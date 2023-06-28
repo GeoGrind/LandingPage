@@ -1,0 +1,23 @@
+{
+  "name": "jsscrappingtest",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.1.4",
+    "express": "^4.18.2",
+    "firebase-admin": "^11.9.0",
+    "kijiji-scraper": "^6.3.2",
+    "mongodb": "^5.6.0",
+    "mongoose": "^7.2.2",
+    "node-fetch": "^3.3.1",
+    "puppeteer": "^20.5.0"
+  }
+}
