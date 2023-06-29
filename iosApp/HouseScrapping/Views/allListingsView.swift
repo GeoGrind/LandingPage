@@ -25,24 +25,6 @@ struct AllListingsView: View {
                 List(items) { item in
                     
                     SingleListingView(item: item)
-
-                    // Boolean field
-//                    if let petsAllowed = item.attributes.petsallowed {
-//                        if petsAllowed {
-//                            Text("True")
-//                        } else {
-//                            Text("False")
-//                        }
-//                    } else {
-//                        Text("Unknown")
-//                    }
-                    
-                    // String field
-//                    if let rentalsvirtualoptions = item.attributes.rentalsvirtualoptions {
-//                        Text(rentalsvirtualoptions)
-//                    } else {
-//                        Text("Nil")
-//                    }
                     
                 }
             }
