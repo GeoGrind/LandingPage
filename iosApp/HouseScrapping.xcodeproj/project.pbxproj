@@ -45,6 +45,7 @@
 		5F76D89E2A45FCAA0098094B /* singleListingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F76D89D2A45FCAA0098094B /* singleListingView.swift */; };
 		5FBC3DB12A3C0D4F004AE2BE /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FBC3DB02A3C0D4F004AE2BE /* Extensions.swift */; };
 		5FBC3DB32A3E9762004AE2BE /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5FBC3DB22A3E9762004AE2BE /* Launch Screen.storyboard */; };
+		5FF0D73A2A4F54A8004FC0F9 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 5FF0D7392A4F54A8004FC0F9 /* FirebaseStorage */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -111,6 +112,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5F04846C2A37FADC00EAC290 /* FirebaseAuth in Frameworks */,
+				5FF0D73A2A4F54A8004FC0F9 /* FirebaseStorage in Frameworks */,
 				5F04846E2A37FADC00EAC290 /* FirebaseFirestore in Frameworks */,
 				5F0484702A37FADC00EAC290 /* FirebaseFirestoreSwift in Frameworks */,
 			);
@@ -140,6 +142,7 @@
 				5F04845A2A37F83F00EAC290 /* HouseScrappingUITests */,
 				5F0484502A37F83F00EAC290 /* HouseScrappingTests */,
 				5F04843E2A37F83E00EAC290 /* Products */,
+				5FF0D7382A4F54A8004FC0F9 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -249,6 +252,13 @@
 			path = Other;
 			sourceTree = "<group>";
 		};
+		5FF0D7382A4F54A8004FC0F9 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -269,6 +279,7 @@
 				5F04846B2A37FADC00EAC290 /* FirebaseAuth */,
 				5F04846D2A37FADC00EAC290 /* FirebaseFirestore */,
 				5F04846F2A37FADC00EAC290 /* FirebaseFirestoreSwift */,
+				5FF0D7392A4F54A8004FC0F9 /* FirebaseStorage */,
 			);
 			productName = ToDoList;
 			productReference = 5F04843D2A37F83E00EAC290 /* HouseScrapping.app */;
@@ -766,6 +777,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 5F04846A2A37FADB00EAC290 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseFirestoreSwift;
+		};
+		5FF0D7392A4F54A8004FC0F9 /* FirebaseStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5F04846A2A37FADB00EAC290 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseStorage;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
