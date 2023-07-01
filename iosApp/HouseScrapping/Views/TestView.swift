@@ -8,6 +8,7 @@
 import SwiftUI
 import FirebaseStorage
 import FirebaseFirestore
+import FirebaseAuth
 struct TestView: View {
      
     @State var isPickerShowing = false
@@ -36,14 +37,7 @@ struct TestView: View {
             }
             Divider()
             
-            HStack {
-                // Loop through the images 
-                ForEach(retrivedImages, id: \.self){ image in
-                    Image(uiImage: image)
-                        .resizable()
-                        .frame(width: 200, height: 200)
-                }
-            }
+            
         }
         .sheet(isPresented: $isPickerShowing, onDismiss: nil){
             // Image picker
@@ -58,6 +52,8 @@ struct TestView: View {
         guard selectedImage != nil else{
             return
         }
+        // Storage ref
+        let storage = Storage.storage()
         // Create storage reference
         let storageRef = Storage.storage().reference()
         // Turn our image into data
@@ -68,22 +64,50 @@ struct TestView: View {
             return
         }
         // Specify the file path and name
-        let path = "images/\(UUID().uuidString).jpeg"
+        
+        let path = "\(UUID().uuidString).jpeg"
         let fileRef = storageRef.child(path)
+        let db = Firestore.firestore()
+        guard let uid = Auth.auth().currentUser?.uid else{
+            return
+        }
+        let currentUserDocRef = db.collection("users").document(uid)
+        currentUserDocRef.getDocument { (document, error) in
+            if let document = document, document.exists {
+                // Check if the "imageData" field exists
+                if document.data()?["imageData"] != nil {
+                    print("The user has the 'imageData' field.")
+                    
+                    if let imagePath = document.data()?["imageData"] as? String {
+                        let storageRef = storage.reference().child(imagePath)
+                        // Delete the storage item
+                        storageRef.delete { error in
+                            if let error = error {
+                                print("Error deleting storage item: \(error)")
+                            } else {
+                                print("Storage item deleted successfully!")
+                            }
+                        }
+                    }
+                }
+            }
+        }
         // Upload that data
         let uploadTask = fileRef.putData(imageData!, metadata: nil) { metadata, error in
             // Check for err
             if error == nil && metadata != nil{
                 // Save a reference to firestore database
-                let db = Firestore.firestore()
-                db.collection("images").document().setData(["url": path]){ error in
-                    if error == nil{
-                        DispatchQueue.main.async{
-                            self.retrivedImages.append(self.selectedImage!)
-                        }
-                        
+                
+                let imageDataField = ["imageData": path]
+
+                currentUserDocRef.setData(imageDataField, merge: true) { error in
+                    if let error = error {
+                        print("Error updating imageData field: \(error)")
+                    } else {
+                        print("imageData field added successfully!")
                     }
                 }
+                
             }
         }
         // Save a reference to the data in firebase db
