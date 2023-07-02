@@ -21,10 +21,7 @@ struct MainView: View {
     @ViewBuilder
     var accountView: some View{
         TabView {
-            TestView()
-                .tabItem{
-                    Label("Testing", systemImage: "house")
-                }
+            
             ProfileView()
                 .tabItem{
                     Label("Profile", systemImage: "person.circle")

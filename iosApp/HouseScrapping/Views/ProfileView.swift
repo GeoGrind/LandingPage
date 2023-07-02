@@ -30,7 +30,7 @@ struct ProfileView: View {
     
     @ViewBuilder
     func profile(user: User) -> some View{
-        TestView()
+        ProfilePicView()
 //        Image(systemName: "person.circle")
 //            .resizable()
 //            .aspectRatio(contentMode: .fit)

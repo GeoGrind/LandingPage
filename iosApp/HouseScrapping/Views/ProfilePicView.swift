@@ -10,10 +10,12 @@ import FirebaseStorage
 import FirebaseFirestore
 import FirebaseAuth
 
-struct TestView: View {
+struct ProfilePicView: View {
     
     @State var isPickerShowing = false
     @State var selectedImage: UIImage?
+    @State private var showSuccessAlert = false
+    @State private var showFailureAlert = false
     init(){
         retrievePhotos()
     }
@@ -49,7 +51,12 @@ struct TestView: View {
             retrievePhotos()
         }
         
-
+        .alert(isPresented: $showSuccessAlert) {
+                    Alert(title: Text("Success"), message: Text("Photo uploaded successfully"), dismissButton: .default(Text("OK")))
+        }
+        .alert(isPresented: $showFailureAlert) {
+                    Alert(title: Text("Upload Failed"), message: Text("There are some technical issues!"), dismissButton: .default(Text("OK")))
+        }
         
     }
     func uploadPhoto(){
@@ -74,6 +81,7 @@ struct TestView: View {
         let fileRef = storageRef.child(path)
         let db = Firestore.firestore()
         guard let uid = Auth.auth().currentUser?.uid else{
+            showFailureAlert = true
             return
         }
         let currentUserDocRef = db.collection("users").document(uid)
@@ -81,14 +89,15 @@ struct TestView: View {
             if let document = document, document.exists {
                 // Check if the "imageData" field exists
                 if document.data()?["imageData"] != nil {
-                    print("The user has the 'imageData' field.")
+                    
                     
                     if let imagePath = document.data()?["imageData"] as? String {
                         let storageRef = storage.reference().child(imagePath)
                         // Delete the storage item
                         storageRef.delete { error in
-                            if let error = error {
-                                print("Error deleting storage item: \(error)")
+                            if error != nil {
+                                showFailureAlert = true
+        
                             } else {
                                 print("Storage item deleted successfully!")
                             }
@@ -106,18 +115,20 @@ struct TestView: View {
                 let imageDataField = ["imageData": path]
 
                 currentUserDocRef.setData(imageDataField, merge: true) { error in
-                    if let error = error {
-                        print("Error updating imageData field: \(error)")
+                    if error != nil {
+                        showFailureAlert = true
                     } else {
                         print("imageData field added successfully!")
                     }
                 }
-                
+            } else {
+                showFailureAlert = true
             }
         }
         // Save a reference to the data in firebase db
+        showSuccessAlert = true
     }
-    func retrievePhotos() {
+    func retrievePhotos(){
         
         let db = Firestore.firestore()
         guard let uid = Auth.auth().currentUser?.uid else{
@@ -145,38 +156,17 @@ struct TestView: View {
                         }
                     } else {
                         print("Image URL field does not exist or is not a string")
+                        return
                     }
             }
         }
         
-//        db.collection("images").getDocuments{ snapshot, error in
-//            if error == nil && snapshot != nil{
-//                var paths = [String]()
-//                for doc in snapshot!.documents {
-//                    // extract the file path
-//                    paths.append(doc["url"] as! String )
-//                }
-//                for path in paths {
-//                    let storageRef = Storage.storage().reference()
-//                    let fileRef = storageRef.child(path)
-//                    fileRef.getData(maxSize: 5 * 1024 * 1024) { data, error in
-//                        if error == nil && data != nil {
-//                            if let image = UIImage(data: data!){
-//                                DispatchQueue.main.async {
-//                                    retrivedImages.append(image)
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
     }
 }
 
 
-struct TestView_Previews: PreviewProvider {
+struct ProfilePic_Previews: PreviewProvider {
     static var previews: some View {
-        TestView()
+        ProfilePicView()
     }
 }
