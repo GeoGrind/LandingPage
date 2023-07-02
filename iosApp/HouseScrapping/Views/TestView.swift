@@ -9,11 +9,14 @@ import SwiftUI
 import FirebaseStorage
 import FirebaseFirestore
 import FirebaseAuth
+
 struct TestView: View {
-     
+    
     @State var isPickerShowing = false
     @State var selectedImage: UIImage?
-    @State var retrivedImages = [UIImage]()
+    init(){
+        retrievePhotos()
+    }
     var body: some View {
         
         VStack {
@@ -36,8 +39,7 @@ struct TestView: View {
                 }
             }
             Divider()
-            
-            
+                
         }
         .sheet(isPresented: $isPickerShowing, onDismiss: nil){
             // Image picker
@@ -46,6 +48,9 @@ struct TestView: View {
         .onAppear{
             retrievePhotos()
         }
+        
+
+        
     }
     func uploadPhoto(){
         // Make sure that the selected image property is not nil
@@ -93,7 +98,7 @@ struct TestView: View {
             }
         }
         // Upload that data
-        let uploadTask = fileRef.putData(imageData!, metadata: nil) { metadata, error in
+        _ = fileRef.putData(imageData!, metadata: nil) { metadata, error in
             // Check for err
             if error == nil && metadata != nil{
                 // Save a reference to firestore database
@@ -112,30 +117,60 @@ struct TestView: View {
         }
         // Save a reference to the data in firebase db
     }
-    func retrievePhotos(){
+    func retrievePhotos() {
+        
         let db = Firestore.firestore()
-        db.collection("images").getDocuments{ snapshot, error in
+        guard let uid = Auth.auth().currentUser?.uid else{
+            return
+        }
+        let currentUserDocRef = db.collection("users").document(uid)
+        currentUserDocRef.getDocument { snapshot, error in
             if error == nil && snapshot != nil{
-                var paths = [String]()
-                for doc in snapshot!.documents {
-                    // extract the file path
-                    paths.append(doc["url"] as! String )
-                }
-                for path in paths {
-                    let storageRef = Storage.storage().reference()
-                    let fileRef = storageRef.child(path)
-                    fileRef.getData(maxSize: 5 * 1024 * 1024) { data, error in
-                        if error == nil && data != nil {
-                            if let image = UIImage(data: data!){
-                                DispatchQueue.main.async {
-                                    retrivedImages.append(image)
+                guard let document = snapshot else {
+                        print("Document does not exist")
+                        return
+                    }
+                if let imageURL = document.data()?["imageData"] as? String {
+                        // Access the imageURL field
+                        
+                        let storageRef = Storage.storage().reference()
+                        let fileRef = storageRef.child(imageURL)
+                        fileRef.getData(maxSize: 5 * 1024 * 1024) { data, error in
+                            if error == nil && data != nil {
+                                if let image = UIImage(data: data!){
+                                    self.selectedImage = image
                                 }
                             }
+                                            
                         }
+                    } else {
+                        print("Image URL field does not exist or is not a string")
                     }
-                }
             }
         }
+        
+//        db.collection("images").getDocuments{ snapshot, error in
+//            if error == nil && snapshot != nil{
+//                var paths = [String]()
+//                for doc in snapshot!.documents {
+//                    // extract the file path
+//                    paths.append(doc["url"] as! String )
+//                }
+//                for path in paths {
+//                    let storageRef = Storage.storage().reference()
+//                    let fileRef = storageRef.child(path)
+//                    fileRef.getData(maxSize: 5 * 1024 * 1024) { data, error in
+//                        if error == nil && data != nil {
+//                            if let image = UIImage(data: data!){
+//                                DispatchQueue.main.async {
+//                                    retrivedImages.append(image)
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
     }
 }
 

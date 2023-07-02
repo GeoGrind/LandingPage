@@ -30,12 +30,13 @@ struct ProfileView: View {
     
     @ViewBuilder
     func profile(user: User) -> some View{
-        Image(systemName: "person.circle")
-            .resizable()
-            .aspectRatio(contentMode: .fit)
-            .foregroundColor(Color.blue)
-            .frame(width: 125, height: 125)
-            .padding()
+        TestView()
+//        Image(systemName: "person.circle")
+//            .resizable()
+//            .aspectRatio(contentMode: .fit)
+//            .foregroundColor(Color.blue)
+//            .frame(width: 125, height: 125)
+//            .padding()
         // Info: Name, Email, Member Since
         VStack(alignment: .leading){
             HStack{

@@ -354,5 +354,68 @@
             </Locations>
          </BreakpointContent>
       </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "086CBC46-B9A2-4661-BD0C-8530B61EA899"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "HouseScrapping/ViewModels/TestViewModel.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "30"
+            endingLineNumber = "30"
+            landmarkName = "Coordinator"
+            landmarkType = "3">
+            <Locations>
+               <Location
+                  uuid = "086CBC46-B9A2-4661-BD0C-8530B61EA899 - 1a0d8fbc17bff871"
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "HouseScrapping.Coordinator.__allocating_init() -&gt; HouseScrapping.Coordinator"
+                  moduleName = "HouseScrapping"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/pengjingcheng/Desktop/SmartRental/iosApp/HouseScrapping/ViewModels/TestViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "0"
+                  endingLineNumber = "0"
+                  offsetFromSymbolStart = "12">
+               </Location>
+               <Location
+                  uuid = "086CBC46-B9A2-4661-BD0C-8530B61EA899 - 1d1eff918d1d53db"
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "HouseScrapping.Coordinator.init() -&gt; HouseScrapping.Coordinator"
+                  moduleName = "HouseScrapping"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/pengjingcheng/Desktop/SmartRental/iosApp/HouseScrapping/ViewModels/TestViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "30"
+                  endingLineNumber = "30"
+                  offsetFromSymbolStart = "132">
+               </Location>
+               <Location
+                  uuid = "086CBC46-B9A2-4661-BD0C-8530B61EA899 - 7cd1f3fe1642952"
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "HouseScrapping.Coordinator.__deallocating_deinit"
+                  moduleName = "HouseScrapping"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/pengjingcheng/Desktop/SmartRental/iosApp/HouseScrapping/ViewModels/TestViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "0"
+                  endingLineNumber = "0"
+                  offsetFromSymbolStart = "16">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
    </Breakpoints>
 </Bucket>
