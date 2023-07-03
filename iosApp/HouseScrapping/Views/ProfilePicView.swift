@@ -22,8 +22,12 @@ struct ProfilePicView: View {
     var body: some View {
         
         VStack {
-            if selectedImage != nil{
-                Image(uiImage: selectedImage!)
+            if let image = selectedImage {
+                Image(uiImage: image)
+                    .resizable()
+                    .frame(width: 200, height: 200)
+            } else{
+                Image(systemName: "person.fill")
                     .resizable()
                     .frame(width: 200, height: 200)
             }

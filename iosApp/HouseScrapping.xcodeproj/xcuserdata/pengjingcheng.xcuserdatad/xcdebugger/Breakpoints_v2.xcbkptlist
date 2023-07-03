@@ -417,5 +417,53 @@
             </Locations>
          </BreakpointContent>
       </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "A3FA399E-6C72-43AF-97BF-F92E30E2C73E"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "HouseScrapping/Views/ProfileView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "17"
+            endingLineNumber = "17"
+            landmarkName = "body"
+            landmarkType = "24">
+            <Locations>
+               <Location
+                  uuid = "A3FA399E-6C72-43AF-97BF-F92E30E2C73E - f1e4441e6383debd"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 () -&gt; SwiftUI._ConditionalContent&lt;&lt;&lt;opaque return type of HouseScrapping.ProfileView.profile(user: HouseScrapping.User) -&gt; some&gt;&gt;.0, SwiftUI.Text&gt; in closure #1 () -&gt; &lt;&lt;opaque return type of SwiftUI.View.navigationTitle(SwiftUI.LocalizedStringKey) -&gt; some&gt;&gt;.0 in HouseScrapping.ProfileView.body.getter : some"
+                  moduleName = "HouseScrapping"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/pengjingcheng/Desktop/SmartRental/iosApp/HouseScrapping/Views/ProfileView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "17"
+                  endingLineNumber = "17"
+                  offsetFromSymbolStart = "456">
+               </Location>
+               <Location
+                  uuid = "A3FA399E-6C72-43AF-97BF-F92E30E2C73E - f1e4441e6383debd"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 () -&gt; SwiftUI._ConditionalContent&lt;&lt;&lt;opaque return type of HouseScrapping.ProfileView.profile(user: HouseScrapping.User) -&gt; some&gt;&gt;.0, SwiftUI.Text&gt; in closure #1 () -&gt; &lt;&lt;opaque return type of SwiftUI.View.navigationTitle(SwiftUI.LocalizedStringKey) -&gt; some&gt;&gt;.0 in HouseScrapping.ProfileView.body.getter : some"
+                  moduleName = "HouseScrapping"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/pengjingcheng/Desktop/SmartRental/iosApp/HouseScrapping/Views/ProfileView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "17"
+                  endingLineNumber = "17"
+                  offsetFromSymbolStart = "1036">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
    </Breakpoints>
 </Bucket>

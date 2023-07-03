@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct RegisterView: View {
+    @State var showInvalidAlert = false
     @StateObject var viewModel = registerViewViewModel()
     var body: some View {
         VStack{
@@ -25,7 +26,10 @@ struct RegisterView: View {
                 SecureField("Password", text: $viewModel.password)
                     .textFieldStyle(DefaultTextFieldStyle())
                 TLButton(title: "Create an account", background: .green){
-                    viewModel.register()
+                    viewModel.register { status in
+                        print(status)
+                    }
+                   
                 }
                 .padding()
             }
