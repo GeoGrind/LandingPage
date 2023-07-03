@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct RegisterView: View {
+    @State var showInvalidAlert = false
+    @State var alertText : String?
     @StateObject var viewModel = registerViewViewModel()
     var body: some View {
         VStack{
@@ -25,10 +27,20 @@ struct RegisterView: View {
                 SecureField("Password", text: $viewModel.password)
                     .textFieldStyle(DefaultTextFieldStyle())
                 TLButton(title: "Create an account", background: .green){
-                    viewModel.register()
+                    viewModel.register { status in
+                        DispatchQueue.main.async {
+                            self.alertText = status
+                            self.showInvalidAlert = true
+                        }
+                    }
+                   
                 }
                 .padding()
+            
             }
+        }
+        .alert(isPresented: $showInvalidAlert){
+            Alert(title: Text("Error"), message: Text(self.alertText!))
         }
     }
 }
