@@ -24,7 +24,7 @@ struct NewSessionView: View {
             }) {
                 Image(systemName: "play")
                     .padding(.horizontal, 50)
-                    .frame(height: 700)
+                    .frame(height: 112)
                     .background(LinearGradient(gradient: Gradient(colors: [Color.red, Color.blue]), startPoint: .leading, endPoint: .trailing))
                     .clipShape(Circle())
                     .font(.largeTitle)
