@@ -159,7 +159,6 @@ struct ProfilePicView: View {
                                             
                         }
                     } else {
-                        print("Image URL field does not exist or is not a string")
                         return
                     }
             }
