@@ -26,9 +26,16 @@ struct MainView: View {
                 .tabItem{
                     Label("Profile", systemImage: "person.circle")
                 }
-            AllListingsView()
-                .tabItem{
-                    Label("Rental page", systemImage: "house")
+            NewSessionView()
+                .tabItem {
+                        Label(
+                            title: { Text("New Session") },
+                            icon: {
+                                Image(systemName: "plus.app.fill")
+                                    .font(.system(size: 32))
+                                    .foregroundColor(.blue)
+                            }
+                        )
                 }
         }
     }
