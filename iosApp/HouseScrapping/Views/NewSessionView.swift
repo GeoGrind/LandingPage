@@ -12,6 +12,7 @@ struct NewSessionView: View {
     @State private var showSheet = false
     @State var courseOptionTag: Int = 0
     @State var locationOptionTag: Int = 0
+    @StateObject var viewModel = NewSessionViewModel()
     var courseOption = ["CS 240", "CS 246"]
     var locationOption = ["DC", "MC"]
     
@@ -40,8 +41,10 @@ struct NewSessionView: View {
                         
                         HStack {
                             Picker("Course", selection: $courseOptionTag) {
-                                Text(courseOption[0]).tag(0)
-                                Text(courseOption[1]).tag(1)
+                                ForEach(courseOption.indices, id: \.self) { index in
+                                    Text(courseOption[index])
+                                        .tag(index)
+                                }
                             }
                             .pickerStyle(MenuPickerStyle())
                             Spacer()
@@ -49,8 +52,10 @@ struct NewSessionView: View {
                         
                         HStack {
                             Picker("Location", selection: $locationOptionTag) {
-                                Text(locationOption[0]).tag(0)
-                                Text(locationOption[1]).tag(1)
+                                ForEach(locationOption.indices, id: \.self) { index in
+                                    Text(locationOption[index])
+                                        .tag(index)
+                                }
                             }
                             .pickerStyle(MenuPickerStyle())
                             Spacer()
@@ -60,6 +65,7 @@ struct NewSessionView: View {
                     }
                     Button(action: {
                         self.showSheet = false
+                        self.viewModel.save(course: courseOption[courseOptionTag], location: locationOption[locationOptionTag])
                     }, label: {
                         HStack {
                             Spacer()
