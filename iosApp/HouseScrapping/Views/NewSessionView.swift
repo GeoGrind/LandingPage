@@ -9,6 +9,7 @@ import SwiftUI
 
 struct NewSessionView: View {
     
+
     @State private var showSheet = false
     @State var courseOptionTag: Int = 0
     @State var locationOptionTag: Int = 0
@@ -19,7 +20,8 @@ struct NewSessionView: View {
     var body: some View {
         VStack {
             Spacer()
-            
+            TimerView()
+            Spacer()
             Button(action: {
                 self.showSheet = true
             }) {
@@ -32,6 +34,8 @@ struct NewSessionView: View {
                     .foregroundColor(.white)
             }
             Spacer()
+            
+            
         }
         .sheet(isPresented: self.$showSheet){
             NavigationView {

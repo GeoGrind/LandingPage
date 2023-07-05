@@ -13,13 +13,8 @@ struct Session: Codable,Identifiable {
     let userId: String
     let course: String
     let location: String
-    let date: Date
+    let date: Double
    
-    // handled
-    var dateString: String {
-            let formatter = DateFormatter()
-            formatter.dateFormat = "EEEE, dd 'of' MMMM"
-            return formatter.string(from: date)
-    }
+    
 }
 

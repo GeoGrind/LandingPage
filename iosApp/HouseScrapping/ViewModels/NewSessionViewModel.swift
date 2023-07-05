@@ -28,8 +28,9 @@ class NewSessionViewModel: ObservableObject {
             userId: uid,
             course: course,
             location: location,
-            date: Date(timeIntervalSince1970: Date().timeIntervalSince1970)
+            date: Date().timeIntervalSince1970
         )
+        
         
         // Save model
         let db = Firestore.firestore()
