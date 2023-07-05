@@ -154,7 +154,6 @@
 				5F04845A2A37F83F00EAC290 /* HouseScrappingUITests */,
 				5F0484502A37F83F00EAC290 /* HouseScrappingTests */,
 				5F04843E2A37F83E00EAC290 /* Products */,
-				B213F5A95C9E54F13A3E0760 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -267,13 +266,6 @@
 				5FBC3DB22A3E9762004AE2BE /* Launch Screen.storyboard */,
 			);
 			path = Other;
-			sourceTree = "<group>";
-		};
-		B213F5A95C9E54F13A3E0760 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
