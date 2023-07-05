@@ -36,7 +36,6 @@ struct NewSessionView: View {
         .sheet(isPresented: self.$showSheet){
             NavigationView {
                 Form {
-                    
                     Section(header: Text("Your study session")) {
                         
                         HStack {

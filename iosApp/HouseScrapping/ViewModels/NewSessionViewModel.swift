@@ -20,8 +20,12 @@ class NewSessionViewModel: ObservableObject {
         
         // Create model
         let newId = UUID().uuidString
+        guard let uid = Auth.auth().currentUser?.uid else{
+            return
+        }
         let newSession = Session(
             id: newId,
+            userId: uid,
             course: course,
             location: location,
             date: Date(timeIntervalSince1970: Date().timeIntervalSince1970)
