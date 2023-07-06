@@ -13,6 +13,7 @@ struct NewSessionView: View {
     @State private var showSheet = false
     @State var courseOptionTag: Int = 0
     @State var locationOptionTag: Int = 0
+    @State var startTime: Double = -1.0
     @StateObject var viewModel = NewSessionViewModel()
     var courseOption = ["CS 240", "CS 246"]
     var locationOption = ["DC", "MC"]
@@ -20,7 +21,9 @@ struct NewSessionView: View {
     var body: some View {
         VStack {
             Spacer()
-            TimerView()
+            
+            TimerView(startTime: $startTime)
+            
             Spacer()
             Button(action: {
                 self.showSheet = true
@@ -68,7 +71,11 @@ struct NewSessionView: View {
                     }
                     Button(action: {
                         self.showSheet = false
-                        self.viewModel.save(course: courseOption[courseOptionTag], location: locationOption[locationOptionTag])
+                        self.viewModel.saveSession(course: courseOption[courseOptionTag], location: locationOption[locationOptionTag]){ res in
+                            if res >= 0 {
+                                self.startTime = res
+                            }
+                        }
                     }, label: {
                         HStack {
                             Spacer()

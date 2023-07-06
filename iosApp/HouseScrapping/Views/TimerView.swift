@@ -9,46 +9,40 @@ import SwiftUI
 import CountdownView
 
 struct TimerView: View {
-    
     @StateObject var viewModel = TimerViewModel()
-    @State var countdownTimer = 5
-    @State var timerRunning = false
-    
-    
-    let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
-    
+    @Binding var startTime: Double
+    @State private var elapsedTime: Double = 0.0
+    @State private var timer: Timer?
     
     var body: some View {
         VStack {
-            Text("\(countdownTimer)")
+            Text(formatTime(elapsedTime))
+                .font(.title)
                 .padding()
-                .onReceive(timer) { _ in
-                    if countdownTimer < 10 && timerRunning {
-                        countdownTimer += 1
-                        viewModel.getStartTime()
-                    } else {
-                        timerRunning = false
-                    }
-                    
-                }
-                .font(.system(size: 40, weight: .bold))
-            
-            HStack(spacing:30) {
-                Button("Start") {
-                    timerRunning = true
-                }
-                
-                Button("Reset") {
-                    countdownTimer = 5
-                }.foregroundColor(.red)
-            }
+        }
+        .onChange(of: startTime) { newStartTime in
+            restartTimer()
+        }
+        .onAppear {
+            restartTimer()
         }
     }
     
-}
-
-struct TimerView_Previews: PreviewProvider {
-    static var previews: some View {
-        TimerView()
+    private func formatTime(_ time: Double) -> String {
+        let minutes = Int(time / 60)
+        let seconds = Int(time) % 60
+        return String(format: "%02d:%02d", minutes, seconds)
+    }
+    
+    private func restartTimer() {
+        timer?.invalidate()
+        elapsedTime = 0.0
+        startTimer()
+    }
+    
+    private func startTimer() {
+        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
+            elapsedTime += 1.0
+        }
     }
 }
