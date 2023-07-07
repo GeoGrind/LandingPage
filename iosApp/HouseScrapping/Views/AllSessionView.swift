@@ -8,10 +8,20 @@
 import SwiftUI
 
 struct AllSessionView: View {
+    @StateObject private var viewModel = AllSessionViewModel()
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        ScrollView {
+            LazyVStack(spacing: 16) {
+                ForEach(viewModel.sessions) { session in
+                    SingleSessionView(session: session)
+                }
+            }
+            .padding()
+        }
     }
 }
+
 
 struct AllSessionView_Previews: PreviewProvider {
     static var previews: some View {

@@ -14,7 +14,5 @@ struct Session: Codable,Identifiable {
     let course: String
     let location: String
     let date: Double
-   
-    
 }
 
