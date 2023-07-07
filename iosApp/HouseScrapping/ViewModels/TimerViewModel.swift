@@ -46,46 +46,9 @@ class TimerViewModel: ObservableObject {
                     }
                 }
             }
-        
+    }
     
-    }
-    func getElaspedTime(completion: @escaping (Double) -> Void) {
-        guard let currentUser = Auth.auth().currentUser else {
-            completion(-1)
-            return
-        }
-        
-        let db = Firestore.firestore()
-        let sessionsCollection = db.collection("sessions")
-        let uid = currentUser.uid
 
-        sessionsCollection.whereField("userId", isEqualTo: uid).getDocuments { (querySnapshot, error) in
-            if let error = error {
-                print("Error getting sessions: \(error)")
-                completion(-1)
-                return
-            }
-
-            guard let documents = querySnapshot?.documents else {
-                print("No sessions found for the current user.")
-                completion(-1)
-                return
-            }
-
-            for document in documents {
-                let sessionData = document.data()
-                if let startingTime = sessionData["date"] as? Double {
-                    let elapsedTime = Date().timeIntervalSince1970 - startingTime
-                    completion(elapsedTime)
-                    return
-                } else {
-                    print("Invalid date format for session.")
-                    completion(-1)
-                    return
-                }
-            }
-        }
-    }
 
     
     

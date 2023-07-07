@@ -13,7 +13,7 @@ struct LoginView: View {
         NavigationView{
             VStack{
                 // Header
-                HeaderView(title: "ToDo list", subtitle: "Get things down", angle: 15, background: .pink)
+                HeaderView(title: "Test Title", subtitle: "Test Subtitle", angle: 15, background: .pink)
                 
                 // Login Form
                 Form {
