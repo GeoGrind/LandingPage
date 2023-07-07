@@ -15,6 +15,8 @@ import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 
+const DiscordRPC = require('discord-rpc');
+
 class AppUpdater {
   constructor() {
     log.transports.file.level = 'info';
@@ -135,3 +137,30 @@ app
     });
   })
   .catch(console.log);
+
+const clientId = '1125514191588040923';
+DiscordRPC.register(clientId);
+const rpc = new DiscordRPC.Client({ transport: 'ipc' });
+const startTimestamp = new Date();
+async function setActivity() {
+  if (!rpc) {
+    return;
+  }
+
+  rpc.setActivity({
+    details: `Hello`,
+    state: 'hey',
+    startTimestamp,
+    largeImageKey: 'fuji',
+    largeImageText: 'large',
+    smallImageKey: 'nature',
+    smallImageText: 'small',
+    instance: false,
+  });
+}
+
+rpc.on('ready', () => {
+  setActivity();
+});
+
+rpc.login({ clientId }).catch(console.error);
