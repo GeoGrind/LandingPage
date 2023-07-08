@@ -2,7 +2,7 @@ import React from 'react';
 import { signOut } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 
-import { auth } from '../firebase';
+import { auth } from '../../firebase';
 
 function Home() {
   const navigate = useNavigate();
