@@ -120,7 +120,6 @@ class NewSessionViewModel: ObservableObject {
                                 if error != nil {
                                     completion(-1) // Return failure if there's an error
                                 } else {
-                                    print("Stored in the field in user 1")
                                     completion(startTime) // Return success
                                 }
                             }

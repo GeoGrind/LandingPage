@@ -1,5 +1,5 @@
 //
-//  TestView.swift
+//  NewSessionView.swift
 //  HouseScrapping
 //
 //  Created by Justin Peng on 2023-07-03.
@@ -27,7 +27,6 @@ struct NewSessionView: View {
                 .onAppear {
                     self.viewModel.getSession { result in
                         if result >= 0 {
-                            print(result)
                             startTime = result
                         }
                     }
