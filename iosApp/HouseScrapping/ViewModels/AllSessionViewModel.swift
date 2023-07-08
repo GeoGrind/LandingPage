@@ -29,6 +29,7 @@ class AllSessionViewModel: ObservableObject {
                 if let error = error {
                     // Handle error
                     print("Error fetching sessions: \(error.localizedDescription)")
+                    
                     return
                 }
                 

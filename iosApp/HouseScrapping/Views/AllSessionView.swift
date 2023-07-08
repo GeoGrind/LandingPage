@@ -15,9 +15,11 @@ struct AllSessionView: View {
             LazyVStack(spacing: 16) {
                 ForEach(viewModel.sessions) { session in
                     SingleSessionView(session: session)
+                        .padding(.vertical, 4)
                 }
             }
             .padding()
+            
         }
     }
 }

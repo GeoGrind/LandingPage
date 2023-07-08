@@ -28,8 +28,6 @@ struct SingleSessionView: View {
                 .font(.body)
                 .foregroundColor(.gray)
             
-            // Add more content to the card view as needed
-            
             Spacer()
         }
         .padding()
@@ -37,6 +35,7 @@ struct SingleSessionView: View {
         .cornerRadius(10)
         .shadow(color: Color.gray.opacity(0.4), radius: 4, x: 0, y: 2)
         .padding(.horizontal)
+        .frame(height: 150) // Set a fixed height for the card
     }
     
     func formatDate(_ timestamp: Double) -> String {

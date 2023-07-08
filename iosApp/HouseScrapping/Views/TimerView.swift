@@ -25,12 +25,12 @@ struct TimerView: View {
                         Circle()
                             .foregroundColor(Color.purple)
                             .shadow(color: .purple, radius: 10, x: 0, y: 0)
-                            .frame(width: 200, height: 200)
+                            .frame(width: 300, height: 300)
                     )
                     .overlay(
                         Circle()
                             .stroke(Color.white, lineWidth: 8)
-                            .frame(width: 216, height: 216)
+                            .frame(width: 316, height: 316)
                     )
             }
         }
@@ -43,9 +43,10 @@ struct TimerView: View {
     }
     
     private func formatTime(_ time: Double) -> String {
-        let minutes = Int(time / 60)
-        let seconds = Int(time) % 60
-        return String(format: "%02d:%02d", minutes, seconds)
+        let hours = Int(time / 3600)
+        let minutes = Int((time / 60).truncatingRemainder(dividingBy: 60))
+        let seconds = Int(time.truncatingRemainder(dividingBy: 60))
+        return String(format: "%02d:%02d:%02d", hours, minutes, seconds)
     }
     
     private func restartTimer(newStartTime: Double) {
