@@ -52,7 +52,7 @@ function Login() {
       </div>
 
       <p className={styles.Login__switchForm}>
-        No account?
+        No account?{' '}
         <NavLink className={styles.Login__switchForm__link} to="/signup">
           Create one
         </NavLink>

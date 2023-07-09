@@ -4,7 +4,7 @@
   padding: 0;
   font-family: 'poppins', sans-serif;
 }
-.Login {
+.SignUp {
   display: flex;
   flex-direction: column;
   width: 400px;
@@ -15,9 +15,7 @@
   backdrop-filter: blur(15px);
   justify-content: center;
   align-items: center;
-  // .Login__title {
-  //   color: red;
-  // }
+
   &__title {
     color: blue;
     font-size: 2em;
@@ -25,20 +23,6 @@
     text-align: center;
   }
   &__form {
-
-  }
-  &__forgotPassword {
-    // margin: -15px 0 15px;
-    font-size: 12px;
-    color: #fff;
-    display: flex;
-    justify-content: space-between;
-    :hover {
-      text-decoration: underline;
-    }
-  }
-  &__external {
-    font-size: 14px;
   }
   &__switchForm {
     font-size: 0.9em;

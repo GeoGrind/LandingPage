@@ -1,25 +1,15 @@
 import { MemoryRouter as Router, Link, Routes, Route } from 'react-router-dom';
+import Header from 'components/Header';
 import Login from '../components/Authentication/Login/Login';
 import SignUp from '../components/Authentication/SignUp/SignUp';
 import Home from '../components/Home/Home';
-import './App.css';
+// import styles from './App.module.scss';
+import './App.module.scss';
 
 export default function App() {
   return (
     <Router>
-      <div className="App">
-        <div className="menu">
-          <Link to="/home">
-            <h2>Home</h2>
-          </Link>
-          <Link to="/login">
-            <h2>Login</h2>
-          </Link>
-          <Link to="/signup">
-            <h2>Sign up</h2>
-          </Link>
-        </div>
-      </div>
+      <Header />
       <Routes>
         <Route path="/home" element={<Home />} />
         <Route path="/login" element={<Login />} />

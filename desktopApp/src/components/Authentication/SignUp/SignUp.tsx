@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../../firebase';
+import styles from './SignUp.module.scss';
+import FormItem from '../FormItem/FormItem';
 
 function SignUp() {
   const navigate = useNavigate();
-
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -29,52 +30,29 @@ function SignUp() {
   };
 
   return (
-    <main>
-      <section>
-        <div>
-          <div>
-            <h1> FocusApp </h1>
-            <form>
-              <div>
-                <label htmlFor="email-address">
-                  Email address
-                  <input
-                    type="email"
-                    label="Email address"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    placeholder="Email address"
-                  />
-                </label>
-              </div>
+    <div className={styles.SignUp}>
+      <h2 className={styles.SignUp__title}>Sign Up</h2>
+      <div className={styles.SignUp__form}>
+        <FormItem label="email" onChange={setEmail} />
 
-              <div>
-                <label htmlFor="password">
-                  Password
-                  <input
-                    type="password"
-                    label="Create password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    placeholder="Password"
-                  />
-                </label>
-              </div>
+        <FormItem label="password" onChange={setPassword} />
+      </div>
 
-              <button type="submit" onClick={onSubmit}>
-                Sign up
-              </button>
-            </form>
+      <button
+        className={styles.SignUp__button}
+        type="button"
+        onClick={onSubmit}
+      >
+        Sign Up
+      </button>
 
-            <p>
-              Already have an account? <NavLink to="/login">Sign in</NavLink>
-            </p>
-          </div>
-        </div>
-      </section>
-    </main>
+      <p className={styles.SignUp__switchForm}>
+        Already Have an account?{' '}
+        <NavLink className={styles.SignUp__switchForm__link} to="/login">
+          Log in
+        </NavLink>
+      </p>
+    </div>
   );
 }
 
