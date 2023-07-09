@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Firebase
 
 struct NewSessionView: View {
     
@@ -72,6 +73,30 @@ struct NewSessionView: View {
             
             
         }
+        .onAppear {
+                let db = Firestore.firestore()
+                guard let uid = Auth.auth().currentUser?.uid else{
+                    return
+                }
+                let userRef = db.collection("users").document(uid)
+                
+                userRef.addSnapshotListener { snapshot, error in
+                    guard let document = snapshot else {
+                        print("Error fetching document: \(error!)")
+                        return
+                    }
+                    
+                    if document.exists {
+                        if let data = document.data(), !data.keys.contains("startTime") {
+                            self.viewModel.deleteSession { res in
+                                if res == 1 {
+                                    self.startTime = 0
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         
         .sheet(isPresented: self.$showSheet){
             NavigationView {
