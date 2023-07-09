@@ -17,23 +17,9 @@ function FormItem({ label, onChange }: IFormItemProps) {
         className={styles.FormItem__input}
         onChange={(e) => onChange(e.target.value)}
         id={label}
+        type={label === 'password' ? 'password' : 'text'}
       />
     </div>
-    // <div className={styles.FormItem}>
-    //   {/* add icon */}
-    //   <label className={styles.FormItem__label} htmlFor="password">
-    //     Password
-    //     <input
-    //       className={styles.FormItem__input}
-    //       type="password"
-    //       id="password"
-    //       name="password"
-    //       required
-    //       // placeholder="Password"
-    //       onChange={(e) => setPassword(e.target.value)}
-    //     />
-    //   </label>
-    // </div>
   );
 }
 

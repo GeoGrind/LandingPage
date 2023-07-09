@@ -1,36 +1,69 @@
-import { Link, useNavigate } from 'react-router-dom';
-import { signOut } from 'firebase/auth';
-import { auth } from 'firebase';
+import { Link } from 'react-router-dom';
+import firebase from 'firebase';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { useState } from 'react';
 import styles from './Header.module.scss';
-import icon from '../../assets/icon.png';
+import icon from '../../assets/956fd6.png';
 
 function Header() {
-  const navigate = useNavigate();
+  const auth = getAuth();
 
-  const handleLogout = () => {
-    signOut(auth)
-      .then(() => {
-        // Sign-out successful.
-        navigate('/');
-        console.log('Signed out successfully');
-        return null;
-      })
-      .catch((error) => {
-        console.log('there is an error:', error);
-        // An error happened.
-      });
-  };
+  const [isLoggedin, setIsLoggedIn] = useState(false);
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      setIsLoggedIn(true);
+      // User is signed in, see docs for a list of available properties
+      // https://firebase.google.com/docs/reference/js/auth.user
+      // ...
+    } else {
+      setIsLoggedIn(false);
+      // User is signed out
+      // ...
+    }
+  });
   return (
-    <div className={styles.Header}>
-      <Link to="/home">
-        <img className={styles.Header__logo} src={icon} alt="Logo" />
-      </Link>
-      <Link to="/login">Login</Link>
-      <Link to="/signup">Sign up</Link>
-      <button type="button" onClick={handleLogout}>
-        Logout
-      </button>
-    </div>
+    <header className={styles.Header}>
+      <div className={styles.Header__container}>
+        <div className={styles.Header__container__inner}>
+          <div className={styles.Header__container__inner__logo}>
+            <Link to="/home">
+              <img
+                className={styles.Header__logo}
+                src={icon}
+                height={40}
+                alt="Logo"
+              />
+            </Link>
+          </div>
+          <div className={styles.Header__container__inner__nav}>
+            <Link
+              className={styles.Header__container__inner__nav__item}
+              to="/home"
+            >
+              Home
+            </Link>
+          </div>
+
+          <div className={styles.Header__container__inner__utility}>
+            {isLoggedin ? (
+              <Link
+                className={styles.Header__container__inner__utility__item}
+                to="/account"
+              >
+                Account
+              </Link>
+            ) : (
+              <Link
+                className={styles.Header__container__inner__utility__item}
+                to="/login"
+              >
+                Log In
+              </Link>
+            )}
+          </div>
+        </div>
+      </div>
+    </header>
   );
 }
 
