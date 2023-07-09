@@ -10,9 +10,10 @@ import Foundation
 struct Session: Codable,Identifiable {
     // primitive, these fields are mandatory
     let id: String
-    let userId: String
+    let ownerId: String
     let course: String
     let location: String
     let date: Double
+    var subscribers: [String] = []
 }
 

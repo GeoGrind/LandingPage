@@ -29,7 +29,7 @@ class NewSessionViewModel: ObservableObject {
         
         // First clean up the db
         db.collection("sessions")
-            .whereField("userId", isEqualTo: uid)
+            .whereField("ownerId", isEqualTo: uid)
             .getDocuments { (querySnapshot, error) in
                 if error != nil {
                     completion(0) // Return failure if there's an error
@@ -83,17 +83,18 @@ class NewSessionViewModel: ObservableObject {
         let startTime = Date().timeIntervalSince1970
         let newSession = Session(
             id: newId,
-            userId: uid,
+            ownerId: uid,
             course: course,
             location: location,
-            date: startTime
+            date: startTime,
+            subscribers: []
         )
         
         let db = Firestore.firestore()
         
         // First clean up the db
         db.collection("sessions")
-            .whereField("userId", isEqualTo: uid)
+            .whereField("ownerId", isEqualTo: uid)
             .getDocuments { (querySnapshot, error) in
                 if error != nil {
                     completion(-1) // Return failure if there's an error
@@ -163,7 +164,7 @@ class NewSessionViewModel: ObservableObject {
         let db = Firestore.firestore()
         
         db.collection("sessions")
-            .whereField("userId", isEqualTo: uid)
+            .whereField("ownerId", isEqualTo: uid)
             .getDocuments { (querySnapshot, error) in
                 if error != nil {
                     completion(-1)

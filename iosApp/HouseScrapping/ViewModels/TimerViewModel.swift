@@ -24,7 +24,7 @@ class TimerViewModel: ObservableObject {
         
         // first clean up the db
         db.collection("sessions")
-            .whereField("userId", isEqualTo: uid)
+            .whereField("ownerId", isEqualTo: uid)
             .getDocuments { (querySnapshot, error) in
                 if let error = error {
                     print("Error getting sessions: \(error)")

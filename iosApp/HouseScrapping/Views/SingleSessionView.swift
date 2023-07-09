@@ -9,7 +9,7 @@ import SwiftUI
 
 struct SingleSessionView: View {
     var session: Session
-
+    @State private var isJoiningSession = false
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(session.course)
@@ -24,9 +24,24 @@ struct SingleSessionView: View {
                 .font(.body)
                 .foregroundColor(.gray)
             
-            Text("User ID: \(session.userId)")
+            Text("User ID: \(session.ownerId)")
                 .font(.body)
                 .foregroundColor(.gray)
+//            Button(action: {
+//                            // Perform the join session action here
+//                            isJoiningSession = true
+//                        }) {
+//                            Text("Join Session")
+//                                .font(.headline)
+//                                .foregroundColor(.white)
+//                                .padding()
+//                                .background(
+//                                    Capsule()
+//                                        .fill(Color.blue)
+//                                        .shadow(color: .blue, radius: 10, x: 0, y: 0)
+//                                )
+//                        }
+//                        .disabled(isJoiningSession) // Disable the button when already joining the session
             
             Spacer()
         }
@@ -51,7 +66,7 @@ struct SingleSessionView: View {
 struct SingleSessionView_Previews: PreviewProvider {
     static var previews: some View {
         let session = Session(id: "77F6A733-3841-4980-A845-1F8689EBF775",
-                              userId: "9gn4QZbiEtRm0414IMsdBrZiLXv2",
+                              ownerId: "9gn4QZbiEtRm0414IMsdBrZiLXv2",
                               course: "CS 240",
                               location: "DC",
                               date: 1688767501.1226)
