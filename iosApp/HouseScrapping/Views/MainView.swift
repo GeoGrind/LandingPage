@@ -22,6 +22,10 @@ struct MainView: View {
     var accountView: some View{
         TabView {
             
+            AllSessionView()
+                .tabItem{
+                    Label("Session Now", systemImage: "list.bullet.rectangle")
+                }
             ProfileView()
                 .tabItem{
                     Label("Profile", systemImage: "person.circle")
