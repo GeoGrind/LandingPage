@@ -15,7 +15,40 @@ class NewSessionViewModel: ObservableObject {
     
     
     init(){}
+    func cleanUpSession(document: DocumentSnapshot, completion: @escaping () -> Void) {
+        let db = Firestore.firestore()
+        guard let subscribers = document.data()?["subscribers"] as? [String] else {
+            // No subscribers found, skip the cleanup
+            completion()
+            return
+        }
+        
+        let dispatchGroup = DispatchGroup()
+        
+        for userId in subscribers {
+            dispatchGroup.enter()
+            
+            // Update the user document
+            let userRef = db.collection("users").document(userId)
+            userRef.updateData([
+                "isSubscribing": false,
+                "subscribingSession": ""
+            ]) { error in
+                if let error = error {
+                    print("Failed to update user document for user ID \(userId): \(error)")
+                }
+                
+            dispatchGroup.leave()
+            }
+        }
+        
+        dispatchGroup.notify(queue: .main) {
+            completion()
+        }
+    }
+
     
+
     // Delete the session for the current user, return 1 if deletion succeed, 0 otherwise
     func deleteSession(completion: @escaping (Double) -> Void){
         // Create model
@@ -48,23 +81,27 @@ class NewSessionViewModel: ObservableObject {
                     return
                 } else {
                     let document = documents[0]
-                    db.collection("sessions").document(document.documentID).delete { error in
-                        if error != nil {
-                            completion(0) // Return failure if there's an error
-                        } else{
-                            // remove the startTime field in the user
-                            db.collection("users")
-                                .document(uid)
-                                .updateData([
-                                    "startTime": FieldValue.delete()
-                                ]) { error in
-                                    if error != nil {
-                                        completion(0)
-                                    } else {
-                                        completion(1)
+                    
+                    self.cleanUpSession(document: document) {
+                        db.collection("sessions").document(document.documentID).delete { error in
+                            if let error = error {
+                                print("Failed to delete session document: \(error)")
+                                completion(0) // Return failure if there's an error
+                            } else {
+                                // remove the startTime field in the user
+                                db.collection("users")
+                                    .document(uid)
+                                    .updateData([
+                                        "startTime": FieldValue.delete()
+                                    ]) { error in
+                                        if let error = error {
+                                            print("Failed to update user document: \(error)")
+                                            completion(0)
+                                        } else {
+                                            completion(1)
+                                        }
                                     }
-                                }
-                            
+                            }
                         }
                     }
                 }
@@ -111,14 +148,14 @@ class NewSessionViewModel: ObservableObject {
                 if documents.count == 0 {
                    
                     db.collection("sessions").document(newSession.id).setData(newSession.asDictionary()) { error in
-                        if let error = error {
+                        if error != nil {
                             completion(-1) // Return failure if there's an error
                         } else {
                             
                             db.collection("users").document(uid).updateData([
                                 "startTime": startTime
                             ]) { error in
-                                if let error = error {
+                                if error != nil {
                                     completion(-1) // Return failure if there's an error
                                 } else {
                                     completion(startTime) // Return success
