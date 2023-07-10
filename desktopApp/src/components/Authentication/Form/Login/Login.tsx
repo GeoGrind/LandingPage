@@ -40,7 +40,8 @@ function Login() {
         <img
           className={styles.Login__logo}
           src={icon}
-          height={100}
+          height={250}
+          width={250}
           alt="Logo"
         />
         <div className={styles.Login__left__footer}>

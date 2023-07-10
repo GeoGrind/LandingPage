@@ -4,6 +4,8 @@ import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../../../firebase';
 import styles from './SignUp.module.scss';
 import FormItem from '../FormItem/FormItem';
+import FormButton from '../FormButton/FormButton';
+import icon from '../../../../../assets/956fd6.png';
 
 function SignUp() {
   const navigate = useNavigate();
@@ -31,27 +33,38 @@ function SignUp() {
 
   return (
     <div className={styles.SignUp}>
-      <h2 className={styles.SignUp__title}>Sign Up</h2>
-      <div className={styles.SignUp__form}>
-        <FormItem label="email" onChange={setEmail} />
-
-        <FormItem label="password" onChange={setPassword} />
+      <div className={styles.SignUp__left}>
+        <div className={styles.SignUp__header}>Welcome!</div>
+        <img
+          className={styles.SignUp__logo}
+          src={icon}
+          height={250}
+          width={250}
+          alt="Logo"
+        />
+        <div className={styles.SignUp__left__footer}>
+          Already have an account?{' '}
+          <NavLink className={styles.link} to="/login">
+            Log in
+          </NavLink>
+        </div>
       </div>
 
-      <button
-        className={styles.SignUp__button}
-        type="button"
-        onClick={onSubmit}
-      >
-        Sign Up
-      </button>
+      <div className={styles.SignUp__right}>
+        <div className={styles.SignUp__right__content}>
+          <strong className={styles.SignUp__header}>Sign Up</strong>
+        </div>
+        <div className={styles.SignUp__form}>
+          <FormItem label="email" onChange={setEmail} />
+          <FormItem label="password" onChange={setPassword} />
+          <FormButton label="Sign Up" onClick={onSubmit} />
+        </div>
 
-      <p className={styles.SignUp__switchForm}>
-        Already Have an account?{' '}
-        <NavLink className={styles.SignUp__switchForm__link} to="/login">
-          Log in
-        </NavLink>
-      </p>
+        <div className={styles.SignUp__right__bottom}>
+          Or sign up with
+          <div className={styles.SignUp__social}>Google</div>
+        </div>
+      </div>
     </div>
   );
 }
