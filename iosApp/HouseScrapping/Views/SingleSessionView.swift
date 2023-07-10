@@ -6,10 +6,15 @@
 //
 
 import SwiftUI
-
+import FirebaseAuth
+import FirebaseFirestore
+import Foundation
 struct SingleSessionView: View {
     var session: Session
-    @State private var isJoiningSession = false
+    
+    @StateObject private var viewModel = SingleSessionViewModel()
+    var sessionController = SessionController()
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(session.course)
@@ -27,23 +32,47 @@ struct SingleSessionView: View {
             Text("User ID: \(session.ownerId)")
                 .font(.body)
                 .foregroundColor(.gray)
-//            Button(action: {
-//                            // Perform the join session action here
-//                            isJoiningSession = true
-//                        }) {
-//                            Text("Join Session")
-//                                .font(.headline)
-//                                .foregroundColor(.white)
-//                                .padding()
-//                                .background(
-//                                    Capsule()
-//                                        .fill(Color.blue)
-//                                        .shadow(color: .blue, radius: 10, x: 0, y: 0)
-//                                )
-//                        }
-//                        .disabled(isJoiningSession) // Disable the button when already joining the session
+           
+                
+            Button(action: {
+                viewModel.addSubscriberToCurrentSession(sessionID: session.id)
+                sessionController.deleteSession { res in
+                    
+                    if res == 1 {
+                        // go to a firestore collection called "users", change the string field "subscribingSession" to {session.id}
+                        guard let userId = Auth.auth().currentUser?.uid else{
+                            return
+                        }
+                        Firestore.firestore().collection("users").document(userId).updateData([
+                                    "subscribingSession": session.id
+                                ]) { error in
+                                    if let error = error {
+                                        print("Error updating subscribingSession field: \(error)")
+                                    } else {
+                                        print("subscribingSession field updated successfully")
+                                    }
+                        }
+                    }
+                }
+            }) {
+                Text("Join Session")
+                    .font(.subheadline)
+                    .foregroundColor(.white)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 6)
+                    .background(
+                        Capsule()
+                            .fill(viewModel.isSubscribing ? Color.gray : Color.blue) // Switch to gray if isJoiningSession is true
+                    )
+            }
+            .disabled(viewModel.isSubscribing)
             
             Spacer()
+        }
+        .onAppear {
+            if let userId = Auth.auth().currentUser?.uid {
+                viewModel.listenToUserSubscriptionStatus(userId: userId)
+            }
         }
         .padding()
         .background(Color.white)
@@ -51,6 +80,7 @@ struct SingleSessionView: View {
         .shadow(color: Color.gray.opacity(0.4), radius: 4, x: 0, y: 2)
         .padding(.horizontal)
         .frame(height: 150) // Set a fixed height for the card
+        
     }
     
     func formatDate(_ timestamp: Double) -> String {
@@ -62,6 +92,7 @@ struct SingleSessionView: View {
         return dateFormatter.string(from: date)
     }
 }
+
 
 struct SingleSessionView_Previews: PreviewProvider {
     static var previews: some View {

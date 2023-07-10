@@ -7,7 +7,8 @@
 
 import SwiftUI
 import Firebase
-
+import FirebaseAuth
+import FirebaseFirestore
 struct NewSessionView: View {
     
 
@@ -129,9 +130,68 @@ struct NewSessionView: View {
                     }
                     Button(action: {
                         self.showSheet = false
-                        self.viewModel.saveSession(course: courseOption[courseOptionTag], location: locationOption[locationOptionTag]){ res in
-                            if res >= 0 {
-                                self.startTime = res
+                        guard let userId = Auth.auth().currentUser?.uid else {
+                            return
+                        }
+                        
+                        Firestore.firestore().collection("users").document(userId).getDocument { (document, error) in
+                            if let document = document, document.exists {
+                                if let isSubscribing = document.data()?["isSubscribing"] as? Bool, isSubscribing {
+                                    if let subscribingSession = document.data()?["subscribingSession"] as? String {
+                                        // Find the session in Firestore where id matches subscribingSession
+                                        Firestore.firestore().collection("sessions").document(subscribingSession).getDocument { (sessionDocument, sessionError) in
+                                            if let sessionDocument = sessionDocument, sessionDocument.exists {
+                                                if var subscribers = sessionDocument.data()?["subscribers"] as? [String] {
+                                                    // Delete the current user from the subscribers array
+                                                    if let index = subscribers.firstIndex(of: userId) {
+                                                        subscribers.remove(at: index)
+                                                    }
+                                                    
+                                                    // Update the subscribers array in the session document
+                                                    Firestore.firestore().collection("sessions").document(subscribingSession).updateData([
+                                                        "subscribers": subscribers
+                                                    ]) { sessionUpdateError in
+                                                        if let sessionUpdateError = sessionUpdateError {
+                                                            print("Error updating subscribers array: \(sessionUpdateError)")
+                                                        } else {
+                                                            print("Subscribers array updated successfully")
+                                                        }
+                                                        
+                                                        // Update user's fields isSubscribing and subscribingSession
+                                                        Firestore.firestore().collection("users").document(userId).updateData([
+                                                            "isSubscribing": false,
+                                                            "subscribingSession": ""
+                                                        ]) { userUpdateError in
+                                                            if let userUpdateError = userUpdateError {
+                                                                print("Error updating isSubscribing and subscribingSession fields: \(userUpdateError)")
+                                                            } else {
+                                                                print("isSubscribing and subscribingSession fields updated successfully")
+                                                            }
+                                                            
+                                                            // Save the session
+                                                            self.viewModel.saveSession(course: courseOption[courseOptionTag], location: locationOption[locationOptionTag]) { res in
+                                                                if res >= 0 {
+                                                                    self.startTime = res
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            } else {
+                                                print("Session document does not exist")
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    // If the user's "isSubscribing" field is false, simply save the session
+                                    self.viewModel.saveSession(course: courseOption[courseOptionTag], location: locationOption[locationOptionTag]) { res in
+                                        if res >= 0 {
+                                            self.startTime = res
+                                        }
+                                    }
+                                }
+                            } else {
+                                print("User document does not exist")
                             }
                         }
                     }, label: {

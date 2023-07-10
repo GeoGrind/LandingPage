@@ -25,7 +25,9 @@ class ProfileViewViewModel: ObservableObject {
                     name: data["name"] as? String ?? "",
                     email: data["email"] as? String ?? "",
                     joined: data["joined"] as? TimeInterval ?? 0,
-                    imageData: nil
+                    imageData: nil,
+                    isSubscribing: false,
+                    subscribingSession: ""
                 )
             }
         }

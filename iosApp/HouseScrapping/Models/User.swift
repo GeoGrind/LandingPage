@@ -13,4 +13,6 @@ struct User: Codable,Identifiable {
     let email: String
     let joined: TimeInterval
     let imageData: Data?
+    let isSubscribing: Bool
+    let subscribingSession: String?
 }

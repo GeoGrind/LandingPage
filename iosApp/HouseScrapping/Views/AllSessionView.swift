@@ -6,17 +6,21 @@
 //
 
 import SwiftUI
+import FirebaseAuth
 
 struct AllSessionView: View {
     @StateObject private var viewModel = AllSessionViewModel()
     
     var body: some View {
         ScrollView {
-            LazyVStack(spacing: 16) {
+            LazyVStack(spacing: 70) {
                 ForEach(viewModel.sessions) { session in
-                    SingleSessionView(session: session)
-                        .padding(.vertical, 4)
+                    if session.ownerId != Auth.auth().currentUser?.uid {
+                        SingleSessionView(session: session)
+                            .frame(maxWidth: .infinity)
+                    }
                 }
+                Spacer() // Add a spacer to distribute the remaining space evenly
             }
             .padding()
             

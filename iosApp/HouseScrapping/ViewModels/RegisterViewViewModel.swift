@@ -45,7 +45,9 @@ class registerViewViewModel: ObservableObject {
             name: name,
             email: email,
             joined: Date().timeIntervalSince1970,
-            imageData: nil
+            imageData: nil,
+            isSubscribing: false,
+            subscribingSession: ""
         )
 
         let db = Firestore.firestore()

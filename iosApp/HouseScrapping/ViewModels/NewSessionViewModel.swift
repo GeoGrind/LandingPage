@@ -110,21 +110,20 @@ class NewSessionViewModel: ObservableObject {
                 // The case when the current user does not have a session running
                 if documents.count == 0 {
                    
-                    db.collection("sessions").addDocument(data: newSession.asDictionary()) { error in
-                        if error != nil {
-                            completion(-1)
+                    db.collection("sessions").document(newSession.id).setData(newSession.asDictionary()) { error in
+                        if let error = error {
+                            completion(-1) // Return failure if there's an error
                         } else {
                             
                             db.collection("users").document(uid).updateData([
                                 "startTime": startTime
                             ]) { error in
-                                if error != nil {
+                                if let error = error {
                                     completion(-1) // Return failure if there's an error
                                 } else {
                                     completion(startTime) // Return success
                                 }
                             }
-                            completion(startTime) // Return success
                         }
                     }
                 } else {
