@@ -6,6 +6,7 @@ import Home from '../components/Home/Home';
 // import styles from './App.module.scss';
 import './App.module.scss';
 import Account from '../components/Authentication/Account/Account';
+import 'mapbox-gl/dist/mapbox-gl.css';
 
 export default function App() {
   return (
