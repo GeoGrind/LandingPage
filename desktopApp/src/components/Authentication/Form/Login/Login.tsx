@@ -72,29 +72,3 @@ function Login() {
 }
 
 export default Login;
-{
-  /* <h2 className={styles.Login__title}>Login</h2>
-      <div className={styles.Login__form}>
-        <FormItem label="email" onChange={setEmail} />
-
-        <FormItem label="password" onChange={setPassword} />
-      </div>
-      <a className={styles.Login__forgotPassword} href="a.com">
-        Forgot password?
-      </a>
-
-      <button className={styles.Login__button} type="button" onClick={onLogin}>
-        Log in
-      </button>
-
-      <div className={styles.Login__external}>
-        <p>Or Continue with: (add google/other logins later)</p>
-      </div>
-
-      <p className={styles.Login__switchForm}>
-        No account?{' '}
-        <NavLink className={styles.Login__switchForm__link} to="/signup">
-          Create one
-        </NavLink>
-      </p> */
-}
