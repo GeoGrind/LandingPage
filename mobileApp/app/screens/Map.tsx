@@ -1,10 +1,10 @@
 import React from 'react';
 import MapView, { Marker } from 'react-native-maps';
-import { StyleSheet, View, Modal, TextInput, TouchableOpacity, Text } from 'react-native';
+import { StyleSheet, View, Modal, TextInput, TouchableOpacity, Text,ActivityIndicator } from 'react-native';
 import { useState, useEffect } from 'react';
 import * as Location from 'expo-location';
 import 'firebase/firestore';
-import {fetchAllLocations, updateSession, getUserLocationAndStoreInDb} from '../utils/db'
+import {fetchAllLocations, updateSession, getUserLocationAndStoreInDb, logOutCleanUp} from '../utils/db'
 import { Button } from 'react-native';
 import { signOut } from 'firebase/auth';
 import { FIREBASE_AUTH } from '../../FirebaseConfig';
@@ -18,6 +18,7 @@ const Map = () => {
   const [locations, setLocations] = useState<Location[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [formValues, setFormValues] = useState({ course: '' });
+  const [loading, setLoading] = React.useState(false)
   useEffect(() => {
     const fetchData = async () => {
       const newLocations = await fetchAllLocations();
@@ -34,7 +35,9 @@ const Map = () => {
   const handleStartSessionClick = () => {
     setShowForm(true);
   };
+
   const handleFormSubmit = async () => {
+    setLoading(true);
     const newSession: Session = {
       course: formValues.course,
       startTime: Date.now(),
@@ -46,59 +49,70 @@ const Map = () => {
     setLocations(newLocations)
     setShowForm(false);
     console.log(`Form submiited, course: ${formValues.course}`);
+    setLoading(false);
   };
 
   const handleSignOffClick = async () => {
     try {
+      await logOutCleanUp();
       await signOut(FIREBASE_AUTH);
-      // TODO: finish the current user's session
     } catch (error) {
       console.log('Error signing off:', error);
     }
   };
-
-  return (
-    <View style={styles.container}>
-      <MapView style={styles.map}>
-        {locations.map((location, index) => (
-          <Marker
-            key={index}
-            coordinate={{ latitude: location.latitude, longitude: location.longitude }}
-            pinColor="red"
-          />
-        ))}
-      </MapView>
-      <View style={styles.buttonContainer}>
-        <Button title="Start your study session" onPress={handleStartSessionClick} />
-        <Button title="Sign off" onPress={handleSignOffClick} />
+  if (loading) {
+    return (
+      // TODO: Make the loading look better
+      <View style={styles.container}>
+        <Text>Loading...</Text>
       </View>
-      {showForm && (
-        <Modal visible={showForm} transparent>
-          <TouchableOpacity
-            style={styles.modalContainer}
-            activeOpacity={1}
-            onPress={() => setShowForm(false)}
-          >
-            <View style={styles.formContainer}>
-              <TextInput
-                style={styles.input}
-                placeholder="Course Name"
-                value={formValues.course}
-                onChangeText={(text) => setFormValues({ course: text })}
-              />
-              <TouchableOpacity style={styles.submitButton} onPress={handleFormSubmit}>
-                <Text style={styles.submitButtonText}>Submit</Text>
-              </TouchableOpacity>
-            </View>
-          </TouchableOpacity>
-        </Modal>
-      )}
+    )
+  }
+  else {
+    return (
+      <View style={styles.container}>
+        <MapView style={styles.map}>
+          {locations.map((location, index) => (
+            <Marker
+              key={index}
+              coordinate={{ latitude: location.latitude, longitude: location.longitude }}
+              pinColor="red"
+            />
+          ))}
+        </MapView>
+        <View style={styles.buttonContainer}>
+          <Button title="Start your study session" onPress={handleStartSessionClick} />
+          <Button title="Sign off" onPress={handleSignOffClick} />
+        </View>
+        
       
-    </View>
-  );
-  
-  
+        {showForm && !loading && (
+          <Modal visible={showForm} transparent>
+              <TouchableOpacity
+              style={styles.modalContainer}
+              activeOpacity={1}
+              onPress={() => setShowForm(false)}
+              >
+              <View style={styles.formContainer}>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Course Name"
+                  value={formValues.course}
+                  onChangeText={(text) => setFormValues({ course: text })}
+                />
+                <TouchableOpacity style={styles.submitButton} onPress={handleFormSubmit}>
+                  <Text style={styles.submitButtonText}>Submit</Text>
+                </TouchableOpacity>
+              </View>
+              </TouchableOpacity>
+          </Modal>
+        )}
+      </View>
+    );
+  }
 };
+
+
 
 const styles = StyleSheet.create({
   container: {

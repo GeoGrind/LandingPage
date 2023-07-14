@@ -44,7 +44,6 @@ export const getUserLocationAndStoreInDb = async () => {
     }
     const userData = userSnapshot.data();
     if (!userData || !userData.isInSession) {
-      console.log("User is not in session");
       return;
     }
 
@@ -67,15 +66,6 @@ export const getUserLocationAndStoreInDb = async () => {
     console.log("Error retrieving user location:", error);
   }
 };
-
-
-
-
-
-
-
-
-
 // Fetch the location of the users whose isINSession is true
 export const fetchAllLocations = async (): Promise<Location[]> => {
   const docRef = collection(FIREBASE_DB, 'users');
@@ -92,7 +82,7 @@ export const fetchAllLocations = async (): Promise<Location[]> => {
   });
   return locations;
 };
-
+// Negete the session status
 export const changeCurrentUserInSessionStatus = async (): Promise<void> => {
   const auth = getAuth();
   const currentUser = auth.currentUser;
@@ -124,7 +114,6 @@ export const updateSession = async (session: Session) => {
     const auth = getAuth(); // Get the Firebase Authentication instance
     const user = auth.currentUser; // Get the currently logged-in user
     if (!user) {
-      console.log("No user is logged in");
       return;
     }
     const userRef = doc(FIREBASE_DB, 'users', user.uid);
@@ -133,5 +122,21 @@ export const updateSession = async (session: Session) => {
     console.log("Updated user's onGoingSession field with the new session");
   } catch (error) {
     console.log("Error updating user's onGoingSession:", error);
+  }
+};
+
+export const logOutCleanUp = async () => {
+  try {
+    const auth = getAuth(); // Get the Firebase Authentication instance
+    const user = auth.currentUser; // Get the currently logged-in user
+    if (!user) {
+      return;
+    }
+    const userRef = doc(FIREBASE_DB, 'users', user.uid);
+    await updateDoc(userRef, { location: null });
+    await updateDoc(userRef, { onGoingSession: null });
+    await updateDoc(userRef, { isInSession: false });
+  } catch (error) {
+    console.log("Error in logout clean up:", error);
   }
 };
