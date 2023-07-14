@@ -1,8 +1,9 @@
 body {
-  display:flex;
+  display: flex;
   flex-flow: column nowrap;
   background: gray;
   align-items: center;
   font-family: 'NeueMontreal', sans-serif;
-
+  margin: 0;
+  padding: 0;
 }
