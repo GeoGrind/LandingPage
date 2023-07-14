@@ -4,6 +4,7 @@ import { FIREBASE_AUTH, FIREBASE_DB } from '../../FirebaseConfig'
 import {createUserWithEmailAndPassword, signInWithEmailAndPassword} from 'firebase/auth'
 import { collection, addDoc, setDoc, doc } from 'firebase/firestore';
 import { getUserLocationAndStoreInDb } from '../utils/db';
+import { User } from '../types';
 const Login = () => {
     
     const [email, setEmail] = React.useState('')
@@ -14,7 +15,6 @@ const Login = () => {
         setLoading(true);
         try {
           const response = await signInWithEmailAndPassword(auth, email, password);
-          await getUserLocationAndStoreInDb();
         } catch (e: any) {
           console.log(e);
           alert('Sign in failed' + e.message);
@@ -27,13 +27,14 @@ const Login = () => {
         try {
           const response = await createUserWithEmailAndPassword(auth, email, password);
           // Add the new user to the "users" collection with UID as document ID
-          const user = {
+          const user: User = {
             uid: response.user.uid,
             email: response.user.email,
-            currentLocation: null,
+            location: null,
+            isInSession: false,
+            onGoingSession: null,
           };
           await setDoc(doc(FIREBASE_DB, 'users', response.user.uid), user);
-          await getUserLocationAndStoreInDb();
           alert('Check your emails');
         } catch (e: any) {
           console.log(e);

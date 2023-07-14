@@ -1,16 +1,14 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
 import Login from './app/screens/Login';
 import Map from './app/screens/Map';
-import HomePage from './app/screens/HomePage';
 import Profile from './app/screens/Profile';
 import { useEffect, useState } from 'react';
 import { User, onAuthStateChanged } from 'firebase/auth';
 import { FIREBASE_AUTH } from './FirebaseConfig';
 import { getUserLocationAndStoreInDb } from './app/utils/db';
-
+import { Provider } from 'react-redux';
+import {store} from './app/store/store';
 const Stack = createNativeStackNavigator();
 
 const InsideStack = createNativeStackNavigator();
@@ -18,8 +16,7 @@ const InsideStack = createNativeStackNavigator();
 function InsideLayout(){
   return (
     <InsideStack.Navigator>
-      <InsideStack.Screen name="HomePage" component={HomePage} />
-      <InsideStack.Screen name="Details" component={Map} />
+      <InsideStack.Screen name="Map" component={Map} />
       <InsideStack.Screen name="Profile" component={Profile} />
     </InsideStack.Navigator>
   )
@@ -44,16 +41,18 @@ export default function App() {
   }, []);
   
   return ( 
+    <Provider store={store}>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Login">
+        {user ? (
+            <Stack.Screen name="Inside" component={InsideLayout} options={{headerShown:false}} />
+          ) : (
+            <Stack.Screen name="Login" component={Login} options={{headerShown:false}} />
+          ) }
+        </Stack.Navigator>
+      </NavigationContainer>
+    </Provider>
     
-    <NavigationContainer>
-       <Stack.Navigator initialRouteName="Login">
-       {user ? (
-        <Stack.Screen name="Inside" component={InsideLayout} options={{headerShown:false}} />
-        ) : (
-          <Stack.Screen name="Login" component={Login} options={{headerShown:false}} />
-        ) }
-       </Stack.Navigator>
-    </NavigationContainer>
   );
 }
 
