@@ -1,12 +1,32 @@
-import Header from 'components/Header';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
 import styles from './Home.module.scss';
-import React from 'react';
 
+function Map() {
+  return (
+    <MapContainer
+      className={styles.Map}
+      center={[43.472286, -80.544861]}
+      zoom={14}
+      scrollWheelZoom={false}
+    >
+      <TileLayer
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        attribution="Map data © OpenStreetMap contributors"
+      />
+
+      <Marker position={[43.472286, -80.544861]}>
+        <Popup>
+          A pretty CSS3 popup. <br /> Easily customizable.
+        </Popup>
+      </Marker>
+    </MapContainer>
+  );
+}
 function Home() {
   return (
-    // TODO: add the list of available sessions
     <div className={styles.Home}>
-      <h2>Welcome Home</h2>
+      <Map />
     </div>
   );
 }
