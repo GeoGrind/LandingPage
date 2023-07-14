@@ -119,7 +119,6 @@ export const updateSession = async (session: Session) => {
     const userRef = doc(FIREBASE_DB, 'users', user.uid);
     await updateDoc(userRef, { onGoingSession: session });
     await updateDoc(userRef, { isInSession: true });
-    console.log("Updated user's onGoingSession field with the new session");
   } catch (error) {
     console.log("Error updating user's onGoingSession:", error);
   }
