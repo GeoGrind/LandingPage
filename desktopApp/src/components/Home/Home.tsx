@@ -3,9 +3,23 @@ import 'leaflet/dist/leaflet.css';
 import { Icon } from 'leaflet';
 import styles from './Home.module.scss';
 import markerIconPng from '../../../assets/956fd6.png';
+import { useEffect } from 'react';
+import { onAuthStateChanged } from 'firebase/auth';
+import { FIREBASE_AUTH } from 'firebase';
 
 // TODO: fetch the data from firebase
 function Map() {
+  // useEffect(() => {
+  //   onAuthStateChanged(FIREBASE_AUTH, (user) => {
+  //     setUser(user);
+  //   });
+  // }, []);
+
+  // useEffect(() => {
+  //   const intervalId = setInterval(() => {
+  //     getUserLocationAndStoreInDb();
+  // }, 30000);
+
   return (
     <MapContainer
       className={styles.Map}
@@ -45,3 +59,10 @@ function Home() {
 }
 
 export default Home;
+function setUser(user: import('@firebase/auth').User | null) {
+  throw new Error('Function not implemented.');
+}
+
+function getUserLocationAndStoreInDb() {
+  throw new Error('Function not implemented.');
+}
