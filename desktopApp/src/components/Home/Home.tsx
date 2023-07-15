@@ -27,7 +27,7 @@ function Map() {
       zoomDelta={0.1}
       zoom={14}
       minZoom={0}
-      maxZoom={22}
+      maxZoom={18}
       scrollWheelZoom
     >
       <TileLayer
