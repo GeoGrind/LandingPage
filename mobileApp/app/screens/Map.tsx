@@ -90,6 +90,7 @@ const Map = () => {
               coordinate={{ latitude: location.latitude, longitude: location.longitude }}
               pinColor="red"
               onPress={()=>(console.log("pressed"))}
+              image={require('../../assets/delbert.png')}
             />
           ))}
         </MapView>

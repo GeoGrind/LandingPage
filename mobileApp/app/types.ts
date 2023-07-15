@@ -4,6 +4,7 @@ export type User = {
     location: Location | null;
     isInSession: boolean;
     onGoingSession: Session | null;
+    profilePicture: string | null;
   };
 
 // Null location is defined as (0,0)
