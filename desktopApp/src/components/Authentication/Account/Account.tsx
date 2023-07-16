@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { auth } from '../../../firebase';
+import { FIREBASE_AUTH } from '../../../firebase';
 import styles from './Account.module.scss';
 import FormItem from '../Form/FormItem/FormItem';
 import { signOut } from 'firebase/auth';
@@ -9,7 +9,7 @@ function Account() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    signOut(auth)
+    signOut(FIREBASE_AUTH)
       .then(() => {
         // Sign-out successful.
         navigate('/');

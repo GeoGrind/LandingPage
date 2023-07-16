@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../../../firebase';
+import { FIREBASE_AUTH } from '../../../../firebase';
 import styles from './Login.module.scss';
 import FormItem from '../FormItem/FormItem';
 import icon from '../../../../../assets/956fd6.png';
@@ -14,7 +14,7 @@ function Login() {
 
   const onLogin = (e) => {
     e.preventDefault();
-    signInWithEmailAndPassword(auth, email, password)
+    signInWithEmailAndPassword(FIREBASE_AUTH, email, password)
       .then((userCredential) => {
         // Signed in
         const { user } = userCredential;
