@@ -1,24 +1,28 @@
 import { MapContainer, TileLayer, Marker } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Icon } from 'leaflet';
-import styles from './Home.module.scss';
+import { useEffect, useState } from 'react';
+import { fetchActiveUsers } from 'utils/db';
 import markerIconPng from '../../../assets/956fd6.png';
-import { useEffect } from 'react';
-import { onAuthStateChanged } from 'firebase/auth';
-import { FIREBASE_AUTH } from 'firebase';
+import styles from './Home.module.scss';
+import { User } from '../../types/user.type';
 
 // TODO: fetch the data from firebase
 function Map() {
-  // useEffect(() => {
-  //   onAuthStateChanged(FIREBASE_AUTH, (user) => {
-  //     setUser(user);
-  //   });
-  // }, []);
+  const [activeUsers, setActiveUsers] = useState<User[]>([]);
 
-  // useEffect(() => {
-  //   const intervalId = setInterval(() => {
-  //     getUserLocationAndStoreInDb();
-  // }, 30000);
+  useEffect(() => {
+    const fetchData = async () => {
+      const users = await fetchActiveUsers();
+      setActiveUsers(users);
+    };
+    fetchData();
+    const timer = setInterval(fetchData, 30000);
+
+    return () => {
+      clearInterval(timer);
+    };
+  }, []);
 
   return (
     <MapContainer
@@ -34,19 +38,24 @@ function Map() {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution="Map data © OpenStreetMap contributors"
       />
-
-      <Marker
-        position={[43.472286, -80.544861]}
-        icon={
-          new Icon({
-            iconUrl: markerIconPng,
-            iconSize: [25, 41],
-            iconAnchor: [12, 41],
-          })
-        }
-      >
-        test
-      </Marker>
+      {activeUsers.map(
+        (user) =>
+          user.location && (
+            <Marker
+              key={user.uid}
+              position={[user.location.latitude, user.location.longitude]}
+              icon={
+                new Icon({
+                  iconUrl: markerIconPng,
+                  iconSize: [25, 41],
+                  iconAnchor: [12, 41],
+                })
+              }
+            >
+              test
+            </Marker>
+          )
+      )}
     </MapContainer>
   );
 }
@@ -59,10 +68,3 @@ function Home() {
 }
 
 export default Home;
-function setUser(user: import('@firebase/auth').User | null) {
-  throw new Error('Function not implemented.');
-}
-
-function getUserLocationAndStoreInDb() {
-  throw new Error('Function not implemented.');
-}
