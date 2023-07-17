@@ -5,37 +5,17 @@ import { LocationObject, requestForegroundPermissionsAsync, getCurrentPositionAs
 import { getAuth } from 'firebase/auth';
 import { collection, onSnapshot, updateDoc } from "firebase/firestore";
 import { User, Location, Session } from "../types"
+import {Callout} from 'react-native-maps';
 
 
 
-// export const getUserLocationAndStoreInDb = async () => {
-//   try {
-//     const auth = getAuth(); // Get the Firebase Authentication instance
-//     const user = auth.currentUser; // Get the currently logged-in user
-//     if (!user) {
-//       console.log("No user is logged in");
-//       return;
-//     }
-//     // Before trying to get the location, check if the user is in session
-//     const { status } = await requestForegroundPermissionsAsync();
-//     if (status !== 'granted') {
-//       console.log("Please grant location permissions");
-//       return;
-//     }
-//     const currentLocation: LocationObject = await getCurrentPositionAsync({});
-//     const userRef = doc(FIREBASE_DB, 'users', user.uid);
-//     await setDoc(userRef, { location: { longitude: currentLocation.coords.longitude, latitude: currentLocation.coords.latitude } }, { merge: true });
-//   } catch (error) {
-//     console.log("Error retrieving user location:", error);
-//   }
-// };
-export const getUserLocationAndStoreInDb = async () => {
+export const getUserLocationAndStoreInDb = async (): Promise<Location | null> => {
   try {
     const auth = getAuth(); // Get the Firebase Authentication instance
     const user = auth.currentUser; // Get the currently logged-in user
     if (!user) {
       console.log("No user is logged in");
-      return;
+      return null;
     }
 
     // Check if the user is in session
@@ -43,48 +23,69 @@ export const getUserLocationAndStoreInDb = async () => {
     const userSnapshot = await getDoc(userRef);
     if (!userSnapshot.exists()) {
       console.log("User document does not exist");
-      return;
+      return null;
     }
     const userData = userSnapshot.data();
     if (!userData || !userData.isInSession) {
-      return;
+      return null;
     }
 
     // Before trying to get the location, check if the user has granted location permissions
     const { status } = await requestForegroundPermissionsAsync();
     if (status !== 'granted') {
       console.log("Please grant location permissions");
-      return;
+      return null;
     }
 
     // Get the current location
     const currentLocation: LocationObject = await getCurrentPositionAsync({});
     const { longitude, latitude } = currentLocation.coords;
+    
+    const location: Location = {
+      longitude: longitude,
+      latitude: latitude,
+    };
 
+    
     // Update the user's location in the database
-    await setDoc(userRef, { location: { longitude, latitude } }, { merge: true });
-
+    await setDoc(userRef, { location: location }, { merge: true });
     console.log("User location stored in the database");
+    return location;
   } catch (error) {
     console.log("Error retrieving user location:", error);
+    return null
   }
 };
-// Fetch the location of the users whose isINSession is true
-export const fetchAllLocations = async (): Promise<Location[]> => {
+
+// Fetch the {Location, uid} pairs
+export const fetchAllLocationUserPairs = async (): Promise<{ location: Location, uid: string }[]> => {
   const docRef = collection(FIREBASE_DB, 'users');
   const snapshot = await getDocs(docRef);
-  const locations: Location[] = [];
+  const locationUserPairs: { location: Location, uid: string }[] = [];
   snapshot.forEach((doc) => {
     const user = doc.data() as User;
     if (user.isInSession == true) {
-      const { location } = user;
-      if (location != null) {
-        locations.push(location);
+      const { location, uid } = user;
+      if (location != null && uid != null) {
+        locationUserPairs.push({ location, uid });
       }
     }
   });
-  return locations;
+  return locationUserPairs;
 };
+// Fetch all users who are in session
+export const fetchActiveUsers = async (): Promise<User[]> => {
+  const docRef = collection(FIREBASE_DB, 'users');
+  const snapshot = await getDocs(docRef);
+  const users: Array<User> = [];
+  snapshot.forEach((user) => {
+    if (user.data().isInSession === true) {
+      users.push(user.data() as User);
+    }
+  });
+  return users;
+};
+
 // Negete the session status
 export const changeCurrentUserInSessionStatus = async (): Promise<void> => {
   const auth = getAuth();
@@ -112,6 +113,7 @@ export const changeCurrentUserInSessionStatus = async (): Promise<void> => {
   }
 };
 
+// Assign a session to the currently signed in user
 export const updateSession = async (session: Session) => {
   try {
     const auth = getAuth(); // Get the Firebase Authentication instance
@@ -127,7 +129,8 @@ export const updateSession = async (session: Session) => {
   }
 };
 
-export const logOutCleanUp = async () => {
+// Stop the session
+export const stopSessionOfCurrentUser = async () => {
   try {
     const auth = getAuth(); // Get the Firebase Authentication instance
     const user = auth.currentUser; // Get the currently logged-in user
