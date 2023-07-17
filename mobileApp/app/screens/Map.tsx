@@ -1,32 +1,31 @@
 import React from 'react';
-import MapView, { Marker } from 'react-native-maps';
+import MapView, { Marker, Callout } from 'react-native-maps';
 import { StyleSheet, View, Modal, TextInput, TouchableOpacity, Text } from 'react-native';
 import { useState, useEffect } from 'react';
-import * as Location from 'expo-location';
 import 'firebase/firestore';
-import {fetchAllLocations, updateSession, getUserLocationAndStoreInDb, logOutCleanUp} from '../utils/db'
+import {updateSession, getUserLocationAndStoreInDb, stopSessionOfCurrentUser, fetchAllLocationUserPairs, fetchActiveUsers} from '../utils/db'
 import { Button } from 'react-native';
 import { signOut } from 'firebase/auth';
 import { FIREBASE_AUTH } from '../../FirebaseConfig';
-import { Session } from '../types';
-import Profile from './Profile';
+import { Session, User, Location } from '../types';
 import { useNavigation, ParamListBase } from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-interface Location {
-  latitude: number;
-  longitude: number;
-}
+import Test from './Test';
+
+
 
 const Map = () => {
-  const [locations, setLocations] = useState<Location[]>([]);
+
+  const [inSessionUsers, setInSessionUsers] = useState<User[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [formValues, setFormValues] = useState({ course: '' });
   const [loading, setLoading] = React.useState(false)
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   useEffect(() => {
     const fetchData = async () => {
-      const newLocations = await fetchAllLocations();
-      setLocations(newLocations);
+      const temp1 = await fetchActiveUsers();
+      setInSessionUsers(temp1);
+      
     };
     fetchData();
     const timer = setInterval(fetchData, 30000);
@@ -49,25 +48,43 @@ const Map = () => {
       course: formValues.course,
       startTime: Date.now(),
       isVisible: true,
+      sessionStartLocation: { longitude: 0, latitude: 0 }, // Set initial location
+      numberOfCheerers: 0,
     };
+    
+    // BUG: Potential bug, there session might not have initial starting location;
     await updateSession(newSession);
-    await getUserLocationAndStoreInDb();
-    const newLocations = await fetchAllLocations();
-    setLocations(newLocations)
+    
+    // Get user location and store in DB
+    const userLocation = await getUserLocationAndStoreInDb();
+    
+    // Update the session with the user's location
+    newSession.sessionStartLocation = userLocation;
+    await updateSession(newSession);
+    const newActiveUsers = await fetchActiveUsers();
+    setInSessionUsers(newActiveUsers);
     setShowForm(false);
-    console.log(`Form submiited, course: ${formValues.course}`);
+    console.log(`Form submitted, course: ${formValues.course}`);
     setLoading(false);
   };
+  
 
   const handleSignOffClick = async () => {
     try {
-      await logOutCleanUp();
+      await stopSessionOfCurrentUser();
       await signOut(FIREBASE_AUTH);
     } catch (error) {
       console.log('Error signing off:', error);
     }
   };
-
+  const handleStopSessionClick = async () => {
+    // TODO: Needs the UI update immediately after the button is clicked
+    try{
+      await stopSessionOfCurrentUser();
+    } catch (error) {
+      console.log('Error stopping session:', error);
+    }
+  }
   const handleProfileClick = () => {
     navigation.navigate('Profile'); 
   }
@@ -84,18 +101,24 @@ const Map = () => {
       <View style={styles.container}>
         <Button title="See my profile" onPress={handleProfileClick} />
         <MapView style={styles.map}>
-          {locations.map((location, index) => (
+          {inSessionUsers.map((user, index) => (
             <Marker
               key={index}
-              coordinate={{ latitude: location.latitude, longitude: location.longitude }}
+              coordinate={{ latitude: user.location!.latitude, longitude: user.location!.longitude }}
               pinColor="red"
-              onPress={()=>(console.log("pressed"))}
-              image={require('../../assets/delbert.png')}
-            />
+              onPress={() => console.log("pressed")}
+              image={require("../../assets/delbert.png")}
+              style={styles.callout}
+            >
+              <Callout>
+                <Test user={user}/>
+              </Callout>
+            </Marker>
           ))}
         </MapView>
         <View style={styles.buttonContainer}>
           <Button title="Start your study session" onPress={handleStartSessionClick} />
+          <Button title="Stop your study session" onPress={handleStopSessionClick} />
           <Button title="Sign off" onPress={handleSignOffClick} />
         </View>
         
@@ -170,7 +193,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
-  
+  callout: {
+    height:400,
+    width: 200, // Adjust the width as needed
+    padding: 10,
+    borderRadius: 5,
+  },
 });
 
 export default Map;
