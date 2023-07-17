@@ -4,11 +4,14 @@ import { StyleSheet, View, Modal, TextInput, TouchableOpacity, Text } from 'reac
 import { useState, useEffect } from 'react';
 import * as Location from 'expo-location';
 import 'firebase/firestore';
-import {fetchAllLocations, updateSession, getUserLocationAndStoreInDb} from '../utils/db'
+import {fetchAllLocations, updateSession, getUserLocationAndStoreInDb, logOutCleanUp} from '../utils/db'
 import { Button } from 'react-native';
 import { signOut } from 'firebase/auth';
 import { FIREBASE_AUTH } from '../../FirebaseConfig';
 import { Session } from '../types';
+import Profile from './Profile';
+import { useNavigation, ParamListBase } from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 interface Location {
   latitude: number;
   longitude: number;
@@ -18,6 +21,8 @@ const Map = () => {
   const [locations, setLocations] = useState<Location[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [formValues, setFormValues] = useState({ course: '' });
+  const [loading, setLoading] = React.useState(false)
+  const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   useEffect(() => {
     const fetchData = async () => {
       const newLocations = await fetchAllLocations();
@@ -34,7 +39,12 @@ const Map = () => {
   const handleStartSessionClick = () => {
     setShowForm(true);
   };
+
   const handleFormSubmit = async () => {
+    /* TODO: This process is very slow, needs optimization 
+    Try to update the UI at client side first, then update the DB in the background
+    */
+    setLoading(true);
     const newSession: Session = {
       course: formValues.course,
       startTime: Date.now(),
@@ -46,59 +56,77 @@ const Map = () => {
     setLocations(newLocations)
     setShowForm(false);
     console.log(`Form submiited, course: ${formValues.course}`);
+    setLoading(false);
   };
 
   const handleSignOffClick = async () => {
     try {
+      await logOutCleanUp();
       await signOut(FIREBASE_AUTH);
-      // TODO: finish the current user's session
     } catch (error) {
       console.log('Error signing off:', error);
     }
   };
 
-  return (
-    <View style={styles.container}>
-      <MapView style={styles.map}>
-        {locations.map((location, index) => (
-          <Marker
-            key={index}
-            coordinate={{ latitude: location.latitude, longitude: location.longitude }}
-            pinColor="red"
-          />
-        ))}
-      </MapView>
-      <View style={styles.buttonContainer}>
-        <Button title="Start your study session" onPress={handleStartSessionClick} />
-        <Button title="Sign off" onPress={handleSignOffClick} />
+  const handleProfileClick = () => {
+    navigation.navigate('Profile'); 
+  }
+  if (loading) {
+    return (
+      // TODO: Make the loading look better
+      <View style={styles.container}>
+        <Text>Loading...</Text>
       </View>
-      {showForm && (
-        <Modal visible={showForm} transparent>
-          <TouchableOpacity
-            style={styles.modalContainer}
-            activeOpacity={1}
-            onPress={() => setShowForm(false)}
-          >
-            <View style={styles.formContainer}>
-              <TextInput
-                style={styles.input}
-                placeholder="Course Name"
-                value={formValues.course}
-                onChangeText={(text) => setFormValues({ course: text })}
-              />
-              <TouchableOpacity style={styles.submitButton} onPress={handleFormSubmit}>
-                <Text style={styles.submitButtonText}>Submit</Text>
-              </TouchableOpacity>
-            </View>
-          </TouchableOpacity>
-        </Modal>
-      )}
+    )
+  }
+  else {
+    return (
+      <View style={styles.container}>
+        <Button title="See my profile" onPress={handleProfileClick} />
+        <MapView style={styles.map}>
+          {locations.map((location, index) => (
+            <Marker
+              key={index}
+              coordinate={{ latitude: location.latitude, longitude: location.longitude }}
+              pinColor="red"
+              onPress={()=>(console.log("pressed"))}
+              image={require('../../assets/delbert.png')}
+            />
+          ))}
+        </MapView>
+        <View style={styles.buttonContainer}>
+          <Button title="Start your study session" onPress={handleStartSessionClick} />
+          <Button title="Sign off" onPress={handleSignOffClick} />
+        </View>
+        
       
-    </View>
-  );
-  
-  
+        {showForm && !loading && (
+          <Modal visible={showForm} transparent>
+              <TouchableOpacity
+              style={styles.modalContainer}
+              activeOpacity={1}
+              onPress={() => setShowForm(false)}
+              >
+              <View style={styles.formContainer}>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Course Name"
+                  value={formValues.course}
+                  onChangeText={(text) => setFormValues({ course: text })}
+                />
+                <TouchableOpacity style={styles.submitButton} onPress={handleFormSubmit}>
+                  <Text style={styles.submitButtonText}>Submit</Text>
+                </TouchableOpacity>
+              </View>
+              </TouchableOpacity>
+          </Modal>
+        )}
+      </View>
+    );
+  }
 };
+
+
 
 const styles = StyleSheet.create({
   container: {

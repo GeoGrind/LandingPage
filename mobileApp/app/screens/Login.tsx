@@ -33,6 +33,7 @@ const Login = () => {
             location: null,
             isInSession: false,
             onGoingSession: null,
+            profilePicture: null,
           };
           await setDoc(doc(FIREBASE_DB, 'users', response.user.uid), user);
           alert('Check your emails');
