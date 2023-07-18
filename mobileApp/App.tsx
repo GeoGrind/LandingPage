@@ -33,14 +33,7 @@ export default function App() {
     }); 
   }, []);
 
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      getUserLocationAndStoreInDb();
-  }, 30000); 
-
-    // Clean up the interval when the component is unmounted or dependencies change
-    return () => clearInterval(intervalId);
-  }, []);
+  
   
   return ( 
     <Provider store={store}>
