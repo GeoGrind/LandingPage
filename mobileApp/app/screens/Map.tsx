@@ -10,8 +10,7 @@ import { FIREBASE_AUTH } from '../../FirebaseConfig';
 import { Session, User, Location } from '../types';
 import { useNavigation, ParamListBase } from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import Test from './Test';
-
+import UserDotInfo from './UserDotInfo';
 
 
 const Map = () => {
@@ -88,6 +87,9 @@ const Map = () => {
   const handleProfileClick = () => {
     navigation.navigate('Profile'); 
   }
+  const handleTestClick = () => {
+    navigation.navigate('Test');
+  }
   if (loading) {
     return (
       // TODO: Make the loading look better
@@ -111,7 +113,7 @@ const Map = () => {
               style={styles.callout}
             >
               <Callout>
-                <Test user={user}/>
+                <UserDotInfo user={user}/>
               </Callout>
             </Marker>
           ))}
@@ -120,6 +122,7 @@ const Map = () => {
           <Button title="Start your study session" onPress={handleStartSessionClick} />
           <Button title="Stop your study session" onPress={handleStopSessionClick} />
           <Button title="Sign off" onPress={handleSignOffClick} />
+          <Button title="Test" onPress={handleTestClick} />
         </View>
         
       

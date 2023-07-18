@@ -213,3 +213,34 @@ export const fetchProfilePictureFromFirestore = async () => {
     return null;
   }
 };
+
+// A function that adds a new cheerer to a session being referred to 
+export const incrementNumberOfCheerers = async (uid: string): Promise<void> => {
+
+  const db = FIREBASE_DB;
+  const auth = getAuth();
+
+  try {
+    // Get the user document
+    const userDocRef = doc(db, 'users', uid);
+    const userDocSnap = await getDoc(userDocRef);
+
+    if (!userDocSnap.exists()) {
+      throw new Error(`User with ID ${uid} does not exist.`);
+    }
+
+    const userData = userDocSnap.data();
+    const onGoingSession = userData?.onGoingSession || {};
+    const currentNumberOfCheerers = onGoingSession.numberOfCheerers || 0;
+    const updatedNumberOfCheerers = currentNumberOfCheerers + 1;
+
+    // Update the user document with the incremented value
+    await updateDoc(userDocRef, {
+      'onGoingSession.numberOfCheerers': updatedNumberOfCheerers,
+    });
+
+    console.log(`Successfully incremented numberOfCheerers for user ${uid}.`);
+  } catch (error) {
+    console.error(`Error incrementing numberOfCheerers for user ${uid}:`, error);
+  }
+}

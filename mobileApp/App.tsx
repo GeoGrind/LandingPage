@@ -9,6 +9,7 @@ import { FIREBASE_AUTH } from './FirebaseConfig';
 import { getUserLocationAndStoreInDb } from './app/utils/db';
 import { Provider } from 'react-redux';
 import {store} from './app/store/store';
+import Test from './app/screens/Test'
 const Stack = createNativeStackNavigator();
 
 const InsideStack = createNativeStackNavigator();
@@ -18,6 +19,7 @@ function InsideLayout(){
     <InsideStack.Navigator>
       <InsideStack.Screen name="Map" component={Map} />
       <InsideStack.Screen name="Profile" component={Profile} />
+      <InsideStack.Screen name="Test" component={Test} />
     </InsideStack.Navigator>
   )
 }
