@@ -23,19 +23,12 @@ const Map = () => {
   const [loading, setLoading] = React.useState(false)
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   useEffect(() => {
-    const fetchData = async () => {
-      const temp1 = await fetchActiveUsers();
-      setInSessionUsers(temp1);
-      
-    };
     fetchData();
-    const timer = setInterval(fetchData, 30000);
-
-    return () => {
-      clearInterval(timer);
-    };
   }, []);
-  
+  const fetchData = async () => {
+    const temp1 = await fetchActiveUsers();
+    setInSessionUsers(temp1);
+  };
   const handleStartSessionClick = () => {
     setShowForm(true);
   };
@@ -44,7 +37,7 @@ const Map = () => {
     /* TODO: This process is very slow, needs optimization 
     Try to update the UI at client side first, then update the DB in the background
     */
-    setLoading(true);
+    
     const newSession: Session = {
       course: formValues.course,
       startTime: Date.now(),
@@ -63,11 +56,9 @@ const Map = () => {
     // Update the session with the user's location
     newSession.sessionStartLocation = userLocation;
     await updateSession(newSession);
-    const newActiveUsers = await fetchActiveUsers();
-    setInSessionUsers(newActiveUsers);
     setShowForm(false);
     console.log(`Form submitted, course: ${formValues.course}`);
-    setLoading(false);
+    
   };
   
 
@@ -93,6 +84,9 @@ const Map = () => {
   const handleTestClick = () => {
     navigation.navigate('Test');
   }
+  const handleRefreshClick = () => {
+    fetchData();
+  };
   if (loading) {
     return (
       // TODO: Make the loading look better
@@ -123,6 +117,7 @@ const Map = () => {
           ))}
         </MapView>
         <View style={styles.buttonContainer}>
+          <Button title="Refresh" onPress={handleRefreshClick} /> 
           <Button title="Start your study session" onPress={handleStartSessionClick} />
           <Button title="Stop your study session" onPress={handleStopSessionClick} />
           <Button title="Sign off" onPress={handleSignOffClick} />

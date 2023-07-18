@@ -3,16 +3,14 @@ import React from 'react';
 import { User } from '../types';
 import { Button, Icon } from 'react-native-elements';
 import { incrementNumberOfCheerers } from '../utils/db';
+
 type Props = {
   user: User;
 };
 
-
 const handleLikeButtonPress = async (uid:string) => {
   try {
-    // Call your async function here
     await incrementNumberOfCheerers(uid);
-    console.log('Like button clicked and numberOfCheerers incremented!');
   } catch (error) {
     console.error('Error occurred while incrementing numberOfCheerers:', error);
   }
