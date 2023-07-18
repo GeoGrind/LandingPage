@@ -230,6 +230,11 @@ export const incrementNumberOfCheerers = async (uid: string): Promise<void> => {
     }
 
     const userData = userDocSnap.data();
+    if (userData.onGoingSession.cheerers.includes(uid)) {
+      return;
+    }
+    const newCheerers = [...userData.onGoingSession.cheerers, uid];
+
     const onGoingSession = userData?.onGoingSession || {};
     const currentNumberOfCheerers = onGoingSession.numberOfCheerers || 0;
     const updatedNumberOfCheerers = currentNumberOfCheerers + 1;
@@ -237,6 +242,7 @@ export const incrementNumberOfCheerers = async (uid: string): Promise<void> => {
     // Update the user document with the incremented value
     await updateDoc(userDocRef, {
       'onGoingSession.numberOfCheerers': updatedNumberOfCheerers,
+      'onGoingSession.cheerers': newCheerers,
     });
 
     console.log(`Successfully incremented numberOfCheerers for user ${uid}.`);

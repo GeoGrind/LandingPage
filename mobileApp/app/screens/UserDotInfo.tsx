@@ -20,7 +20,7 @@ const handleLikeButtonPress = async (uid:string) => {
 export default function UserDotInfo({ user }: Props) {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>{user.email}</Text>
+      <Text style={styles.text}>{user.onGoingSession?.course}</Text>
       
       <Text style={styles.randomText}>
         This is a random paragraph. Lorem ipsum dolor sit amet, consectetur adipiscing elit.

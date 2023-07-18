@@ -11,6 +11,8 @@ import { Session, User, Location } from '../types';
 import { useNavigation, ParamListBase } from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import UserDotInfo from './UserDotInfo';
+import { Icon } from 'react-native-elements';
+
 
 
 const Map = () => {
@@ -49,6 +51,7 @@ const Map = () => {
       isVisible: true,
       sessionStartLocation: { longitude: 0, latitude: 0 }, // Set initial location
       numberOfCheerers: 0,
+      cheerers: [],
     };
     
     // BUG: Potential bug, there session might not have initial starting location;
@@ -109,9 +112,10 @@ const Map = () => {
               coordinate={{ latitude: user.location!.latitude, longitude: user.location!.longitude }}
               pinColor="red"
               onPress={() => console.log("pressed")}
-              image={require("../../assets/delbert.png")}
+              // image={require("../../assets/delbert.png")}
               style={styles.callout}
             >
+              
               <Callout>
                 <UserDotInfo user={user}/>
               </Callout>
