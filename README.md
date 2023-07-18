@@ -10,3 +10,10 @@
 Using:
 - Using leaflet map for desktop app
 - react native maps for mobile app
+
+
+Current team members:
+- Justin
+- Jay
+- Delbert
+- Chris
