@@ -3,15 +3,14 @@ import MapView, { Marker, Callout } from 'react-native-maps';
 import { StyleSheet, View, Modal, TextInput, TouchableOpacity, Text, AppState } from 'react-native';
 import { useState, useEffect } from 'react';
 import 'firebase/firestore';
-import {updateSession, getUserLocationAndStoreInDb, stopSessionOfCurrentUser, fetchAllLocationUserPairs, fetchActiveUsers} from '../utils/db'
+import {updateSession, getUserLocationAndStoreInDb, stopSessionOfCurrentUser, fetchActiveUsers} from '../utils/db'
 import { Button } from 'react-native';
-import { signOut } from 'firebase/auth';
+import { signOut,getAuth } from 'firebase/auth';
 import { FIREBASE_AUTH } from '../../FirebaseConfig';
-import { Session, User, Location } from '../types';
+import { Session, User } from '../types';
 import { useNavigation, ParamListBase } from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import UserDotInfo from './UserDotInfo';
-
 
 
 const Map = () => {
@@ -22,7 +21,6 @@ const Map = () => {
   const [loading, setLoading] = React.useState(false)
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   const appState = useRef(AppState.currentState);
-  const [appStateVisible, setAppStateVisible] = useState(appState.current);
   useEffect(() => {
     fetchData();
   }, []);
@@ -38,9 +36,7 @@ const Map = () => {
         // Fetch the data when the user comes back.
         fetchData();
       }
-
       appState.current = nextAppState;
-      setAppStateVisible(appState.current);
       console.log('AppState', appState.current);
     });
 
@@ -48,6 +44,13 @@ const Map = () => {
       subscription.remove();
     };
   }, []);
+  // This use effect can fetch the data when there is a navigation even happened
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      fetchData();
+    });
+    return unsubscribe;
+  }, [navigation]);
 
   const fetchData = async () => {
     const temp1 = await fetchActiveUsers();
@@ -124,21 +127,27 @@ const Map = () => {
       <View style={styles.container}>
         <Button title="See my profile" onPress={handleProfileClick} />
         <MapView style={styles.map}>
-          {inSessionUsers.map((user, index) => (
-            <Marker
-              key={index}
-              coordinate={{ latitude: user.location!.latitude, longitude: user.location!.longitude }}
-              pinColor="red"
-              onPress={() => console.log("pressed")}
-              // image={require("../../assets/delbert.png")}
-              style={styles.callout}
-            >
-              
-              <Callout>
-                <UserDotInfo user={user}/>
-              </Callout>
-            </Marker>
-          ))}
+          {inSessionUsers.map((user, index) => {
+            const isCurrentUser = user.uid === getAuth().currentUser!.uid
+            const pinColor = isCurrentUser ? 'green' : 'red';
+
+            return (
+              <Marker
+                key={index}
+                coordinate={{
+                  latitude: user.location!.latitude,
+                  longitude: user.location!.longitude
+                }}
+                pinColor={pinColor}
+              >
+                {!isCurrentUser && (
+                  <Callout>
+                    <UserDotInfo user={user} />
+                  </Callout>
+                )}
+              </Marker>
+            );
+          })}
         </MapView>
         <View style={styles.buttonContainer}>
           <Button title="Refresh" onPress={handleRefreshClick} /> 
