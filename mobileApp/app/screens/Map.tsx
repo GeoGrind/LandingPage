@@ -11,7 +11,6 @@ import { Session, User } from '../types';
 import { useNavigation, ParamListBase } from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import UserDotInfo from './UserDotInfo';
-import { Use } from 'react-native-svg';
 
 
 const Map = () => {
@@ -145,7 +144,7 @@ const Map = () => {
               >
                 {!isCurrentUser && (
                   <Callout>
-                    <UserDotInfo userMarker={user} userClicker={signedInUser as User} />
+                    <UserDotInfo userMarker={user}/>
                   </Callout>
                 )}
               </Marker>

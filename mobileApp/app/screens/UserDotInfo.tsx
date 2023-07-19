@@ -6,7 +6,6 @@ import { incrementNumberOfCheerers } from '../utils/db';
 
 type Props = {
   userMarker: User;
-  userClicker: User;
 };
 
 const handleLikeButtonPress = async (uid:string) => {
@@ -16,8 +15,8 @@ const handleLikeButtonPress = async (uid:string) => {
     console.error('Error occurred while incrementing numberOfCheerers:', error);
   }
 };
-export default function UserDotInfo({ userMarker,userClicker }: Props) {
-  console.log(userClicker.email);
+export default function UserDotInfo({ userMarker }: Props) {
+  
   return (
     <View style={styles.container}>
       <Text style={styles.text}>{userMarker.onGoingSession?.course}</Text>
