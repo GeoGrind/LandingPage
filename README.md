@@ -9,7 +9,7 @@
 
 Using:
 - Using leaflet map for desktop app
-- react native maps for mobile app
+- React native maps for mobile app
 
 
 Current team members:
@@ -17,3 +17,6 @@ Current team members:
 - Jay
 - Delbert
 - Chris
+
+
+Jay is handling CI/CD for mobile auto deploy to appstore
