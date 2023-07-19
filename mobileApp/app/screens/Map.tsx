@@ -1,6 +1,6 @@
 import React, {useRef} from 'react';
 import MapView, { Marker, Callout } from 'react-native-maps';
-import { StyleSheet, View, Modal, TextInput, TouchableOpacity, Text, AppState } from 'react-native';
+import { StyleSheet, View, Modal, TextInput, TouchableOpacity, Text, AppState, Alert } from 'react-native';
 import { useState, useEffect } from 'react';
 import 'firebase/firestore';
 import {updateSession, getUserLocationAndStoreInDb, stopSessionOfCurrentUser, fetchActiveUsers, getUserLocation} from '../utils/db'
@@ -11,6 +11,8 @@ import { Session, User } from '../types';
 import { useNavigation, ParamListBase } from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import UserDotInfo from './UserDotInfo';
+import Navbar from '../components/NavBar';
+
 
 
 const Map = () => {
@@ -78,7 +80,6 @@ const Map = () => {
     };
 
     const userLocation = await getUserLocationAndStoreInDb();
-    console.log(userLocation);
     newSession.sessionStartLocation = userLocation;
     await updateSession(newSession);
     console.log(`Form submitted, course: ${formValues.course}`);
@@ -147,14 +148,16 @@ const Map = () => {
             );
           })}
         </MapView>
-        <View style={styles.buttonContainer}>
-          <Button title="Refresh" onPress={handleRefreshClick} /> 
-          <Button title="Start your study session" onPress={handleStartSessionClick} />
-          <Button title="Stop your study session" onPress={handleStopSessionClick} />
-          <Button title="Sign off" onPress={handleSignOffClick} />
-          <Button title="Test" onPress={handleTestClick} />
-        </View>
         
+        <View style={styles.buttonContainer}>
+          <Navbar
+              onRefreshClick={handleRefreshClick}
+              onStartSessionClick={handleStartSessionClick}
+              onStopSessionClick={handleStopSessionClick}
+              onSignOffClick={handleSignOffClick}
+              onTestClick={handleTestClick}
+          />
+        </View>
       
         {showForm && !loading && (
           <Modal visible={showForm} transparent>
