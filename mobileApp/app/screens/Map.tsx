@@ -11,6 +11,7 @@ import { Session, User } from '../types';
 import { useNavigation, ParamListBase } from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import UserDotInfo from './UserDotInfo';
+import { Use } from 'react-native-svg';
 
 
 const Map = () => {
@@ -21,6 +22,9 @@ const Map = () => {
   const [loading, setLoading] = React.useState(false)
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   const appState = useRef(AppState.currentState);
+  const { currentUser } = FIREBASE_AUTH;
+  const signedInUser: any = currentUser;
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -85,7 +89,6 @@ const Map = () => {
     await updateSession(newSession);
     setShowForm(false);
     console.log(`Form submitted, course: ${formValues.course}`);
-    
   };
   
 
@@ -128,7 +131,7 @@ const Map = () => {
         <Button title="See my profile" onPress={handleProfileClick} />
         <MapView style={styles.map}>
           {inSessionUsers.map((user, index) => {
-            const isCurrentUser = user.uid === getAuth().currentUser!.uid
+            const isCurrentUser = user.uid === currentUser!.uid
             const pinColor = isCurrentUser ? 'green' : 'red';
 
             return (
@@ -142,7 +145,7 @@ const Map = () => {
               >
                 {!isCurrentUser && (
                   <Callout>
-                    <UserDotInfo user={user} />
+                    <UserDotInfo userMarker={user} userClicker={signedInUser as User} />
                   </Callout>
                 )}
               </Marker>

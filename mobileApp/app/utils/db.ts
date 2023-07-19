@@ -7,14 +7,13 @@ import { collection, onSnapshot, updateDoc } from "firebase/firestore";
 import { User, Location, Session } from "../types"
 import {Callout} from 'react-native-maps';
 
-
-
-export const getUserLocationAndStoreInDb = async (): Promise<Location | null> => {
+export const getUserLocation = async () => {
   try {
-    const auth = getAuth(); // Get the Firebase Authentication instance
-    const user = auth.currentUser; // Get the currently logged-in user
+    // Check if the user is logged in
+    const auth = getAuth();
+    const user = auth.currentUser;
     if (!user) {
-      console.log("No user is logged in");
+      console.log('No user is logged in');
       return null;
     }
 
@@ -22,7 +21,7 @@ export const getUserLocationAndStoreInDb = async (): Promise<Location | null> =>
     const userRef = doc(FIREBASE_DB, 'users', user.uid);
     const userSnapshot = await getDoc(userRef);
     if (!userSnapshot.exists()) {
-      console.log("User document does not exist");
+      console.log('User document does not exist');
       return null;
     }
     const userData = userSnapshot.data();
@@ -30,30 +29,52 @@ export const getUserLocationAndStoreInDb = async (): Promise<Location | null> =>
       return null;
     }
 
-    // Before trying to get the location, check if the user has granted location permissions
+    // Check location permissions
     const { status } = await requestForegroundPermissionsAsync();
     if (status !== 'granted') {
-      console.log("Please grant location permissions");
+      console.log('Please grant location permissions');
       return null;
     }
 
     // Get the current location
     const currentLocation: LocationObject = await getCurrentPositionAsync({});
     const { longitude, latitude } = currentLocation.coords;
-    
-    const location: Location = {
-      longitude: longitude,
-      latitude: latitude,
+
+    const location = {
+      longitude,
+      latitude,
     };
 
-    
-    // Update the user's location in the database
-    await setDoc(userRef, { location: location }, { merge: true });
-    console.log("User location stored in the database");
     return location;
   } catch (error) {
-    console.log("Error retrieving user location:", error);
-    return null
+    console.log('Error retrieving user location:', error);
+    return null;
+  }
+};
+
+
+export const getUserLocationAndStoreInDb = async (): Promise<Location | null> => {
+  try {
+    const location = await getUserLocation();
+    if (!location) {
+      return null;
+    }
+
+    const auth = getAuth();
+    const user = auth.currentUser;
+    if (!user) {
+      console.log('No user is logged in');
+      return null;
+    }
+
+    const userRef = doc(FIREBASE_DB, 'users', user.uid);
+    await setDoc(userRef, { location }, { merge: true });
+    console.log('User location stored in the database');
+
+    return location;
+  } catch (error) {
+    console.log('Error retrieving user location:', error);
+    return null;
   }
 };
 

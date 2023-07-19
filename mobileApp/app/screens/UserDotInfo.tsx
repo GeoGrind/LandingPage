@@ -5,7 +5,8 @@ import { Button, Icon } from 'react-native-elements';
 import { incrementNumberOfCheerers } from '../utils/db';
 
 type Props = {
-  user: User;
+  userMarker: User;
+  userClicker: User;
 };
 
 const handleLikeButtonPress = async (uid:string) => {
@@ -15,10 +16,11 @@ const handleLikeButtonPress = async (uid:string) => {
     console.error('Error occurred while incrementing numberOfCheerers:', error);
   }
 };
-export default function UserDotInfo({ user }: Props) {
+export default function UserDotInfo({ userMarker,userClicker }: Props) {
+  console.log(userClicker.email);
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>{user.onGoingSession?.course}</Text>
+      <Text style={styles.text}>{userMarker.onGoingSession?.course}</Text>
       
       <Text style={styles.randomText}>
         This is a random paragraph. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
@@ -28,7 +30,7 @@ export default function UserDotInfo({ user }: Props) {
         title="Like"
         icon={<Icon name="thumb-up" type="material" color="white" />}
         buttonStyle={styles.button}
-        onPress={() => handleLikeButtonPress(user.uid)}
+        onPress={() => handleLikeButtonPress(userMarker.uid)}
       />
     </View>
   );
