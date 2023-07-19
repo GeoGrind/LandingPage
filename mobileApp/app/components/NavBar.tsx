@@ -1,24 +1,69 @@
 import React from 'react';
-import { View, Button } from 'react-native';
+import { View, StyleSheet } from 'react-native';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 
-interface NavbarProps {
-  onProfilePress: () => void;
-  onMapPress: () => void;
-  onLogoutPress: () => void;
-}
+type Props = {
+  onRefreshClick: () => void;
+  onStartSessionClick: () => void;
+  onStopSessionClick: () => void;
+  onSignOffClick: () => void;
+  onTestClick: () => void;
+};
 
-const Navbar: React.FC<NavbarProps> = ({
-  onProfilePress,
-  onMapPress,
-  onLogoutPress,
+const Navbar: React.FC<Props> = ({
+  onRefreshClick,
+  onStartSessionClick,
+  onStopSessionClick,
+  onSignOffClick,
+  onTestClick,
 }) => {
   return (
-    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-      <Button onPress={onProfilePress} title="See my profile" />
-      <Button onPress={onMapPress} title="Open Map" />
-      <Button onPress={onLogoutPress} title="Log out" />
+    <View style={styles.container}>
+        <FontAwesome5
+          name="sync"
+          size={30}
+          color="black"
+          onPress={onRefreshClick}
+        />
+        <FontAwesome5
+          name="play"
+          size={30}
+          color="black"
+          onPress={onStartSessionClick}
+        />
+        <FontAwesome5
+          name="stop"
+          size={30}
+          color="black"
+          onPress={onStopSessionClick}
+        />
+        <FontAwesome5
+          name="sign-out-alt"
+          size={30}
+          color="black"
+          onPress={onSignOffClick}
+        />
+        <FontAwesome5
+          name="cog"
+          size={30}
+          color="black"
+          onPress={onTestClick}
+        />
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    backgroundColor: '#f5f5f5',
+    paddingVertical: 10,
+  },
+  buttonContainer: {
+    marginVertical: 5,
+  },
+});
 
 export default Navbar;
