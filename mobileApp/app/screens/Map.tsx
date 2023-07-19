@@ -1,17 +1,16 @@
-import React from 'react';
+import React, {useRef} from 'react';
 import MapView, { Marker, Callout } from 'react-native-maps';
-import { StyleSheet, View, Modal, TextInput, TouchableOpacity, Text } from 'react-native';
+import { StyleSheet, View, Modal, TextInput, TouchableOpacity, Text, AppState } from 'react-native';
 import { useState, useEffect } from 'react';
 import 'firebase/firestore';
-import {updateSession, getUserLocationAndStoreInDb, stopSessionOfCurrentUser, fetchAllLocationUserPairs, fetchActiveUsers} from '../utils/db'
+import {updateSession, getUserLocationAndStoreInDb, stopSessionOfCurrentUser, fetchActiveUsers, getUserLocation} from '../utils/db'
 import { Button } from 'react-native';
-import { signOut } from 'firebase/auth';
+import { signOut,getAuth } from 'firebase/auth';
 import { FIREBASE_AUTH } from '../../FirebaseConfig';
-import { Session, User, Location } from '../types';
+import { Session, User } from '../types';
 import { useNavigation, ParamListBase } from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import Test from './Test';
-
+import UserDotInfo from './UserDotInfo';
 
 
 const Map = () => {
@@ -21,20 +20,45 @@ const Map = () => {
   const [formValues, setFormValues] = useState({ course: '' });
   const [loading, setLoading] = React.useState(false)
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
+  const appState = useRef(AppState.currentState);
+  const { currentUser } = FIREBASE_AUTH;
+  const signedInUser: any = currentUser;
+
   useEffect(() => {
-    const fetchData = async () => {
-      const temp1 = await fetchActiveUsers();
-      setInSessionUsers(temp1);
-      
-    };
     fetchData();
-    const timer = setInterval(fetchData, 30000);
+  }, []);
+
+  // This tracks if the user exit the app.
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', nextAppState => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === 'active'
+      ) {
+        console.log('App has come to the foreground!');
+        // Fetch the data when the user comes back.
+        fetchData();
+      }
+      appState.current = nextAppState;
+      console.log('AppState', appState.current);
+    });
 
     return () => {
-      clearInterval(timer);
+      subscription.remove();
     };
   }, []);
-  
+  // This use effect can fetch the data when there is a navigation even happened
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      fetchData();
+    });
+    return unsubscribe;
+  }, [navigation]);
+
+  const fetchData = async () => {
+    const temp1 = await fetchActiveUsers();
+    setInSessionUsers(temp1);
+  };
   const handleStartSessionClick = () => {
     setShowForm(true);
   };
@@ -43,29 +67,22 @@ const Map = () => {
     /* TODO: This process is very slow, needs optimization 
     Try to update the UI at client side first, then update the DB in the background
     */
-    setLoading(true);
+    setShowForm(false)
     const newSession: Session = {
       course: formValues.course,
       startTime: Date.now(),
       isVisible: true,
       sessionStartLocation: { longitude: 0, latitude: 0 }, // Set initial location
       numberOfCheerers: 0,
+      cheerers: [],
     };
-    
-    // BUG: Potential bug, there session might not have initial starting location;
-    await updateSession(newSession);
-    
-    // Get user location and store in DB
+
     const userLocation = await getUserLocationAndStoreInDb();
-    
-    // Update the session with the user's location
+    console.log(userLocation);
     newSession.sessionStartLocation = userLocation;
     await updateSession(newSession);
-    const newActiveUsers = await fetchActiveUsers();
-    setInSessionUsers(newActiveUsers);
-    setShowForm(false);
     console.log(`Form submitted, course: ${formValues.course}`);
-    setLoading(false);
+    fetchData();
   };
   
 
@@ -81,6 +98,7 @@ const Map = () => {
     // TODO: Needs the UI update immediately after the button is clicked
     try{
       await stopSessionOfCurrentUser();
+      await fetchData();
     } catch (error) {
       console.log('Error stopping session:', error);
     }
@@ -88,6 +106,12 @@ const Map = () => {
   const handleProfileClick = () => {
     navigation.navigate('Profile'); 
   }
+  const handleTestClick = () => {
+    navigation.navigate('Test');
+  }
+  const handleRefreshClick = () => {
+    fetchData();
+  };
   if (loading) {
     return (
       // TODO: Make the loading look better
@@ -101,25 +125,34 @@ const Map = () => {
       <View style={styles.container}>
         <Button title="See my profile" onPress={handleProfileClick} />
         <MapView style={styles.map}>
-          {inSessionUsers.map((user, index) => (
-            <Marker
-              key={index}
-              coordinate={{ latitude: user.location!.latitude, longitude: user.location!.longitude }}
-              pinColor="red"
-              onPress={() => console.log("pressed")}
-              image={require("../../assets/delbert.png")}
-              style={styles.callout}
-            >
-              <Callout>
-                <Test user={user}/>
-              </Callout>
-            </Marker>
-          ))}
+          {inSessionUsers.map((user, index) => {
+            const isCurrentUser = user.uid === currentUser!.uid
+            const pinColor = isCurrentUser ? 'green' : 'red';
+
+            return (
+              <Marker
+                key={index}
+                coordinate={{
+                  latitude: user.location!.latitude,
+                  longitude: user.location!.longitude
+                }}
+                pinColor={pinColor}
+              >
+                
+                <Callout>
+                  <UserDotInfo userMarker={user}/>
+                </Callout>
+                
+              </Marker>
+            );
+          })}
         </MapView>
         <View style={styles.buttonContainer}>
+          <Button title="Refresh" onPress={handleRefreshClick} /> 
           <Button title="Start your study session" onPress={handleStartSessionClick} />
           <Button title="Stop your study session" onPress={handleStopSessionClick} />
           <Button title="Sign off" onPress={handleSignOffClick} />
+          <Button title="Test" onPress={handleTestClick} />
         </View>
         
       

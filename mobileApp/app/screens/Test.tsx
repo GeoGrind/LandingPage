@@ -1,31 +1,42 @@
-import { StyleSheet, Text, View } from 'react-native';
-import React from 'react';
-import { User } from '../types';
+import React, {useRef, useState, useEffect} from 'react';
+import {AppState, StyleSheet, Text, View} from 'react-native';
 
-type TestProps = {
-  user: User;
-};
+const Test = () => {
+  const appState = useRef(AppState.currentState);
+  const [appStateVisible, setAppStateVisible] = useState(appState.current);
 
-export default function Test({ user }: TestProps) {
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', nextAppState => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === 'active'
+      ) {
+        console.log('App has come to the foreground!');
+      }
+
+      appState.current = nextAppState;
+      setAppStateVisible(appState.current);
+      console.log('AppState', appState.current);
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
+
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>{user.email}</Text>
-      <Text style={styles.text}>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</Text>
-      <Text style={styles.text}>Nullam tempus vestibulum semper.</Text>
+      <Text>Current state is: {appStateVisible}</Text>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      alignItems: 'flex-start',
-      justifyContent: 'center',
-    },
-    text: {
-      fontSize: 18,
-      fontWeight: 'bold',
-      marginBottom: 10,
-    },
-  });
-  
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
+
+export default Test;

@@ -19,4 +19,5 @@ export type Session = {
   isVisible: boolean;
   sessionStartLocation: Location | null;
   numberOfCheerers: number;
+  cheerers: string[];
 }
