@@ -1,6 +1,6 @@
-import React from 'react';
+import React, {useRef} from 'react';
 import MapView, { Marker, Callout } from 'react-native-maps';
-import { StyleSheet, View, Modal, TextInput, TouchableOpacity, Text } from 'react-native';
+import { StyleSheet, View, Modal, TextInput, TouchableOpacity, Text, AppState } from 'react-native';
 import { useState, useEffect } from 'react';
 import 'firebase/firestore';
 import {updateSession, getUserLocationAndStoreInDb, stopSessionOfCurrentUser, fetchAllLocationUserPairs, fetchActiveUsers} from '../utils/db'
@@ -11,7 +11,6 @@ import { Session, User, Location } from '../types';
 import { useNavigation, ParamListBase } from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import UserDotInfo from './UserDotInfo';
-import { Icon } from 'react-native-elements';
 
 
 
@@ -22,9 +21,34 @@ const Map = () => {
   const [formValues, setFormValues] = useState({ course: '' });
   const [loading, setLoading] = React.useState(false)
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
+  const appState = useRef(AppState.currentState);
+  const [appStateVisible, setAppStateVisible] = useState(appState.current);
   useEffect(() => {
     fetchData();
   }, []);
+
+  // This tracks if the user exit the app.
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', nextAppState => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === 'active'
+      ) {
+        console.log('App has come to the foreground!');
+        // Fetch the data when the user comes back.
+        fetchData();
+      }
+
+      appState.current = nextAppState;
+      setAppStateVisible(appState.current);
+      console.log('AppState', appState.current);
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
+
   const fetchData = async () => {
     const temp1 = await fetchActiveUsers();
     setInSessionUsers(temp1);
