@@ -1,10 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Image, View } from 'react-native';
+import { Button, Image, View, Text } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import {handleUpload, fetchProfilePictureFromFirestore} from '../utils/db'
+import { FIREBASE_AUTH } from '../../FirebaseConfig';
+import { User } from '../types';
 export default function Profile() {
-  const [image, setImage] = useState<string | null>(null);
   
+  const [image, setImage] = useState<string | null>(null);
+  const { currentUser } = FIREBASE_AUTH;
+  const temp: any = currentUser;
+  const signedInUser = temp as User
+
   useEffect(() => {
     // Fetch the user's profile picture from Firestore here
     const fetchProfilePicture = async () => {
@@ -59,6 +65,7 @@ export default function Profile() {
   }
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text>{currentUser?.email}</Text>
       <Button title="Pick from library" onPress={pickImageFromLibrary} />
       <Button title="Take a picture" onPress={takePicture} />
       <Button title="Upload" onPress={uploadImage} />

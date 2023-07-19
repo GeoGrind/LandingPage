@@ -3,7 +3,7 @@ import MapView, { Marker, Callout } from 'react-native-maps';
 import { StyleSheet, View, Modal, TextInput, TouchableOpacity, Text, AppState } from 'react-native';
 import { useState, useEffect } from 'react';
 import 'firebase/firestore';
-import {updateSession, getUserLocationAndStoreInDb, stopSessionOfCurrentUser, fetchActiveUsers} from '../utils/db'
+import {updateSession, getUserLocationAndStoreInDb, stopSessionOfCurrentUser, fetchActiveUsers, getUserLocation} from '../utils/db'
 import { Button } from 'react-native';
 import { signOut,getAuth } from 'firebase/auth';
 import { FIREBASE_AUTH } from '../../FirebaseConfig';
@@ -67,7 +67,7 @@ const Map = () => {
     /* TODO: This process is very slow, needs optimization 
     Try to update the UI at client side first, then update the DB in the background
     */
-    
+    setShowForm(false)
     const newSession: Session = {
       course: formValues.course,
       startTime: Date.now(),
@@ -76,18 +76,13 @@ const Map = () => {
       numberOfCheerers: 0,
       cheerers: [],
     };
-    
-    // BUG: Potential bug, there session might not have initial starting location;
-    await updateSession(newSession);
-    
-    // Get user location and store in DB
+
     const userLocation = await getUserLocationAndStoreInDb();
-    
-    // Update the session with the user's location
+    console.log(userLocation);
     newSession.sessionStartLocation = userLocation;
     await updateSession(newSession);
-    setShowForm(false);
     console.log(`Form submitted, course: ${formValues.course}`);
+    fetchData();
   };
   
 
@@ -103,6 +98,7 @@ const Map = () => {
     // TODO: Needs the UI update immediately after the button is clicked
     try{
       await stopSessionOfCurrentUser();
+      await fetchData();
     } catch (error) {
       console.log('Error stopping session:', error);
     }
@@ -142,11 +138,11 @@ const Map = () => {
                 }}
                 pinColor={pinColor}
               >
-                {!isCurrentUser && (
-                  <Callout>
-                    <UserDotInfo userMarker={user}/>
-                  </Callout>
-                )}
+                
+                <Callout>
+                  <UserDotInfo userMarker={user}/>
+                </Callout>
+                
               </Marker>
             );
           })}

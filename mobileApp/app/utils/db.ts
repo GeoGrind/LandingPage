@@ -7,7 +7,7 @@ import { collection, onSnapshot, updateDoc } from "firebase/firestore";
 import { User, Location, Session } from "../types"
 import {Callout} from 'react-native-maps';
 
-export const getUserLocation = async () => {
+export const getUserLocation = async (): Promise<Location | null> => {
   try {
     // Check if the user is logged in
     const auth = getAuth();
@@ -25,7 +25,7 @@ export const getUserLocation = async () => {
       return null;
     }
     const userData = userSnapshot.data();
-    if (!userData || !userData.isInSession) {
+    if (!userData) {
       return null;
     }
 
@@ -68,8 +68,21 @@ export const getUserLocationAndStoreInDb = async (): Promise<Location | null> =>
     }
 
     const userRef = doc(FIREBASE_DB, 'users', user.uid);
-    await setDoc(userRef, { location }, { merge: true });
-    console.log('User location stored in the database');
+
+    const storeUserLocation = async (userRef: any, location: Location) => {
+      try {
+        await setDoc(userRef, { location }, { merge: true });
+        console.log('User location stored in the database');
+      } catch (error) {
+        console.error('Error storing user location:', error);
+      }
+    };
+    await storeUserLocation(userRef, location);
+
+    // This is a very weird bug being fixed magically, the two lines below do not work;
+
+    // await setDoc(userRef, { location }, { merge: true });
+    // console.log('User location stored in the database');
 
     return location;
   } catch (error) {
@@ -237,9 +250,13 @@ export const fetchProfilePictureFromFirestore = async () => {
 
 // A function that adds a new cheerer to a session being referred to 
 export const incrementNumberOfCheerers = async (uid: string): Promise<void> => {
-
+  // uid -> owner of the marker being clicked
+  // curUserId -> the person who clicked on the marker
+  // Logic: in uid's session, we add curUserId
   const db = FIREBASE_DB;
   const auth = getAuth();
+  const currentUser = auth.currentUser;
+  const curUserId = currentUser!.uid
 
   try {
     // Get the user document
@@ -251,10 +268,10 @@ export const incrementNumberOfCheerers = async (uid: string): Promise<void> => {
     }
 
     const userData = userDocSnap.data();
-    if (userData.onGoingSession.cheerers.includes(uid)) {
+    if (userData.onGoingSession.cheerers.includes(curUserId)) {
       return;
     }
-    const newCheerers = [...userData.onGoingSession.cheerers, uid];
+    const newCheerers = [...userData.onGoingSession.cheerers, curUserId];
 
     const onGoingSession = userData?.onGoingSession || {};
     const currentNumberOfCheerers = onGoingSession.numberOfCheerers || 0;
