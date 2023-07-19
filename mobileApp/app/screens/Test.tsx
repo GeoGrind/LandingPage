@@ -1,32 +1,25 @@
-import React, {useRef, useState, useEffect} from 'react';
-import {AppState, StyleSheet, Text, View} from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { Text, View, Button, Platform, StyleSheet } from 'react-native';
+import * as Device from 'expo-device';
+import * as Notifications from 'expo-notifications';
+import { fireNotification } from '../utils/notification';
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
 
-const Test = () => {
-  const appState = useRef(AppState.currentState);
-  const [appStateVisible, setAppStateVisible] = useState(appState.current);
-
+const Test: React.FC = () => {
+  
   useEffect(() => {
-    const subscription = AppState.addEventListener('change', nextAppState => {
-      if (
-        appState.current.match(/inactive|background/) &&
-        nextAppState === 'active'
-      ) {
-        console.log('App has come to the foreground!');
-      }
-
-      appState.current = nextAppState;
-      setAppStateVisible(appState.current);
-      console.log('AppState', appState.current);
-    });
-
-    return () => {
-      subscription.remove();
-    };
+    fireNotification();
   }, []);
 
   return (
     <View style={styles.container}>
-      <Text>Current state is: {appStateVisible}</Text>
+      <Text>Test</Text>
     </View>
   );
 };
