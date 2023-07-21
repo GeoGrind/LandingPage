@@ -1,6 +1,7 @@
 import {
   collection,
   doc,
+  getDoc,
   getDocs,
   setDoc,
   updateDoc,
@@ -51,4 +52,33 @@ export const createUser = async (user: User) => {
     console.log('Error creating user:', error);
   }
 };
-export const dontUse = 2; // prevents eslint error exporting one thing, will export more util later
+
+export const stopSessionOfCurrentUser = async () => {
+  try {
+    if (!FIREBASE_AUTH.currentUser) {
+      return;
+    }
+    const userRef = doc(FIREBASE_DB, 'users', FIREBASE_AUTH.currentUser.uid);
+    await updateDoc(userRef, { location: null });
+    await updateDoc(userRef, { onGoingSession: null });
+    await updateDoc(userRef, { isInSession: false });
+  } catch (error) {
+    console.log('Error in logout clean up:', error);
+  }
+};
+
+// export const currentUserInSession = (user: any): Promise<boolean> => {
+//   try {
+//     if (!FIREBASE_AUTH.currentUser) {
+//       return;
+//     }
+//     const userDocRef = doc(FIREBASE_DB, 'users', FIREBASE_AUTH.currentUser.uid);
+//     const userDoc = await getDoc(userDocRef);
+
+//     if (userDoc.exists()) {
+//       return userDoc.data().isInSession;
+//     }
+//   } catch (error) {
+//     console.log('error in getting user');
+//   }
+// };
