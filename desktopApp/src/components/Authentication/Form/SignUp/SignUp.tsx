@@ -1,34 +1,54 @@
 import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUser } from 'utils/db';
 import { FIREBASE_AUTH } from '../../../../firebase';
 import styles from './SignUp.module.scss';
 import FormItem from '../FormItem/FormItem';
 import FormButton from '../FormButton/FormButton';
 import icon from '../../../../../assets/956fd6.png';
+import { User } from 'types/user.type';
 
 function SignUp() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  // await createUserWithEmailAndPassword(FIREBASE_AUTH, email, password)
+  //   .then((userCredential) => {
+  //     // Signed in
+  //     const { user } = userCredential;
+  //     console.log(user);
+  //     navigate('/login');
+  //     return null;
+  //   })
+  //   .catch((error) => {
+  //     const errorCode = error.code;
+  //     const errorMessage = error.message;
+  //     console.log(errorCode, errorMessage);
+  //     // ..
+  //   });
   const onSubmit = async (e) => {
     e.preventDefault();
-
-    await createUserWithEmailAndPassword(FIREBASE_AUTH, email, password)
-      .then((userCredential) => {
-        // Signed in
-        const { user } = userCredential;
-        console.log(user);
-        navigate('/login');
-        return null;
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorCode, errorMessage);
-        // ..
-      });
+    try {
+      const response = await createUserWithEmailAndPassword(
+        FIREBASE_AUTH,
+        email,
+        password
+      );
+      const user: User = {
+        uid: response.user.uid,
+        email: response.user.email || '',
+        location: null,
+        isInSession: false,
+        onGoingSession: null,
+        profilePicture: null,
+      };
+      await createUser(user);
+      navigate('/login');
+    } catch {
+      console.log(e);
+    }
   };
 
   return (
@@ -68,5 +88,4 @@ function SignUp() {
     </div>
   );
 }
-
 export default SignUp;

@@ -30,7 +30,7 @@ function Map() {
       center={[43.472286, -80.544861]}
       zoomDelta={0.1}
       zoom={14}
-      minZoom={0}
+      minZoom={3}
       maxZoom={18}
       scrollWheelZoom
     >

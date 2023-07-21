@@ -42,6 +42,14 @@ function Header() {
             >
               Home
             </Link>
+            <div className={styles.Header__container__inner__nav}>
+              <Link
+                className={styles.Header__container__inner__nav__item}
+                to="/createsession"
+              >
+                Create Session
+              </Link>
+            </div>
           </div>
 
           <div className={styles.Header__container__inner__utility}>
