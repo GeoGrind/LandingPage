@@ -1,12 +1,13 @@
-import { View, Text, StyleSheet, TextInput, ActivityIndicator, Button, KeyboardAvoidingView } from 'react-native'
+import { View, Text, StyleSheet, TextInput, ActivityIndicator, Button, KeyboardAvoidingView,Keyboard } from 'react-native'
 import React from 'react'
 import { FIREBASE_AUTH, FIREBASE_DB } from '../../FirebaseConfig'
-import {createUserWithEmailAndPassword, signInWithEmailAndPassword} from 'firebase/auth'
+import {createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, signOut} from 'firebase/auth'
 import { collection, addDoc, setDoc, doc } from 'firebase/firestore';
 import { getUserLocationAndStoreInDb } from '../utils/db';
 import { User } from '../types';
+
+
 const Login = () => {
-    
     const [email, setEmail] = React.useState('')
     const [password, setPassword] = React.useState('')
     const [loading, setLoading] = React.useState(false)
@@ -26,7 +27,9 @@ const Login = () => {
         setLoading(true);
         try {
           const response = await createUserWithEmailAndPassword(auth, email, password);
-          // Add the new user to the "users" collection with UID as document ID
+          setEmail("")
+          setPassword("")
+          await sendEmailVerification(auth.currentUser!);
           const user: User = {
             uid: response.user.uid,
             email: response.user.email,
@@ -36,13 +39,15 @@ const Login = () => {
             profilePicture: null,
           };
           await setDoc(doc(FIREBASE_DB, 'users', response.user.uid), user);
+          Keyboard.dismiss()
+          await signOut(auth);
           alert('Check your emails');
         } catch (e: any) {
           console.log(e);
           alert('Sign in failed' + e.message);
         }
         setLoading(false);
-      };
+    };
 
   return (  
     <View style={styles.container}>

@@ -10,6 +10,8 @@ import { getUserLocationAndStoreInDb } from './app/utils/db';
 import { Provider } from 'react-redux';
 import {store} from './app/store/store';
 import Test from './app/screens/Test'
+import { Keyboard } from 'react-native';
+
 const Stack = createNativeStackNavigator();
 
 const InsideStack = createNativeStackNavigator();
@@ -27,22 +29,29 @@ function InsideLayout(){
 export default function App() { 
   const [user, setUser] = useState<User | null>(null);
   
-  useEffect(() => {
+  const printStuff = () => {
+    console.log("stuff")
+  }
+
+  const handleKeyboardFrameChange = (event: any) => {
     onAuthStateChanged(FIREBASE_AUTH, (user) => {
       setUser(user);
-    }); 
+    });
+  };
+
+  useEffect(() => {
+    const keyboardListener = Keyboard.addListener('keyboardWillChangeFrame', handleKeyboardFrameChange);
+    return () => keyboardListener.remove();
   }, []);
 
-  
-  
   return ( 
     <Provider store={store}>
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Login">
-        {user ? (
+        {user && user.emailVerified ? (
             <Stack.Screen name="Inside" component={InsideLayout} options={{headerShown:false}} />
           ) : (
-            <Stack.Screen name="Login" component={Login} options={{headerShown:false}} />
+            <Stack.Screen name="Login" component={Login} options={{headerShown:false}}/>
           ) }
         </Stack.Navigator>
       </NavigationContainer>
