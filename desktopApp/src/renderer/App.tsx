@@ -1,5 +1,6 @@
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from 'components/Header';
+import CreateSession from 'components/CreateSession/CreateSession';
 import Login from '../components/Authentication/Form/Login/Login';
 import SignUp from '../components/Authentication/Form/SignUp/SignUp';
 import Home from '../components/Home/Home';
@@ -16,6 +17,7 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/account" element={<Account />} />
+        <Route path="/createsession" element={<CreateSession />} />
       </Routes>
     </Router>
   );

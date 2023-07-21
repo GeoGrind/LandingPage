@@ -7,4 +7,5 @@ export type User = {
   location: Location | null;
   isInSession: boolean;
   onGoingSession: Session | null;
+  profilePicture: string | null;
 };

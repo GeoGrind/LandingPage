@@ -64,7 +64,7 @@ const Login = () => {
       alert("Check your emails");
     } catch (e: any) {
       console.log(e);
-      alert("Sign in failed" + e.message);
+      alert("Sign up failed" + e.message);
     }
     setLoading(false);
   };

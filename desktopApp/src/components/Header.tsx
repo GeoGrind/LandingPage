@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom';
-import firebase from 'firebase';
+import firebase, { FIREBASE_AUTH } from 'firebase';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useState } from 'react';
+import { stopSessionOfCurrentUser } from 'utils/db';
 import styles from './Header.module.scss';
 import icon from '../../assets/956fd6.png';
 
@@ -42,6 +43,26 @@ function Header() {
             >
               Home
             </Link>
+            {/* {currentUserInSession ? ( */}
+            <div className={styles.Header__container__inner__nav}>
+              <button
+                className={styles.Header__container__inner__nav__item}
+                type="button"
+                onClick={stopSessionOfCurrentUser}
+              >
+                Stop Session
+              </button>
+            </div>
+            {/* ) : ( */}
+            <div className={styles.Header__container__inner__nav}>
+              <Link
+                className={styles.Header__container__inner__nav__item}
+                to="/createsession"
+              >
+                Create Session
+              </Link>
+            </div>
+            {/* )} */}
           </div>
 
           <div className={styles.Header__container__inner__utility}>
