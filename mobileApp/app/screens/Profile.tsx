@@ -1,15 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { Button, Image, View, Text } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
-import {handleUpload, fetchProfilePictureFromFirestore} from '../utils/db'
-import { FIREBASE_AUTH } from '../../FirebaseConfig';
-import { User } from '../types';
+import React, { useState, useEffect } from "react";
+import { Button, Image, View, Text } from "react-native";
+import * as ImagePicker from "expo-image-picker";
+import { handleUpload, fetchProfilePictureFromFirestore } from "../utils/db";
+import { FIREBASE_AUTH } from "../../FirebaseConfig";
+import { User } from "../types";
+import { useNavigation, ParamListBase } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+
 export default function Profile() {
-  
   const [image, setImage] = useState<string | null>(null);
   const { currentUser } = FIREBASE_AUTH;
   const temp: any = currentUser;
-  const signedInUser = temp as User
+  const signedInUser = temp as User;
+  const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
 
   useEffect(() => {
     // Fetch the user's profile picture from Firestore here
@@ -23,10 +26,11 @@ export default function Profile() {
   }, []);
 
   const pickImageFromLibrary = async () => {
-    let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    let permissionResult =
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
 
     if (permissionResult.granted === false) {
-      alert('Permission to access the media library is required!');
+      alert("Permission to access the media library is required!");
       return;
     }
 
@@ -46,7 +50,7 @@ export default function Profile() {
     let permissionResult = await ImagePicker.requestCameraPermissionsAsync();
 
     if (permissionResult.granted === false) {
-      alert('Permission to access the camera is required!');
+      alert("Permission to access the camera is required!");
       return;
     }
 
@@ -61,15 +65,19 @@ export default function Profile() {
   };
 
   const uploadImage = async () => {
-    handleUpload(image!)
-  }
+    handleUpload(image!);
+  };
+
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
       <Text>{currentUser?.email}</Text>
       <Button title="Pick from library" onPress={pickImageFromLibrary} />
       <Button title="Take a picture" onPress={takePicture} />
       <Button title="Upload" onPress={uploadImage} />
-      {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
+      <Button title="Exit" onPress={() => navigation.navigate("Map")} />
+      {image && (
+        <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
+      )}
     </View>
   );
 }

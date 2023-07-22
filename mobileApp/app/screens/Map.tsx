@@ -35,7 +35,6 @@ const Map = () => {
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   const appState = useRef(AppState.currentState);
   const { currentUser } = FIREBASE_AUTH;
-  const signedInUser: any = currentUser;
   const [input, setInput] = useState<string>("");
 
   useEffect(() => {
