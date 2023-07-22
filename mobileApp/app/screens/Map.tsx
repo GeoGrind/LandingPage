@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
   Text,
   AppState,
-  Alert,
 } from "react-native";
 import { useState, useEffect } from "react";
 import "firebase/firestore";
@@ -26,9 +25,7 @@ import { useNavigation, ParamListBase } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import UserDotInfo from "./UserDotInfo";
 import Navbar from "../components/NavBar";
-import { SearchBar } from "react-native-elements";
-import { SearchBarBaseProps } from "react-native-elements/dist/searchbar/SearchBar";
-const SafeSearchBar = SearchBar as unknown as React.FC<SearchBarBaseProps>;
+import { Keyboard } from "react-native";
 
 const Map = () => {
   const [inSessionUsers, setInSessionUsers] = useState<User[]>([]);
@@ -39,7 +36,7 @@ const Map = () => {
   const appState = useRef(AppState.currentState);
   const { currentUser } = FIREBASE_AUTH;
   const signedInUser: any = currentUser;
-  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [input, setInput] = useState<string>("");
 
   useEffect(() => {
     fetchData();
@@ -127,6 +124,17 @@ const Map = () => {
   const handleRefreshClick = () => {
     fetchData();
   };
+  const filterUsers = () => {
+    if (!input.trim()) {
+      return inSessionUsers; // If input is empty, return all users
+    }
+
+    // Filter users based on the prefix match in "onGoingSession.course"
+    return inSessionUsers.filter(
+      (user) =>
+        user.onGoingSession && user.onGoingSession.course.startsWith(input)
+    );
+  };
   if (loading) {
     return (
       // TODO: Make the loading look better
@@ -137,8 +145,14 @@ const Map = () => {
   } else {
     return (
       <View style={styles.container}>
-        <MapView style={styles.map}>
-          {inSessionUsers.map((user, index) => {
+        <MapView
+          style={styles.map}
+          onTouchStart={() => {
+            // Dismiss the keyboard when the user taps on the map
+            Keyboard.dismiss();
+          }}
+        >
+          {filterUsers().map((user, index) => {
             const isCurrentUser = user.uid === currentUser!.uid;
             const pinColor = isCurrentUser ? "green" : "red";
             return (
@@ -158,11 +172,25 @@ const Map = () => {
           })}
         </MapView>
         <View style={styles.searchBar}>
-          <SafeSearchBar
-            placeholder="Search"
-            onChangeText={(text: string) => setSearchQuery(text)}
-            value={searchQuery}
-            platform={"default"}
+          <TextInput
+            style={{
+              borderRadius: 10,
+              margin: 10,
+              color: "#000",
+              borderColor: "#666",
+              backgroundColor: "#FFF",
+              borderWidth: 1,
+              height: 45,
+              paddingHorizontal: 10,
+              fontSize: 18,
+            }}
+            placeholder={"Search"}
+            placeholderTextColor={"#666"}
+            value={input}
+            onChangeText={(s) => {
+              setInput(s);
+              console.log(s);
+            }}
           />
         </View>
         <View style={styles.profilePicture}>
