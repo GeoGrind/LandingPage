@@ -1,6 +1,6 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import React from "react";
+import { View, StyleSheet } from "react-native";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 
 type Props = {
   onRefreshClick: () => void;
@@ -8,6 +8,7 @@ type Props = {
   onStopSessionClick: () => void;
   onSignOffClick: () => void;
   onTestClick: () => void;
+  onListViewClick: () => void;
 };
 
 const Navbar: React.FC<Props> = ({
@@ -16,49 +17,51 @@ const Navbar: React.FC<Props> = ({
   onStopSessionClick,
   onSignOffClick,
   onTestClick,
+  onListViewClick,
 }) => {
   return (
     <View style={styles.container}>
-        <FontAwesome5
-          name="sync"
-          size={30}
-          color="black"
-          onPress={onRefreshClick}
-        />
-        <FontAwesome5
-          name="play"
-          size={30}
-          color="black"
-          onPress={onStartSessionClick}
-        />
-        <FontAwesome5
-          name="stop"
-          size={30}
-          color="black"
-          onPress={onStopSessionClick}
-        />
-        <FontAwesome5
-          name="sign-out-alt"
-          size={30}
-          color="black"
-          onPress={onSignOffClick}
-        />
-        <FontAwesome5
-          name="cog"
-          size={30}
-          color="black"
-          onPress={onTestClick}
-        />
+      <FontAwesome5
+        name="sync"
+        size={30}
+        color="black"
+        onPress={onRefreshClick}
+      />
+      <FontAwesome5
+        name="play"
+        size={30}
+        color="black"
+        onPress={onStartSessionClick}
+      />
+      <FontAwesome5
+        name="stop"
+        size={30}
+        color="black"
+        onPress={onStopSessionClick}
+      />
+      <FontAwesome5
+        name="sign-out-alt"
+        size={30}
+        color="black"
+        onPress={onSignOffClick}
+      />
+      <FontAwesome5 name="cog" size={30} color="black" onPress={onTestClick} />
+      <FontAwesome5
+        name="list"
+        size={30}
+        color="black"
+        onPress={onListViewClick}
+      />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    backgroundColor: '#f5f5f5',
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+    backgroundColor: "#f5f5f5",
     paddingVertical: 10,
   },
   buttonContainer: {
