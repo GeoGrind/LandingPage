@@ -2,17 +2,24 @@ import { Link } from 'react-router-dom';
 import firebase, { FIREBASE_AUTH } from 'firebase';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useState } from 'react';
-import { stopSessionOfCurrentUser } from 'utils/db';
+import {
+  getCurrentUser,
+  getUserByUid,
+  stopSessionOfCurrentUser,
+} from 'utils/db';
 import styles from './Header.module.scss';
 import icon from '../../assets/956fd6.png';
+import { User } from 'types/user.type';
 
 function Header() {
   const auth = getAuth();
 
   const [isLoggedin, setIsLoggedIn] = useState(false);
+  const [curUser, setCurUser] = useState(undefined);
   onAuthStateChanged(auth, (user) => {
     if (user) {
       setIsLoggedIn(true);
+      getCurrentUser(setCurUser);
       // User is signed in, see docs for a list of available properties
       // https://firebase.google.com/docs/reference/js/auth.user
       // ...
@@ -22,6 +29,28 @@ function Header() {
       // ...
     }
   });
+
+  const authOptions =
+    curUser && (curUser as User).isInSession ? (
+      <div className={styles.Header__container__inner__nav}>
+        <button
+          className={styles.Header__container__inner__nav__item}
+          type="button"
+          onClick={stopSessionOfCurrentUser}
+        >
+          Stop Session
+        </button>
+      </div>
+    ) : (
+      <div className={styles.Header__container__inner__nav}>
+        <Link
+          className={styles.Header__container__inner__nav__item}
+          to="/createsession"
+        >
+          Create Session
+        </Link>
+      </div>
+    );
   return (
     <header className={styles.Header}>
       <div className={styles.Header__container}>
@@ -43,26 +72,7 @@ function Header() {
             >
               Home
             </Link>
-            {/* {currentUserInSession ? ( */}
-            <div className={styles.Header__container__inner__nav}>
-              <button
-                className={styles.Header__container__inner__nav__item}
-                type="button"
-                onClick={stopSessionOfCurrentUser}
-              >
-                Stop Session
-              </button>
-            </div>
-            {/* ) : ( */}
-            <div className={styles.Header__container__inner__nav}>
-              <Link
-                className={styles.Header__container__inner__nav__item}
-                to="/createsession"
-              >
-                Create Session
-              </Link>
-            </div>
-            {/* )} */}
+            {curUser && authOptions}
           </div>
 
           <div className={styles.Header__container__inner__utility}>
