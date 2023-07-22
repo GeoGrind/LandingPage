@@ -1,30 +1,45 @@
-import React, {useRef} from 'react';
-import MapView, { Marker, Callout } from 'react-native-maps';
-import { StyleSheet, View, Modal, TextInput, TouchableOpacity, Text, AppState, Alert } from 'react-native';
-import { useState, useEffect } from 'react';
-import 'firebase/firestore';
-import {updateSession, getUserLocationAndStoreInDb, stopSessionOfCurrentUser, fetchActiveUsers, getUserLocation} from '../utils/db'
-import { Button } from 'react-native';
-import { signOut,getAuth } from 'firebase/auth';
-import { FIREBASE_AUTH } from '../../FirebaseConfig';
-import { Session, User } from '../types';
-import { useNavigation, ParamListBase } from '@react-navigation/native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import UserDotInfo from './UserDotInfo';
-import Navbar from '../components/NavBar';
-
-
+import React, { useRef } from "react";
+import MapView, { Marker, Callout } from "react-native-maps";
+import {
+  StyleSheet,
+  View,
+  Modal,
+  TextInput,
+  TouchableOpacity,
+  Text,
+  AppState,
+  Alert,
+} from "react-native";
+import { useState, useEffect } from "react";
+import "firebase/firestore";
+import {
+  updateSession,
+  getUserLocationAndStoreInDb,
+  stopSessionOfCurrentUser,
+  fetchActiveUsers,
+} from "../utils/db";
+import { Button } from "react-native";
+import { signOut, getAuth } from "firebase/auth";
+import { FIREBASE_AUTH } from "../../FirebaseConfig";
+import { Session, User } from "../types";
+import { useNavigation, ParamListBase } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import UserDotInfo from "./UserDotInfo";
+import Navbar from "../components/NavBar";
+import { SearchBar } from "react-native-elements";
+import { SearchBarBaseProps } from "react-native-elements/dist/searchbar/SearchBar";
+const SafeSearchBar = SearchBar as unknown as React.FC<SearchBarBaseProps>;
 
 const Map = () => {
-
   const [inSessionUsers, setInSessionUsers] = useState<User[]>([]);
   const [showForm, setShowForm] = useState(false);
-  const [formValues, setFormValues] = useState({ course: '' });
-  const [loading, setLoading] = React.useState(false)
+  const [formValues, setFormValues] = useState({ course: "" });
+  const [loading, setLoading] = React.useState(false);
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   const appState = useRef(AppState.currentState);
   const { currentUser } = FIREBASE_AUTH;
   const signedInUser: any = currentUser;
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   useEffect(() => {
     fetchData();
@@ -32,17 +47,17 @@ const Map = () => {
 
   // This tracks if the user exit the app.
   useEffect(() => {
-    const subscription = AppState.addEventListener('change', nextAppState => {
+    const subscription = AppState.addEventListener("change", (nextAppState) => {
       if (
         appState.current.match(/inactive|background/) &&
-        nextAppState === 'active'
+        nextAppState === "active"
       ) {
-        console.log('App has come to the foreground!');
+        console.log("App has come to the foreground!");
         // Fetch the data when the user comes back.
         fetchData();
       }
       appState.current = nextAppState;
-      console.log('AppState', appState.current);
+      console.log("AppState", appState.current);
     });
 
     return () => {
@@ -51,7 +66,7 @@ const Map = () => {
   }, []);
   // This use effect can fetch the data when there is a navigation even happened
   useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
+    const unsubscribe = navigation.addListener("focus", () => {
       fetchData();
     });
     return unsubscribe;
@@ -69,7 +84,7 @@ const Map = () => {
     /* TODO: This process is very slow, needs optimization 
     Try to update the UI at client side first, then update the DB in the background
     */
-    setShowForm(false)
+    setShowForm(false);
     const newSession: Session = {
       course: formValues.course,
       startTime: Date.now(),
@@ -85,31 +100,30 @@ const Map = () => {
     console.log(`Form submitted, course: ${formValues.course}`);
     fetchData();
   };
-  
 
   const handleSignOffClick = async () => {
     try {
       await stopSessionOfCurrentUser();
       await signOut(FIREBASE_AUTH);
     } catch (error) {
-      console.log('Error signing off:', error);
+      console.log("Error signing off:", error);
     }
   };
   const handleStopSessionClick = async () => {
     // TODO: Needs the UI update immediately after the button is clicked
-    try{
+    try {
       await stopSessionOfCurrentUser();
       await fetchData();
     } catch (error) {
-      console.log('Error stopping session:', error);
+      console.log("Error stopping session:", error);
     }
-  }
+  };
   const handleProfileClick = () => {
-    navigation.navigate('Profile'); 
-  }
+    navigation.navigate("Profile");
+  };
   const handleTestClick = () => {
-    navigation.navigate('Test');
-  }
+    navigation.navigate("Test");
+  };
   const handleRefreshClick = () => {
     fetchData();
   };
@@ -119,53 +133,58 @@ const Map = () => {
       <View style={styles.container}>
         <Text>Loading...</Text>
       </View>
-    )
-  }
-  else {
+    );
+  } else {
     return (
       <View style={styles.container}>
-        <Button title="See my profile" onPress={handleProfileClick} />
         <MapView style={styles.map}>
           {inSessionUsers.map((user, index) => {
-            const isCurrentUser = user.uid === currentUser!.uid
-            const pinColor = isCurrentUser ? 'green' : 'red';
-
+            const isCurrentUser = user.uid === currentUser!.uid;
+            const pinColor = isCurrentUser ? "green" : "red";
             return (
               <Marker
                 key={index}
                 coordinate={{
                   latitude: user.location!.latitude,
-                  longitude: user.location!.longitude
+                  longitude: user.location!.longitude,
                 }}
                 pinColor={pinColor}
               >
-                
                 <Callout>
-                  <UserDotInfo userMarker={user}/>
+                  <UserDotInfo userMarker={user} />
                 </Callout>
-                
               </Marker>
             );
           })}
         </MapView>
-        
-        <View style={styles.buttonContainer}>
-          <Navbar
-              onRefreshClick={handleRefreshClick}
-              onStartSessionClick={handleStartSessionClick}
-              onStopSessionClick={handleStopSessionClick}
-              onSignOffClick={handleSignOffClick}
-              onTestClick={handleTestClick}
+        <View style={styles.searchBar}>
+          <SafeSearchBar
+            placeholder="Search"
+            onChangeText={(text: string) => setSearchQuery(text)}
+            value={searchQuery}
+            platform={"default"}
           />
         </View>
-      
+        <View style={styles.profilePicture}>
+          <Button title="Profile" onPress={handleProfileClick} />
+        </View>
+        <View style={styles.buttonContainer}>
+          <Navbar
+            onRefreshClick={handleRefreshClick}
+            onStartSessionClick={handleStartSessionClick}
+            onStopSessionClick={handleStopSessionClick}
+            onSignOffClick={handleSignOffClick}
+            onTestClick={handleTestClick}
+          />
+        </View>
+
         {showForm && !loading && (
           <Modal visible={showForm} transparent>
-              <TouchableOpacity
+            <TouchableOpacity
               style={styles.modalContainer}
               activeOpacity={1}
               onPress={() => setShowForm(false)}
-              >
+            >
               <View style={styles.formContainer}>
                 <TextInput
                   style={styles.input}
@@ -173,11 +192,14 @@ const Map = () => {
                   value={formValues.course}
                   onChangeText={(text) => setFormValues({ course: text })}
                 />
-                <TouchableOpacity style={styles.submitButton} onPress={handleFormSubmit}>
+                <TouchableOpacity
+                  style={styles.submitButton}
+                  onPress={handleFormSubmit}
+                >
                   <Text style={styles.submitButtonText}>Submit</Text>
                 </TouchableOpacity>
               </View>
-              </TouchableOpacity>
+            </TouchableOpacity>
           </Modal>
         )}
       </View>
@@ -185,52 +207,60 @@ const Map = () => {
   }
 };
 
-
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
   map: {
-    width: '100%',
-    height: '100%',
+    flex: 1,
+  },
+  searchBar: {
+    position: "absolute",
+    top: "5%",
+    left: "25%",
+    width: "50%",
+    justifyContent: "center",
+  },
+  profilePicture: {
+    position: "absolute", //use absolute position to show button on top of the map
+    top: "5%", //for center align
+    alignSelf: "flex-end", //for align to right
   },
   buttonContainer: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 16,
-    alignSelf: 'center',
+    alignSelf: "center",
   },
   formContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    
+    justifyContent: "center",
+    alignItems: "center",
   },
   input: {
-    width: '80%',
+    width: "80%",
     height: 40,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     marginBottom: 10,
     paddingHorizontal: 10,
   },
   submitButton: {
-    backgroundColor: 'blue',
+    backgroundColor: "blue",
     padding: 10,
     borderRadius: 5,
     marginTop: 10,
   },
   submitButtonText: {
-    color: 'white',
-    textAlign: 'center',
+    color: "white",
+    textAlign: "center",
   },
   modalContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   callout: {
-    height:400,
+    height: 400,
     width: 200, // Adjust the width as needed
     padding: 10,
     borderRadius: 5,
