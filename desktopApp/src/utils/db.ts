@@ -67,18 +67,22 @@ export const stopSessionOfCurrentUser = async () => {
   }
 };
 
-// export const currentUserInSession = (user: any): Promise<boolean> => {
-//   try {
-//     if (!FIREBASE_AUTH.currentUser) {
-//       return;
-//     }
-//     const userDocRef = doc(FIREBASE_DB, 'users', FIREBASE_AUTH.currentUser.uid);
-//     const userDoc = await getDoc(userDocRef);
+export const getCurrentUser = async (setUser: any): Promise<void> => {
+  try {
+    if (!FIREBASE_AUTH.currentUser) {
+      return;
+    }
+    const { uid } = FIREBASE_AUTH.currentUser;
 
-//     if (userDoc.exists()) {
-//       return userDoc.data().isInSession;
-//     }
-//   } catch (error) {
-//     console.log('error in getting user');
-//   }
-// };
+    const usersCollection = collection(FIREBASE_DB, 'users');
+    const querySnapshot = await getDocs(usersCollection);
+    querySnapshot.forEach(async (docSnapshot) => {
+      const user = docSnapshot.data() as User;
+      if (user.uid === uid) {
+        setUser(user);
+      }
+    });
+  } catch (error) {
+    console.log('Error getting user', error);
+  }
+};
