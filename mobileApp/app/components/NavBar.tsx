@@ -46,12 +46,12 @@ const Navbar: React.FC<Props> = ({
         onPress={onSignOffClick}
       />
       <FontAwesome5 name="cog" size={30} color="black" onPress={onTestClick} />
-      <FontAwesome5
+      {/* <FontAwesome5
         name="list"
         size={30}
         color="black"
         onPress={onListViewClick}
-      />
+      /> */}
     </View>
   );
 };
