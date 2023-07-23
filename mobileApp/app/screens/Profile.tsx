@@ -10,8 +10,6 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 export default function Profile() {
   const [image, setImage] = useState<string | null>(null);
   const { currentUser } = FIREBASE_AUTH;
-  const temp: any = currentUser;
-  const signedInUser = temp as User;
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
 
   useEffect(() => {

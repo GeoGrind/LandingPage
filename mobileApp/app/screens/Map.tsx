@@ -72,9 +72,6 @@ const Map = () => {
     const temp1 = await fetchActiveUsers();
     setInSessionUsers(temp1);
   };
-  const handleStartSessionClick = () => {
-    setShowForm(true);
-  };
 
   const handleFormSubmit = async () => {
     /* TODO: This process is very slow, needs optimization 
@@ -117,12 +114,7 @@ const Map = () => {
   const handleProfileClick = () => {
     navigation.navigate("Profile");
   };
-  const handleTestClick = () => {
-    navigation.navigate("Test");
-  };
-  const handleRefreshClick = () => {
-    fetchData();
-  };
+
   const filterUsers = () => {
     if (!input.trim()) {
       return inSessionUsers; // If input is empty, return all users
@@ -197,15 +189,24 @@ const Map = () => {
         </View>
         <View style={styles.buttonContainer}>
           <Navbar
-            onRefreshClick={handleRefreshClick}
-            onStartSessionClick={handleStartSessionClick}
+            onRefreshClick={() => {
+              fetchData();
+            }}
+            onStartSessionClick={() => {
+              setShowForm(true);
+            }}
             onStopSessionClick={handleStopSessionClick}
             onSignOffClick={handleSignOffClick}
-            onTestClick={handleTestClick}
+            onTestClick={() => {
+              navigation.navigate("Test");
+            }}
+            onListViewClick={() => {
+              navigation.navigate("ListView");
+            }}
           />
         </View>
 
-        {showForm && !loading && (
+        {showForm && (
           <Modal visible={showForm} transparent>
             <TouchableOpacity
               style={styles.modalContainer}

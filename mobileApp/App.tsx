@@ -6,12 +6,11 @@ import Profile from "./app/screens/Profile";
 import { useEffect, useState } from "react";
 import { User, onAuthStateChanged } from "firebase/auth";
 import { FIREBASE_AUTH } from "./FirebaseConfig";
-import { getUserLocationAndStoreInDb } from "./app/utils/db";
 import { Provider } from "react-redux";
 import { store } from "./app/store/store";
 import Test from "./app/screens/Test";
 import { Keyboard } from "react-native";
-
+import ListView from "./app/screens/ListView";
 const Stack = createNativeStackNavigator();
 
 const InsideStack = createNativeStackNavigator();
@@ -26,23 +25,18 @@ function InsideLayout() {
       <InsideStack.Screen name="Map" component={Map} />
       <InsideStack.Screen name="Profile" component={Profile} />
       <InsideStack.Screen name="Test" component={Test} />
+      <InsideStack.Screen name="ListView" component={ListView} />
     </InsideStack.Navigator>
   );
 }
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
-
-  const printStuff = () => {
-    console.log("stuff");
-  };
-
   const handleKeyboardFrameChange = (event: any) => {
     onAuthStateChanged(FIREBASE_AUTH, (user) => {
       setUser(user);
     });
   };
-
   useEffect(() => {
     const keyboardListener = Keyboard.addListener(
       "keyboardWillChangeFrame",
