@@ -16,11 +16,13 @@ import {
   onSnapshot,
   orderBy,
   query,
-  serverTimestamp,
 } from "firebase/firestore";
 import { FIREBASE_DB, FIREBASE_AUTH } from "../../FirebaseConfig";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-
+import { Message } from "../types";
+import "react-native-get-random-values";
+import { v4 as uuidv4 } from "uuid";
+import { doc, setDoc } from "firebase/firestore";
 type RootStackParamList = {
   Map: {};
   Profile: {};
@@ -45,9 +47,15 @@ const SingleChat = ({ route, navigation }: Props) => {
     );
     const q = query(msgCollectionRef, orderBy("createdAt", "asc"));
 
-    const unsubscribe = onSnapshot(q, (chatRooms: DocumentData) => {
-      const messages = chatRooms.docs.map((doc: any) => {
-        return { id: doc.id, ...doc.data() };
+    const unsubscribe = onSnapshot(q, (firebaseDoc: DocumentData) => {
+      const messages: Message[] = firebaseDoc.docs.map((doc: any) => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          createdAt: data.createdAt || 0,
+          message: data.message || "",
+          sender: data.sender || "",
+        };
       });
       setMessages(messages);
     });
@@ -63,12 +71,15 @@ const SingleChat = ({ route, navigation }: Props) => {
       FIREBASE_DB,
       `chatRooms/${id}/messages`
     );
-
-    await addDoc(msgCollectionRef, {
+    const documentId = uuidv4();
+    const newMessage: Message = {
+      id: documentId,
       message: msg,
       sender: currentUser!.uid,
       createdAt: Date.now(),
-    });
+    };
+    const messageRef = doc(msgCollectionRef!, documentId);
+    await setDoc(messageRef, newMessage);
 
     setMessage("");
   };

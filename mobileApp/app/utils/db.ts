@@ -1,11 +1,29 @@
-import { FIREBASE_DB } from '../../FirebaseConfig';
-import { doc, setDoc, getDocs, getDoc } from 'firebase/firestore';
-import { getStorage, ref, uploadString, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { LocationObject, requestForegroundPermissionsAsync, getCurrentPositionAsync } from 'expo-location';
-import { getAuth } from 'firebase/auth';
-import { collection, onSnapshot, updateDoc } from "firebase/firestore";
-import { User, Location, Session } from "../types"
-import {Callout} from 'react-native-maps';
+import { FIREBASE_DB } from "../../FirebaseConfig";
+import {
+  doc,
+  setDoc,
+  getDocs,
+  getDoc,
+  query,
+  where,
+  collection,
+  updateDoc,
+} from "firebase/firestore";
+import {
+  getStorage,
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";
+import {
+  LocationObject,
+  requestForegroundPermissionsAsync,
+  getCurrentPositionAsync,
+} from "expo-location";
+import { getAuth } from "firebase/auth";
+import { User, Location, Session, ChatRoom } from "../types";
+import "react-native-get-random-values";
+import { v4 as uuidv4 } from "uuid";
 
 export const getUserLocation = async (): Promise<Location | null> => {
   try {
@@ -13,15 +31,15 @@ export const getUserLocation = async (): Promise<Location | null> => {
     const auth = getAuth();
     const user = auth.currentUser;
     if (!user) {
-      console.log('No user is logged in');
+      console.log("No user is logged in");
       return null;
     }
 
     // Check if the user is in session
-    const userRef = doc(FIREBASE_DB, 'users', user.uid);
+    const userRef = doc(FIREBASE_DB, "users", user.uid);
     const userSnapshot = await getDoc(userRef);
     if (!userSnapshot.exists()) {
-      console.log('User document does not exist');
+      console.log("User document does not exist");
       return null;
     }
     const userData = userSnapshot.data();
@@ -31,8 +49,8 @@ export const getUserLocation = async (): Promise<Location | null> => {
 
     // Check location permissions
     const { status } = await requestForegroundPermissionsAsync();
-    if (status !== 'granted') {
-      console.log('Please grant location permissions');
+    if (status !== "granted") {
+      console.log("Please grant location permissions");
       return null;
     }
 
@@ -47,55 +65,51 @@ export const getUserLocation = async (): Promise<Location | null> => {
 
     return location;
   } catch (error) {
-    console.log('Error retrieving user location:', error);
+    console.log("Error retrieving user location:", error);
     return null;
   }
 };
 
-
-export const getUserLocationAndStoreInDb = async (): Promise<Location | null> => {
-  try {
-    const location = await getUserLocation();
-    if (!location) {
-      return null;
-    }
-
-    const auth = getAuth();
-    const user = auth.currentUser;
-    if (!user) {
-      console.log('No user is logged in');
-      return null;
-    }
-
-    const userRef = doc(FIREBASE_DB, 'users', user.uid);
-
-    const storeUserLocation = async (userRef: any, location: Location) => {
-      try {
-        await setDoc(userRef, { location }, { merge: true });
-        console.log('User location stored in the database');
-      } catch (error) {
-        console.error('Error storing user location:', error);
+export const getUserLocationAndStoreInDb =
+  async (): Promise<Location | null> => {
+    try {
+      const location = await getUserLocation();
+      if (!location) {
+        return null;
       }
-    };
-    await storeUserLocation(userRef, location);
 
-    // This is a very weird bug being fixed magically, the two lines below do not work;
+      const auth = getAuth();
+      const user = auth.currentUser;
+      if (!user) {
+        console.log("No user is logged in");
+        return null;
+      }
 
-    // await setDoc(userRef, { location }, { merge: true });
-    // console.log('User location stored in the database');
+      const userRef = doc(FIREBASE_DB, "users", user.uid);
 
-    return location;
-  } catch (error) {
-    console.log('Error retrieving user location:', error);
-    return null;
-  }
-};
+      const storeUserLocation = async (userRef: any, location: Location) => {
+        try {
+          await setDoc(userRef, { location }, { merge: true });
+          console.log("User location stored in the database");
+        } catch (error) {
+          console.error("Error storing user location:", error);
+        }
+      };
+      await storeUserLocation(userRef, location);
+      return location;
+    } catch (error) {
+      console.log("Error retrieving user location:", error);
+      return null;
+    }
+  };
 
 // Fetch the {Location, uid} pairs
-export const fetchAllLocationUserPairs = async (): Promise<{ location: Location, uid: string }[]> => {
-  const docRef = collection(FIREBASE_DB, 'users');
+export const fetchAllLocationUserPairs = async (): Promise<
+  { location: Location; uid: string }[]
+> => {
+  const docRef = collection(FIREBASE_DB, "users");
   const snapshot = await getDocs(docRef);
-  const locationUserPairs: { location: Location, uid: string }[] = [];
+  const locationUserPairs: { location: Location; uid: string }[] = [];
   snapshot.forEach((doc) => {
     const user = doc.data() as User;
     if (user.isInSession == true) {
@@ -109,7 +123,7 @@ export const fetchAllLocationUserPairs = async (): Promise<{ location: Location,
 };
 // Fetch all users who are in session
 export const fetchActiveUsers = async (): Promise<User[]> => {
-  const docRef = collection(FIREBASE_DB, 'users');
+  const docRef = collection(FIREBASE_DB, "users");
   const snapshot = await getDocs(docRef);
   const users: Array<User> = [];
   snapshot.forEach((user) => {
@@ -126,7 +140,7 @@ export const changeCurrentUserInSessionStatus = async (): Promise<void> => {
   const currentUser = auth.currentUser;
   if (currentUser) {
     const userId = currentUser.uid;
-    const usersCollection = collection(FIREBASE_DB, 'users');
+    const usersCollection = collection(FIREBASE_DB, "users");
     try {
       const querySnapshot = await getDocs(usersCollection);
       querySnapshot.forEach(async (docSnapshot) => {
@@ -136,14 +150,14 @@ export const changeCurrentUserInSessionStatus = async (): Promise<void> => {
           await updateDoc(docRef, {
             isInSession: !user.isInSession,
           });
-          return; 
+          return;
         }
       });
     } catch (error) {
-      console.log('Error changing user in session status:', error);
+      console.log("Error changing user in session status:", error);
     }
   } else {
-    console.log('No signed-in user');
+    console.log("No signed-in user");
   }
 };
 
@@ -155,7 +169,7 @@ export const updateSession = async (session: Session) => {
     if (!user) {
       return;
     }
-    const userRef = doc(FIREBASE_DB, 'users', user.uid);
+    const userRef = doc(FIREBASE_DB, "users", user.uid);
     await updateDoc(userRef, { onGoingSession: session });
     await updateDoc(userRef, { isInSession: true });
   } catch (error) {
@@ -171,7 +185,7 @@ export const stopSessionOfCurrentUser = async () => {
     if (!user) {
       return;
     }
-    const userRef = doc(FIREBASE_DB, 'users', user.uid);
+    const userRef = doc(FIREBASE_DB, "users", user.uid);
     await updateDoc(userRef, { location: null });
     await updateDoc(userRef, { onGoingSession: null });
     await updateDoc(userRef, { isInSession: false });
@@ -183,7 +197,7 @@ export const stopSessionOfCurrentUser = async () => {
 export async function handleUpload(uri: string) {
   const fetchResponse = await fetch(uri);
   const theBlob = await fetchResponse.blob();
-  const imageRef = ref(getStorage(), 'images');
+  const imageRef = ref(getStorage(), "images");
   const uploadTask = uploadBytesResumable(imageRef, theBlob);
   const auth = getAuth(); // Get the Firebase Authentication instance
   const user = auth.currentUser; // Get the currently logged-in user
@@ -192,7 +206,7 @@ export async function handleUpload(uri: string) {
     return;
   }
   uploadTask.on(
-    'state_changed',
+    "state_changed",
     (snapshot) => {
       // ...existing code for state change events
     },
@@ -202,19 +216,19 @@ export async function handleUpload(uri: string) {
     () => {
       // Handle successful uploads on complete
       getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
-        console.log('File available at', downloadURL);
-        
+        console.log("File available at", downloadURL);
+
         // Update the user's profilePicture field with the reference to the uploaded image
-        const userDocRef = doc(FIREBASE_DB, 'users', user.uid);
+        const userDocRef = doc(FIREBASE_DB, "users", user.uid);
         const userDoc = await getDoc(userDocRef);
-        
+
         if (userDoc.exists()) {
           await updateDoc(userDocRef, {
             profilePicture: downloadURL,
           });
-          console.log('Profile picture reference updated successfully');
+          console.log("Profile picture reference updated successfully");
         } else {
-          console.log('User document does not exist');
+          console.log("User document does not exist");
         }
       });
     }
@@ -225,12 +239,12 @@ export const fetchProfilePictureFromFirestore = async () => {
   const auth = getAuth(); // Get the Firebase Authentication instance
   const user = auth.currentUser;
   if (!user) {
-    console.log('Failed to fetch profile picture');
+    console.log("Failed to fetch profile picture");
     return null;
   }
 
   try {
-    const userDocRef = doc(FIREBASE_DB, 'users', user.uid);
+    const userDocRef = doc(FIREBASE_DB, "users", user.uid);
     const userDocSnap = await getDoc(userDocRef);
 
     if (userDocSnap.exists()) {
@@ -239,16 +253,16 @@ export const fetchProfilePictureFromFirestore = async () => {
 
       return profilePicture;
     } else {
-      console.log('User document does not exist');
+      console.log("User document does not exist");
       return null;
     }
   } catch (error) {
-    console.log('Error fetching profile picture:', error);
+    console.log("Error fetching profile picture:", error);
     return null;
   }
 };
 
-// A function that adds a new cheerer to a session being referred to 
+// A function that adds a new cheerer to a session being referred to
 export const incrementNumberOfCheerers = async (uid: string): Promise<void> => {
   // uid -> owner of the marker being clicked
   // curUserId -> the person who clicked on the marker
@@ -256,11 +270,11 @@ export const incrementNumberOfCheerers = async (uid: string): Promise<void> => {
   const db = FIREBASE_DB;
   const auth = getAuth();
   const currentUser = auth.currentUser;
-  const curUserId = currentUser!.uid
+  const curUserId = currentUser!.uid;
 
   try {
     // Get the user document
-    const userDocRef = doc(db, 'users', uid);
+    const userDocRef = doc(db, "users", uid);
     const userDocSnap = await getDoc(userDocRef);
 
     if (!userDocSnap.exists()) {
@@ -279,12 +293,65 @@ export const incrementNumberOfCheerers = async (uid: string): Promise<void> => {
 
     // Update the user document with the incremented value
     await updateDoc(userDocRef, {
-      'onGoingSession.numberOfCheerers': updatedNumberOfCheerers,
-      'onGoingSession.cheerers': newCheerers,
+      "onGoingSession.numberOfCheerers": updatedNumberOfCheerers,
+      "onGoingSession.cheerers": newCheerers,
     });
 
     console.log(`Successfully incremented numberOfCheerers for user ${uid}.`);
   } catch (error) {
-    console.error(`Error incrementing numberOfCheerers for user ${uid}:`, error);
+    console.error(
+      `Error incrementing numberOfCheerers for user ${uid}:`,
+      error
+    );
   }
-}
+};
+
+export const createChatRoom = async (
+  userId1: string,
+  userId2: string
+): Promise<string> => {
+  try {
+    const db = FIREBASE_DB;
+    const auth = getAuth();
+    const currentUser = auth.currentUser;
+    const chatRoomCollectionRef = collection(FIREBASE_DB, "chatRooms");
+    const documentId = uuidv4();
+    const chatRoom: ChatRoom = {
+      id: documentId,
+      creator: currentUser?.uid || "",
+      description: "This is a chat group",
+      name: `Group #${Math.floor(Math.random() * 1000)}`,
+      ownerIds: [userId1, userId2],
+    };
+    const chatRoomRef = doc(chatRoomCollectionRef!, documentId);
+    await setDoc(chatRoomRef, chatRoom);
+    return documentId;
+  } catch (error) {
+    console.log("error creating group", error);
+    return "Error";
+  }
+};
+
+export const getChatRoomFromUserId = async (
+  uid1: string,
+  uid2: string
+): Promise<string | null> => {
+  try {
+    const chatRoomCollectionRef = collection(FIREBASE_DB, "chatRooms");
+    const q = query(chatRoomCollectionRef);
+    const querySnapshot = await getDocs(q);
+    const matchingChatRooms = querySnapshot.docs.filter((doc) => {
+      const data = doc.data();
+      return data.ownerIds.includes(uid1) && data.ownerIds.includes(uid2);
+    });
+
+    if (matchingChatRooms.length === 0) {
+      return null; // ChatRoom not found, return null
+    } else {
+      return matchingChatRooms[0].id; // Return the chatRoom ID
+    }
+  } catch (error) {
+    console.log("Error checking chatRoom:", error);
+    return null;
+  }
+};

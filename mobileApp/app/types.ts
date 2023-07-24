@@ -37,6 +37,5 @@ export type ChatRoom = {
   creator: string;
   description: string;
   name: string;
-  messages: Message[]; // Nested collection of messages
-  owners: User[]; // Array of Users
+  ownerIds: string[]; // Array of Users
 };

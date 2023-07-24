@@ -4,25 +4,20 @@ import {
   StyleSheet,
   Pressable,
   ScrollView,
-  Touchable,
   TouchableOpacity,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
-import {
-  DocumentData,
-  addDoc,
-  collection,
-  onSnapshot,
-} from "firebase/firestore";
+import { DocumentData, collection, onSnapshot } from "firebase/firestore";
 import { FIREBASE_DB, FIREBASE_AUTH } from "../../FirebaseConfig";
 import { ChatRoom } from "../types";
 import { useNavigation, ParamListBase } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { createChatRoom } from "../utils/db";
 
 const AllChats = () => {
   const [groupsCollectionRef, setGroupsCollectionRef] = useState(null);
-  const [chatRooms, setChatRooms] = useState([]);
+  const [chatRooms, setChatRooms] = useState<ChatRoom[]>([]);
   const { currentUser } = FIREBASE_AUTH;
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   useEffect(() => {
@@ -30,27 +25,30 @@ const AllChats = () => {
     setGroupsCollectionRef(ref as any);
 
     const unsubscribe = onSnapshot(ref, (chatRooms: DocumentData) => {
-      const chatRoomsData = chatRooms.docs.map((doc: any) => {
-        return { id: doc.id, ...doc.data() };
-      });
+      const chatRoomsData = chatRooms.docs
+        .map((doc: any) => {
+          const data = doc.data();
+          const chatRoom: ChatRoom = {
+            id: doc.id,
+            creator: data.creator || "",
+            description: data.description || "",
+            name: data.name || "",
+            ownerIds: data.ownerIds || [],
+          };
+          return chatRoom;
+        })
+        .filter((chatRoom: ChatRoom) => {
+          return (
+            chatRoom.ownerIds[0] === currentUser?.uid ||
+            chatRoom.ownerIds[1] === currentUser?.uid
+          );
+        });
 
       setChatRooms(chatRoomsData);
     });
 
     return unsubscribe;
   }, []);
-
-  const createChatRoom = async () => {
-    try {
-      await addDoc(groupsCollectionRef!, {
-        name: `Group #${Math.floor(Math.random() * 1000)}`,
-        description: "This is a chat group",
-        creator: currentUser?.uid,
-      });
-    } catch (error) {
-      console.log("error creating group", error);
-    }
-  };
 
   return (
     <View style={styles.container}>
@@ -78,7 +76,10 @@ const AllChats = () => {
         <Ionicons name="exit-outline" size={24} color="red" />
       </Pressable>
 
-      <Pressable style={styles.rightButton} onPress={createChatRoom}>
+      <Pressable
+        style={styles.rightButton}
+        onPress={() => createChatRoom("dummy1", "dummy2")}
+      >
         <Ionicons name="add" size={24} color="white" />
       </Pressable>
     </View>
