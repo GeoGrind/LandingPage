@@ -9,7 +9,6 @@ import {
   Platform,
 } from "react-native";
 import React, { useLayoutEffect, useState } from "react";
-import { useSearchParams } from "expo-router";
 import {
   DocumentData,
   addDoc,
@@ -20,14 +19,7 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 import { FIREBASE_DB, FIREBASE_AUTH } from "../../FirebaseConfig";
-import { User } from "../types";
-import { useNavigation, ParamListBase } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { RouteProp } from "@react-navigation/native";
-import { useRoute } from "@react-navigation/native";
 
 type RootStackParamList = {
   Map: {};
@@ -41,18 +33,20 @@ type Props = NativeStackScreenProps<RootStackParamList, "SingleChat">;
 
 const SingleChat = ({ route, navigation }: Props) => {
   const { id } = route.params;
-  console.log(id);
   const { currentUser } = FIREBASE_AUTH;
 
   const [messages, setMessages] = useState<DocumentData[]>([]);
   const [message, setMessage] = useState<string>("");
 
   useLayoutEffect(() => {
-    const msgCollectionRef = collection(FIREBASE_DB, `groups/${id}/messages`);
+    const msgCollectionRef = collection(
+      FIREBASE_DB,
+      `chatRooms/${id}/messages`
+    );
     const q = query(msgCollectionRef, orderBy("createdAt", "asc"));
 
-    const unsubscribe = onSnapshot(q, (groups: DocumentData) => {
-      const messages = groups.docs.map((doc: any) => {
+    const unsubscribe = onSnapshot(q, (chatRooms: DocumentData) => {
+      const messages = chatRooms.docs.map((doc: any) => {
         return { id: doc.id, ...doc.data() };
       });
       setMessages(messages);
@@ -65,7 +59,10 @@ const SingleChat = ({ route, navigation }: Props) => {
     const msg = message.trim();
     if (msg.length === 0) return;
 
-    const msgCollectionRef = collection(FIREBASE_DB, `groups/${id}/messages`);
+    const msgCollectionRef = collection(
+      FIREBASE_DB,
+      `chatRooms/${id}/messages`
+    );
 
     await addDoc(msgCollectionRef, {
       message: msg,

@@ -7,7 +7,6 @@ export type User = {
   profilePicture: string | null;
 };
 
-// Null location is defined as (0,0)
 export type Location = {
   longitude: number;
   latitude: number;
@@ -33,10 +32,11 @@ export type Message = {
 };
 
 // Type for the documents in the "groups" collection
-export type Group = {
+export type ChatRoom = {
   id: string;
   creator: string;
   description: string;
   name: string;
   messages: Message[]; // Nested collection of messages
+  owners: User[]; // Array of Users
 };

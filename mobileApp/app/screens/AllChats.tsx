@@ -16,33 +16,31 @@ import {
   onSnapshot,
 } from "firebase/firestore";
 import { FIREBASE_DB, FIREBASE_AUTH } from "../../FirebaseConfig";
-import { Group } from "../types";
+import { ChatRoom } from "../types";
 import { useNavigation, ParamListBase } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 const AllChats = () => {
   const [groupsCollectionRef, setGroupsCollectionRef] = useState(null);
-  const [groups, setGroups] = useState([]);
+  const [chatRooms, setChatRooms] = useState([]);
   const { currentUser } = FIREBASE_AUTH;
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   useEffect(() => {
-    const ref = collection(FIREBASE_DB, "groups");
+    const ref = collection(FIREBASE_DB, "chatRooms");
     setGroupsCollectionRef(ref as any);
 
-    const unsubscribe = onSnapshot(ref, (groups: DocumentData) => {
-      console.log("Current groups in database: ", groups);
-      const groupsData = groups.docs.map((doc: any) => {
+    const unsubscribe = onSnapshot(ref, (chatRooms: DocumentData) => {
+      const chatRoomsData = chatRooms.docs.map((doc: any) => {
         return { id: doc.id, ...doc.data() };
       });
-      console.log("Current groups in database: ", groupsData);
 
-      setGroups(groupsData);
+      setChatRooms(chatRoomsData);
     });
 
     return unsubscribe;
   }, []);
 
-  const startGroup = async () => {
+  const createChatRoom = async () => {
     try {
       await addDoc(groupsCollectionRef!, {
         name: `Group #${Math.floor(Math.random() * 1000)}`,
@@ -57,16 +55,16 @@ const AllChats = () => {
   return (
     <View style={styles.container}>
       <ScrollView>
-        {groups.map((group: Group) => (
+        {chatRooms.map((chatRoom: ChatRoom) => (
           <TouchableOpacity
-            key={group.id}
+            key={chatRoom.id}
             style={styles.groupCard}
             onPress={() => {
-              navigation.navigate("SingleChat", { id: group.id });
+              navigation.navigate("SingleChat", { id: chatRoom.id });
             }}
           >
-            <Text>{group.name}</Text>
-            <Text>{group.description}</Text>
+            <Text>{chatRoom.name}</Text>
+            <Text>{chatRoom.description}</Text>
           </TouchableOpacity>
         ))}
       </ScrollView>
@@ -80,7 +78,7 @@ const AllChats = () => {
         <Ionicons name="exit-outline" size={24} color="red" />
       </Pressable>
 
-      <Pressable style={styles.rightButton} onPress={startGroup}>
+      <Pressable style={styles.rightButton} onPress={createChatRoom}>
         <Ionicons name="add" size={24} color="white" />
       </Pressable>
     </View>
