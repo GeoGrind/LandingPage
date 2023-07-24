@@ -11,9 +11,21 @@ import { store } from "./app/store/store";
 import Test from "./app/screens/Test";
 import { Keyboard } from "react-native";
 import ListView from "./app/screens/ListView";
-const Stack = createNativeStackNavigator();
+import AllChats from "./app/screens/AllChats";
+import SingleChat from "./app/screens/SingleChat";
+import { createStackNavigator } from "@react-navigation/stack";
 
-const InsideStack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator();
+type RootStackParamList = {
+  Map: {};
+  Profile: {};
+  Test: {};
+  ListView: {};
+  AllChats: {};
+  SingleChat: { id: string };
+};
+
+const InsideStack = createStackNavigator<RootStackParamList>();
 
 function InsideLayout() {
   return (
@@ -26,6 +38,12 @@ function InsideLayout() {
       <InsideStack.Screen name="Profile" component={Profile} />
       <InsideStack.Screen name="Test" component={Test} />
       <InsideStack.Screen name="ListView" component={ListView} />
+      <InsideStack.Screen name="AllChats" component={AllChats} />
+      <InsideStack.Screen
+        name="SingleChat"
+        component={SingleChat}
+        initialParams={{ id: "temp" }}
+      />
     </InsideStack.Navigator>
   );
 }

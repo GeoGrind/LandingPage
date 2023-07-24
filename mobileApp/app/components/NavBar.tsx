@@ -9,6 +9,7 @@ type Props = {
   onSignOffClick: () => void;
   onTestClick: () => void;
   onListViewClick: () => void;
+  onChatClick: () => void;
 };
 
 const Navbar: React.FC<Props> = ({
@@ -18,6 +19,7 @@ const Navbar: React.FC<Props> = ({
   onSignOffClick,
   onTestClick,
   onListViewClick,
+  onChatClick,
 }) => {
   return (
     <View style={styles.container}>
@@ -52,6 +54,12 @@ const Navbar: React.FC<Props> = ({
         color="black"
         onPress={onListViewClick}
       /> */}
+      <FontAwesome5
+        name="comments"
+        size={30}
+        color="black"
+        onPress={onChatClick}
+      />
     </View>
   );
 };

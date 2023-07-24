@@ -203,6 +203,9 @@ const Map = () => {
             onListViewClick={() => {
               navigation.navigate("ListView");
             }}
+            onChatClick={() => {
+              navigation.navigate("AllChats");
+            }}
           />
         </View>
 
