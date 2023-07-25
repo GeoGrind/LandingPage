@@ -52,7 +52,7 @@ function Map() {
                 })
               }
             >
-              test
+              test2
             </Marker>
           )
       )}
