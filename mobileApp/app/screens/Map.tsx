@@ -17,7 +17,7 @@ import {
   stopSessionOfCurrentUser,
   fetchActiveUsers,
 } from "../utils/db";
-import { Button } from "react-native";
+import { Button, Image } from "react-native";
 import { signOut, getAuth } from "firebase/auth";
 import { FIREBASE_AUTH } from "../../FirebaseConfig";
 import { Session, User } from "../types";
@@ -144,8 +144,6 @@ const Map = () => {
           }}
         >
           {filterUsers().map((user, index) => {
-            const isCurrentUser = user.uid === currentUser!.uid;
-            const pinColor = isCurrentUser ? "green" : "red";
             return (
               <Marker
                 key={index}
@@ -153,9 +151,9 @@ const Map = () => {
                   latitude: user.location!.latitude,
                   longitude: user.location!.longitude,
                 }}
-                pinColor={pinColor}
               >
-                <Callout>
+                <Text>{user.emoji}</Text>
+                <Callout style={{ width: 300, height: 300 }}>
                   <UserDotInfo userMarker={user} />
                 </Callout>
               </Marker>

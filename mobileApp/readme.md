@@ -1,4 +1,4 @@
 nvm use v18.16.1
-npm install
+npx expo install
 npx expo login
-npx expo start 
+npx expo start

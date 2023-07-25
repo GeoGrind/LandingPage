@@ -13,7 +13,6 @@ import { FIREBASE_DB, FIREBASE_AUTH } from "../../FirebaseConfig";
 import { ChatRoom } from "../types";
 import { useNavigation, ParamListBase } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { createChatRoom } from "../utils/db";
 
 const AllChats = () => {
   const [groupsCollectionRef, setGroupsCollectionRef] = useState(null);
@@ -30,9 +29,7 @@ const AllChats = () => {
           const data = doc.data();
           const chatRoom: ChatRoom = {
             id: doc.id,
-            creator: data.creator || "",
-            description: data.description || "",
-            name: data.name || "",
+
             ownerIds: data.ownerIds || [],
           };
           return chatRoom;
@@ -61,8 +58,8 @@ const AllChats = () => {
               navigation.navigate("SingleChat", { id: chatRoom.id });
             }}
           >
-            <Text>{chatRoom.name}</Text>
-            <Text>{chatRoom.description}</Text>
+            <Text>{chatRoom.ownerIds[0]}</Text>
+            <Text>{chatRoom.ownerIds[1]}</Text>
           </TouchableOpacity>
         ))}
       </ScrollView>
@@ -74,13 +71,6 @@ const AllChats = () => {
         }}
       >
         <Ionicons name="exit-outline" size={24} color="red" />
-      </Pressable>
-
-      <Pressable
-        style={styles.rightButton}
-        onPress={() => createChatRoom("dummy1", "dummy2")}
-      >
-        <Ionicons name="add" size={24} color="white" />
       </Pressable>
     </View>
   );

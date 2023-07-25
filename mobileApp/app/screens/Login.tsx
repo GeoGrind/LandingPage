@@ -53,6 +53,8 @@ const Login = () => {
       const user: User = {
         uid: response.user.uid,
         email: response.user.email,
+        emoji: "🙂",
+        termCourses: [],
         location: null,
         isInSession: false,
         onGoingSession: null,
@@ -87,6 +89,7 @@ const Login = () => {
           autoCapitalize="none"
           onChangeText={(text) => setPassword(text)}
         ></TextInput>
+
         {loading ? (
           <ActivityIndicator size="large" color="blue" />
         ) : (

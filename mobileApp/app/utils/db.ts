@@ -318,9 +318,6 @@ export const createChatRoom = async (
     const documentId = uuidv4();
     const chatRoom: ChatRoom = {
       id: documentId,
-      creator: currentUser?.uid || "",
-      description: "This is a chat group",
-      name: `Group #${Math.floor(Math.random() * 1000)}`,
       ownerIds: [userId1, userId2],
     };
     const chatRoomRef = doc(chatRoomCollectionRef!, documentId);

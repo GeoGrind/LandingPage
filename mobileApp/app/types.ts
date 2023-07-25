@@ -1,6 +1,8 @@
 export type User = {
   uid: string;
   email: string | null;
+  emoji: string | "🙂";
+  termCourses: string[];
   location: Location | null;
   isInSession: boolean;
   onGoingSession: Session | null;
@@ -34,8 +36,5 @@ export type Message = {
 // Type for the documents in the "groups" collection
 export type ChatRoom = {
   id: string;
-  creator: string;
-  description: string;
-  name: string;
   ownerIds: string[]; // Array of Users
 };

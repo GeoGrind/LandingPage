@@ -36,7 +36,6 @@ type Props = NativeStackScreenProps<RootStackParamList, "SingleChat">;
 const SingleChat = ({ route, navigation }: Props) => {
   const { id } = route.params;
   const { currentUser } = FIREBASE_AUTH;
-
   const [messages, setMessages] = useState<DocumentData[]>([]);
   const [message, setMessage] = useState<string>("");
 
@@ -123,8 +122,8 @@ const SingleChat = ({ route, navigation }: Props) => {
         />
         <Button disabled={message === ""} title="Send" onPress={sendMessage} />
         <Button
-          title="Go to AllChats"
-          onPress={() => navigation.navigate("AllChats", {})}
+          title="Go to the Map"
+          onPress={() => navigation.navigate("Map", {})}
         />
       </View>
     </KeyboardAvoidingView>
