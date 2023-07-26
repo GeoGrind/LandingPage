@@ -15,7 +15,7 @@ import { ChatRoom } from "../types";
 import { useNavigation, ParamListBase } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Header } from "react-native-elements";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, getDocs } from "firebase/firestore";
 
 const AllChats = () => {
   const [chatRooms, setChatRooms] = useState<ChatRoom[]>([]);
@@ -23,10 +23,12 @@ const AllChats = () => {
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   const [idToEmoji, setIdToEmoji] = useState<{ [key: string]: string }>({});
   const [isRefreshing, setIsRefreshing] = useState(false);
-  useEffect(() => {
-    const ref = collection(FIREBASE_DB, "chatRooms");
-    const unsubscribe = onSnapshot(ref, async (chatRooms: DocumentData) => {
-      const chatRoomsData = chatRooms.docs
+
+  const fetchChatRoomsData = async () => {
+    try {
+      const ref = collection(FIREBASE_DB, "chatRooms");
+      const snapshot = await getDocs(ref);
+      const chatRoomsData = snapshot.docs
         .map((doc: any) => {
           const data = doc.data();
           const chatRoom: ChatRoom = {
@@ -44,51 +46,49 @@ const AllChats = () => {
           );
         });
 
-      const usefulIds = chatRoomsData.map(
-        (chatRoom: ChatRoom, index: number) => {
-          if (currentUser?.uid === chatRoom.ownerIds[0]) {
-            return chatRoom.ownerIds[1];
-          }
-          if (currentUser?.uid === chatRoom.ownerIds[1]) {
-            return chatRoom.ownerIds[0];
-          }
+      const usefulIds = chatRoomsData.map((chatRoom: ChatRoom) => {
+        if (currentUser?.uid === chatRoom.ownerIds[0]) {
+          return chatRoom.ownerIds[1];
         }
-      );
-
-      const fetchEmojis = async () => {
-        try {
-          const promises = usefulIds.map(async (userId: any) => {
-            const userRef = doc(FIREBASE_DB, "users", userId);
-            const snapshot = await getDoc(userRef);
-            const data = snapshot.data();
-
-            if (data && data.emoji) {
-              return { [userId]: data.emoji };
-            }
-            return null;
-          });
-
-          const results = await Promise.all(promises);
-          const updatedEmojis = results.reduce((acc, result) => {
-            if (result) {
-              return { ...acc, ...result };
-            }
-            return acc;
-          }, {});
-
-          setIdToEmoji((prevEmojis) => ({ ...prevEmojis, ...updatedEmojis }));
-        } catch (error) {
-          console.error("Error fetching data:", error);
+        if (currentUser?.uid === chatRoom.ownerIds[1]) {
+          return chatRoom.ownerIds[0];
         }
-      };
-      await fetchEmojis();
+      });
 
+      const promises = usefulIds.map(async (userId: any) => {
+        const userRef = doc(FIREBASE_DB, "users", userId);
+        const userSnapshot = await getDoc(userRef);
+        const userData = userSnapshot.data();
+
+        if (userData && userData.emoji) {
+          return { [userId]: userData.emoji };
+        }
+        return null;
+      });
+
+      const results = await Promise.all(promises);
+      const updatedEmojis = results.reduce((acc, result) => {
+        if (result) {
+          return { ...acc, ...result };
+        }
+        return acc;
+      }, {});
+
+      setIdToEmoji((prevEmojis) => ({ ...prevEmojis, ...updatedEmojis }));
       setChatRooms(chatRoomsData);
-    });
-    return unsubscribe;
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchChatRoomsData();
   }, []);
-  const handleRefresh = () => {
-    console.log("scrolled");
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    await fetchChatRoomsData();
+    setIsRefreshing(false);
   };
   return (
     <View style={styles.container}>
