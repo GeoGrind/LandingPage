@@ -1,81 +1,105 @@
-import React, { useState, useEffect } from "react";
-import { Button, Image, View, Text } from "react-native";
-import * as ImagePicker from "expo-image-picker";
-import { handleUpload, fetchProfilePictureFromFirestore } from "../utils/db";
-import { FIREBASE_AUTH } from "../../FirebaseConfig";
-import { User } from "../types";
-import { useNavigation, ParamListBase } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import React, { useState, useRef } from "react";
+import {
+  Button,
+  View,
+  Text,
+  TextInput,
+  Keyboard,
+  TouchableWithoutFeedback,
+} from "react-native";
+import Modal, { ReactNativeModal } from "react-native-modal";
+import { MultipleSelectList } from "react-native-dropdown-select-list";
+import { updateUserProfile } from "../utils/db";
 
 export default function Profile() {
-  const [image, setImage] = useState<string | null>(null);
-  const { currentUser } = FIREBASE_AUTH;
-  const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
-
-  useEffect(() => {
-    // Fetch the user's profile picture from Firestore here
-    const fetchProfilePicture = async () => {
-      // Replace 'fetchProfilePictureFromFirestore' with your own logic to retrieve the profile picture
-      const profilePicture = await fetchProfilePictureFromFirestore();
-      // Update the 'image' state with the fetched profile picture
-      setImage(profilePicture);
-    };
-    fetchProfilePicture();
-  }, []);
-
-  const pickImageFromLibrary = async () => {
-    let permissionResult =
-      await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-    if (permissionResult.granted === false) {
-      alert("Permission to access the media library is required!");
-      return;
-    }
-
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
-    }
+  const [isModalVisible, setModalVisible] = useState(false);
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
   };
-
-  const takePicture = async () => {
-    let permissionResult = await ImagePicker.requestCameraPermissionsAsync();
-
-    if (permissionResult.granted === false) {
-      alert("Permission to access the camera is required!");
-      return;
-    }
-
-    let result = await ImagePicker.launchCameraAsync({
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
-    }
+  const modalViewRef = useRef<ReactNativeModal>(null);
+  const handleTouchOutsideKeyboard = () => {
+    Keyboard.dismiss();
   };
+  // State variables for the form inputs
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [emoji, setEmoji] = useState("");
 
-  const uploadImage = async () => {
-    handleUpload(image!);
+  // Test
+  const [selectedCourses, setSelectedCourses] = React.useState([]);
+  const data = [
+    { key: "1", value: "CS 240" },
+    { key: "2", value: "CS 245" },
+    { key: "3", value: "STAT 331" },
+    { key: "4", value: "MATH 135" },
+  ];
+
+  // Function to handle form submission
+  const handleFormSubmit = async () => {
+    await updateUserProfile(firstName, lastName, emoji, selectedCourses);
   };
 
   return (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-      <Text>{currentUser?.email}</Text>
-      <Button title="Pick from library" onPress={pickImageFromLibrary} />
-      <Button title="Take a picture" onPress={takePicture} />
-      <Button title="Upload" onPress={uploadImage} />
-      <Button title="Exit" onPress={() => navigation.navigate("Map")} />
-      {image && (
-        <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
-      )}
-    </View>
+    <TouchableWithoutFeedback onPress={handleTouchOutsideKeyboard}>
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <Button title="Show modal" onPress={toggleModal} />
+        <Modal
+          isVisible={isModalVisible}
+          onBackdropPress={handleTouchOutsideKeyboard}
+          ref={modalViewRef}
+          backdropOpacity={1}
+          backdropColor={"white"}
+        >
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View
+              style={{
+                flex: 1,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <View
+                style={{
+                  flex: 1,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Text>Enter your details:</Text>
+                <TextInput
+                  placeholder="First Name"
+                  value={firstName}
+                  onChangeText={setFirstName}
+                  placeholderTextColor="black"
+                  style={{ color: "black" }}
+                />
+                <TextInput
+                  placeholder="Last Name"
+                  value={lastName}
+                  onChangeText={setLastName}
+                  placeholderTextColor="black"
+                  style={{ color: "black" }}
+                />
+                <TextInput
+                  placeholder="Emoji"
+                  value={emoji}
+                  onChangeText={setEmoji}
+                  placeholderTextColor="black"
+                  style={{ color: "black" }}
+                />
+                <MultipleSelectList
+                  setSelected={(val: any) => setSelectedCourses(val)}
+                  data={data}
+                  save="value"
+                  label="Categories"
+                />
+                <Button title="Submit" onPress={handleFormSubmit} />
+                <Button title="Hide modal" onPress={toggleModal} />
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
+        </Modal>
+      </View>
+    </TouchableWithoutFeedback>
   );
 }

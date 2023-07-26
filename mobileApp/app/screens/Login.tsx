@@ -53,6 +53,7 @@ const Login = () => {
       const user: User = {
         uid: response.user.uid,
         email: response.user.email,
+        name: null,
         emoji: "🙂",
         termCourses: [],
         location: null,

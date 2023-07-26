@@ -1,6 +1,7 @@
 export type User = {
   uid: string;
   email: string | null;
+  name: string | null;
   emoji: string | "🙂";
   termCourses: string[];
   location: Location | null;

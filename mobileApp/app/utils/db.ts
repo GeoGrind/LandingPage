@@ -352,3 +352,28 @@ export const getChatRoomFromUserId = async (
     return null;
   }
 };
+
+export const updateUserProfile = async (
+  firstName: string,
+  lastName: string,
+  emoji: string,
+  termCourses: string[]
+): Promise<void> => {
+  try {
+    // Combine first name and last name into name
+    const name = `${firstName} ${lastName}`;
+    const auth = getAuth();
+    const currentUser = auth.currentUser;
+    if (currentUser) {
+      const userRef = doc(FIREBASE_DB, "users", currentUser.uid);
+      await updateDoc(userRef, {
+        name: name,
+        emoji: emoji,
+        termCourses: termCourses,
+      });
+    }
+  } catch (error) {
+    console.error("Error updating user profile:", error);
+    throw error;
+  }
+};
