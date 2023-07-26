@@ -6,10 +6,16 @@ import { getCurrentUser } from 'utils/db';
 import { signOut } from 'firebase/auth';
 import { FIREBASE_AUTH } from '../../../firebase';
 import styles from './Account.module.scss';
+import FormItem from '../Form/FormItem/FormItem';
 
 function Account() {
   const navigate = useNavigate();
   const [curUser, setCurUser] = useState<User | undefined>(undefined);
+  // const [username, setUsername] = useState(curUser.name);
+  const [username, setUsername] = useState('my username');
+  // const [program, setProgram] = useState(curUser.program);
+  const [program, setProgram] = useState('my program');
+  const [email, setEmail] = useState('');
 
   const handleLogout = () => {
     signOut(FIREBASE_AUTH)
@@ -28,6 +34,48 @@ function Account() {
     getCurrentUser(setCurUser);
   }, []);
 
+  const accountPage = curUser && (
+    <div>
+      <div className={styles.Account__picture}>
+        {/* insert pfp here */}
+        {curUser.profilePicture}
+      </div>
+      <FormItem
+        label="Username"
+        // placeholder={curUser.name}
+        placeholder="Name"
+        onChange={setUsername}
+      />
+      {/* <FormItem
+        label="Email"
+        // placeholder={curUser.name}
+        placeholder={curUser.email}
+        onChange={setEmail}
+      /> */}
+      <FormItem
+        label="Program"
+        // placeholder={curUser.program}
+        placeholder="My Program"
+        onChange={setProgram}
+      />
+      isInSession: {curUser.isInSession ? 'yeah' : 'nope'}
+      <br />
+      Session: {curUser.onGoingSession?.course}
+      <br />
+      course: {curUser.onGoingSession?.course}
+      <br />
+      startTime: {curUser.onGoingSession?.startTime}
+      <br />
+      <br />
+      sessionStartLocationLong:{' '}
+      {curUser.onGoingSession?.sessionStartLocation?.longitude}
+      <br />
+      sessionStartLocationLat:{' '}
+      {curUser.onGoingSession?.sessionStartLocation?.latitude}
+      <br />
+    </div>
+  );
+
   return (
     <div className={styles.Account}>
       <button
@@ -38,35 +86,7 @@ function Account() {
         Logout
       </button>
 
-      {curUser && (
-        <div>
-          profilePicture: {curUser.profilePicture}
-          <br />
-          User Properties: uid: {curUser.uid}
-          <br />
-          email: {curUser.email}
-          <br />
-          isInSession: {curUser.isInSession}
-          <br />
-          Session: {curUser.onGoingSession?.course}
-          <br />
-          course: {curUser.onGoingSession?.course}
-          <br />
-          startTime: {curUser.onGoingSession?.startTime}
-          <br />
-          isVisible: {curUser.onGoingSession?.isVisible}
-          <br />
-          sessionStartLocationLong:{' '}
-          {curUser.onGoingSession?.sessionStartLocation?.longitude}
-          <br />
-          sessionStartLocationLat:{' '}
-          {curUser.onGoingSession?.sessionStartLocation?.latitude}
-          <br />
-          numberOfCheerers: {curUser.onGoingSession?.numberOfCheerers}
-          <br />
-          cheerers: to add
-        </div>
-      )}
+      {accountPage}
     </div>
   );
 }
