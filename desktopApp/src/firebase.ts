@@ -3,13 +3,13 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyBCByzuFU0mrWPbT7jExCA9hPSOSSpfKm8',
-  authDomain: 'developmentdatabase-b3fbc.firebaseapp.com',
-  projectId: 'developmentdatabase-b3fbc',
-  storageBucket: 'developmentdatabase-b3fbc.appspot.com',
-  messagingSenderId: '304443000712',
-  appId: '1:304443000712:web:ec63f5f33d885979c85c3d',
-  measurementId: 'G-FWH0BYC07S',
+  apiKey: 'AIzaSyB6NXVw0aowHlBu9yC0FEDzsB7Oph-WPco',
+  authDomain: 'foobar-testing-43480.firebaseapp.com',
+  projectId: 'foobar-testing-43480',
+  storageBucket: 'foobar-testing-43480.appspot.com',
+  messagingSenderId: '476983559491',
+  appId: '1:476983559491:web:0df4413f71f3f320691bf6',
+  measurementId: 'G-5ZE6YMNP79',
 };
 export const FIREBASE_APP = initializeApp(firebaseConfig);
 export const FIREBASE_AUTH = getAuth(FIREBASE_APP);
