@@ -88,12 +88,15 @@ export default function UserDotInfo({ userMarker }: Props) {
           userMarker.onGoingSession?.cheerers?.includes(user.uid)
         }
       />
-      <Button
-        title={"Chat with me"}
-        icon={<Icon name="chat" type="material" color="white" />}
-        buttonStyle={styles.button}
-        onPress={() => handleChatPerson(navigation, userMarker.uid, user.uid)}
-      />
+
+      {userMarker.uid !== user.uid && (
+        <Button
+          title={"Chat with me"}
+          icon={<Icon name="chat" type="material" color="white" />}
+          buttonStyle={styles.button}
+          onPress={() => handleChatPerson(navigation, userMarker.uid, user.uid)}
+        />
+      )}
     </View>
   );
 }

@@ -23,6 +23,7 @@ import { Message } from "../types";
 import "react-native-get-random-values";
 import { v4 as uuidv4 } from "uuid";
 import { doc, setDoc } from "firebase/firestore";
+import { updateChatRoomLastChangeTime } from "../utils/db";
 type RootStackParamList = {
   Map: {};
   Profile: {};
@@ -79,7 +80,7 @@ const SingleChat = ({ route, navigation }: Props) => {
     };
     const messageRef = doc(msgCollectionRef!, documentId);
     await setDoc(messageRef, newMessage);
-
+    await updateChatRoomLastChangeTime(id);
     setMessage("");
   };
 

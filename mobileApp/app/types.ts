@@ -38,4 +38,6 @@ export type Message = {
 export type ChatRoom = {
   id: string;
   ownerIds: string[]; // Array of Users
+  ownerNames: string[];
+  lastChangeTime: number;
 };

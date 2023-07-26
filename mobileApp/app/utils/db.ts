@@ -314,11 +314,15 @@ export const createChatRoom = async (
     const db = FIREBASE_DB;
     const auth = getAuth();
     const currentUser = auth.currentUser;
+    const userName1 = await getUserNameFromDB(userId1);
+    const userName2 = await getUserNameFromDB(userId2);
     const chatRoomCollectionRef = collection(FIREBASE_DB, "chatRooms");
     const documentId = uuidv4();
     const chatRoom: ChatRoom = {
       id: documentId,
       ownerIds: [userId1, userId2],
+      ownerDisplayString: [userName1, userName2],
+      lastChangeTime: Date.now(),
     };
     const chatRoomRef = doc(chatRoomCollectionRef!, documentId);
     await setDoc(chatRoomRef, chatRoom);
@@ -377,3 +381,36 @@ export const updateUserProfile = async (
     throw error;
   }
 };
+
+export const getUserNameFromDB = async (uid: string) => {
+  try {
+    const db = FIREBASE_DB;
+    const userRef = doc(db, "users", uid);
+
+    const userSnapshot = await getDoc(userRef);
+
+    if (userSnapshot.exists()) {
+      const userData = userSnapshot.data();
+      const userName = userData.name;
+      return userName;
+    } else {
+      console.log("User data not found.");
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+    throw error;
+  }
+};
+
+export async function updateChatRoomLastChangeTime(id: string): Promise<void> {
+  const chatRoomRef = doc(collection(FIREBASE_DB, "chatRooms"), id);
+  try {
+    await updateDoc(chatRoomRef, {
+      lastChangeTime: Date.now(),
+    });
+    console.log(`Document with ID ${id} updated successfully.`);
+  } catch (error) {
+    console.error("Error updating document: ", error);
+  }
+}
