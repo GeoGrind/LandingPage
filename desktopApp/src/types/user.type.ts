@@ -4,6 +4,7 @@ import { Session } from './session.type';
 export type User = {
   uid: string;
   email: string;
+  username: string;
   location: Location | null;
   isInSession: boolean;
   onGoingSession: Session | null;
