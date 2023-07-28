@@ -7,15 +7,17 @@ import {
   TouchableOpacity,
   RefreshControl,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
-import { DocumentData, collection, onSnapshot } from "firebase/firestore";
+import { collection } from "firebase/firestore";
 import { FIREBASE_DB, FIREBASE_AUTH } from "../../FirebaseConfig";
 import { ChatRoom } from "../types";
 import { useNavigation, ParamListBase } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Header } from "react-native-elements";
 import { doc, getDoc, getDocs } from "firebase/firestore";
+import { useFocusEffect } from "@react-navigation/native";
+import { formatTime } from "../utils/util";
 
 const AllChats = () => {
   const [chatRooms, setChatRooms] = useState<ChatRoom[]>([]);
@@ -80,10 +82,13 @@ const AllChats = () => {
       console.error("Error fetching data:", error);
     }
   };
-
-  useEffect(() => {
-    fetchChatRoomsData();
-  }, []);
+  // Fetch data when naviagation happens
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchChatRoomsData();
+      return () => {};
+    }, [])
+  );
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
@@ -132,7 +137,7 @@ const AllChats = () => {
                     : chatRoom.ownerNames[1]}
                 </Text>
               )}
-              <Text>{new Date(chatRoom.lastChangeTime).toLocaleString()}</Text>
+              <Text>{formatTime(chatRoom.lastChangeTime)}</Text>
             </TouchableOpacity>
           ))}
       </ScrollView>

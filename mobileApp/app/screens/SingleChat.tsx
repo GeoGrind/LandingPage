@@ -24,6 +24,9 @@ import "react-native-get-random-values";
 import { v4 as uuidv4 } from "uuid";
 import { doc, setDoc } from "firebase/firestore";
 import { updateChatRoomLastChangeTime } from "../utils/db";
+import { formatTime } from "../utils/util";
+import { ScrollView } from "react-native";
+import { getMessaging, getToken } from "firebase/messaging";
 type RootStackParamList = {
   Map: {};
   Profile: {};
@@ -97,7 +100,7 @@ const SingleChat = ({ route, navigation }: Props) => {
         ]}
       >
         <Text style={styles.messageText}>{item.message}</Text>
-        <Text style={styles.time}>{item.createdAt}</Text>
+        <Text style={styles.time}>{formatTime(item.createdAt)}</Text>
       </View>
     );
   };
@@ -106,13 +109,14 @@ const SingleChat = ({ route, navigation }: Props) => {
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={100}
     >
-      <FlatList
-        data={messages}
-        keyExtractor={(item) => item.id}
-        renderItem={renderMessage}
-      />
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1, justifyContent: "flex-end" }}
+      >
+        {messages.map((item) => (
+          <View key={item.id}>{renderMessage({ item })}</View>
+        ))}
+      </ScrollView>
       <View style={styles.inputContainer}>
         <TextInput
           multiline
