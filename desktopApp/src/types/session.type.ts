@@ -7,4 +7,5 @@ export type Session = {
   sessionStartLocation: Location | null;
   numberOfCheerers: number;
   cheerers: string[];
+  description: string;
 };

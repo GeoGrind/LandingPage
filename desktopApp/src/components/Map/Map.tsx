@@ -1,13 +1,13 @@
-import { MapContainer, TileLayer, Marker } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Icon } from 'leaflet';
 import { useEffect, useState } from 'react';
 import { fetchActiveUsers } from 'utils/db';
+import PopupContent from './PopupContent/PopupContent';
 import markerIconPng from '../../../assets/956fd6.png';
-import styles from './Home.module.scss';
 import { User } from '../../types/user.type';
+import styles from './Map.module.scss';
 
-// TODO: fetch the data from firebase
 function Map() {
   const [activeUsers, setActiveUsers] = useState<User[]>([]);
 
@@ -43,7 +43,7 @@ function Map() {
           user.location && (
             <Marker
               key={user.uid}
-              position={[user.location.latitude, user.location.longitude]}
+              position={[user.location.longitude, user.location.latitude]}
               icon={
                 new Icon({
                   iconUrl: markerIconPng,
@@ -52,19 +52,14 @@ function Map() {
                 })
               }
             >
-              test2
+              <Popup className={styles.Map__popup}>
+                <PopupContent user={user} />
+              </Popup>
             </Marker>
           )
       )}
     </MapContainer>
   );
 }
-function Home() {
-  return (
-    <div className={styles.Home}>
-      <Map />
-    </div>
-  );
-}
 
-export default Home;
+export default Map;
