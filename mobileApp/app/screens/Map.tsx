@@ -26,6 +26,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import UserDotInfo from "./UserDotInfo";
 import Navbar from "../components/NavBar";
 import { Keyboard } from "react-native";
+import { updateUserExpoToken } from "../utils/db";
 
 const Map = () => {
   const [inSessionUsers, setInSessionUsers] = useState<User[]>([]);
@@ -97,6 +98,7 @@ const Map = () => {
   const handleSignOffClick = async () => {
     try {
       await stopSessionOfCurrentUser();
+      await updateUserExpoToken("");
       await signOut(FIREBASE_AUTH);
     } catch (error) {
       console.log("Error signing off:", error);

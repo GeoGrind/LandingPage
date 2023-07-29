@@ -27,18 +27,12 @@ import { updateChatRoomLastChangeTime } from "../utils/db";
 import { formatTime } from "../utils/util";
 import { ScrollView } from "react-native";
 import { getMessaging, getToken } from "firebase/messaging";
-type RootStackParamList = {
-  Map: {};
-  Profile: {};
-  Test: {};
-  ListView: {};
-  AllChats: {};
-  SingleChat: { id: string };
-};
+import { RootStackParamList } from "../types";
+import { sendNotificationById } from "../utils/notifications";
 type Props = NativeStackScreenProps<RootStackParamList, "SingleChat">;
 
 const SingleChat = ({ route, navigation }: Props) => {
-  const { id } = route.params;
+  const { id, chatRoomOwner1Id, chatRoomOwner2Id } = route.params;
   const { currentUser } = FIREBASE_AUTH;
   const [messages, setMessages] = useState<DocumentData[]>([]);
   const [message, setMessage] = useState<string>("");
@@ -84,6 +78,11 @@ const SingleChat = ({ route, navigation }: Props) => {
     const messageRef = doc(msgCollectionRef!, documentId);
     await setDoc(messageRef, newMessage);
     await updateChatRoomLastChangeTime(id);
+    if (chatRoomOwner1Id === currentUser?.uid) {
+      await sendNotificationById(chatRoomOwner2Id);
+    } else {
+      await sendNotificationById(chatRoomOwner1Id);
+    }
     setMessage("");
   };
 

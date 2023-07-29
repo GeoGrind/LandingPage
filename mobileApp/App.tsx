@@ -9,21 +9,14 @@ import { FIREBASE_AUTH } from "./FirebaseConfig";
 import { Provider } from "react-redux";
 import { store } from "./app/store/store";
 import Test from "./app/screens/Test";
-import { Keyboard } from "react-native";
+import { Keyboard, Alert, Platform } from "react-native";
 import ListView from "./app/screens/ListView";
 import AllChats from "./app/screens/AllChats";
 import SingleChat from "./app/screens/SingleChat";
 import { createStackNavigator } from "@react-navigation/stack";
-
+import * as Notifications from "expo-notifications";
+import { RootStackParamList } from "./app/types";
 const Stack = createNativeStackNavigator();
-type RootStackParamList = {
-  Map: {};
-  Profile: {};
-  Test: {};
-  ListView: {};
-  AllChats: {};
-  SingleChat: { id: string };
-};
 
 const InsideStack = createStackNavigator<RootStackParamList>();
 
@@ -49,6 +42,33 @@ function InsideLayout() {
 }
 
 export default function App() {
+  useEffect(() => {
+    const subscription1 = Notifications.addNotificationReceivedListener(
+      (notification) => {
+        console.log("NOTIFICATION RECEIVED");
+        console.log(notification);
+        const userName = notification.request.content.data.userName;
+        console.log(userName);
+      }
+    );
+
+    const subscription2 = Notifications.addNotificationResponseReceivedListener(
+      (response) => {
+        console.log("NOTIFICATION RESPONSE RECEIVED");
+        console.log(response);
+        const userName = response.notification.request.content.data.userName;
+        console.log(userName);
+      }
+    );
+
+    return () => {
+      subscription1.remove();
+      subscription2.remove();
+    };
+  }, []);
+
+  // End of notification stuff
+
   const [user, setUser] = useState<User | null>(null);
   const handleKeyboardFrameChange = (event: any) => {
     onAuthStateChanged(FIREBASE_AUTH, (user) => {

@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "mobileApp",
-    "slug": "mobileApp",
+    "slug": "mobileapp",
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
@@ -9,7 +9,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.study.buddyyyyy",
@@ -45,8 +47,9 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "f29924bc-c60c-4993-b528-eaf70eb53b0c"
+        "projectId": "b8fc75f0-6051-4db3-a6d0-6f841221ca76"
       }
-    }
+    },
+    "owner": "justinp1209"
   }
 }

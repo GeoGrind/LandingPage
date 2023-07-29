@@ -134,33 +134,6 @@ export const fetchActiveUsers = async (): Promise<User[]> => {
   return users;
 };
 
-// Negete the session status
-export const changeCurrentUserInSessionStatus = async (): Promise<void> => {
-  const auth = getAuth();
-  const currentUser = auth.currentUser;
-  if (currentUser) {
-    const userId = currentUser.uid;
-    const usersCollection = collection(FIREBASE_DB, "users");
-    try {
-      const querySnapshot = await getDocs(usersCollection);
-      querySnapshot.forEach(async (docSnapshot) => {
-        const user = docSnapshot.data() as User;
-        if (user.uid === userId) {
-          const docRef = doc(usersCollection, docSnapshot.id);
-          await updateDoc(docRef, {
-            isInSession: !user.isInSession,
-          });
-          return;
-        }
-      });
-    } catch (error) {
-      console.log("Error changing user in session status:", error);
-    }
-  } else {
-    console.log("No signed-in user");
-  }
-};
-
 // Assign a session to the currently signed in user
 export const updateSession = async (session: Session) => {
   try {
@@ -193,47 +166,6 @@ export const stopSessionOfCurrentUser = async () => {
     console.log("Error in logout clean up:", error);
   }
 };
-
-export async function handleUpload(uri: string) {
-  const fetchResponse = await fetch(uri);
-  const theBlob = await fetchResponse.blob();
-  const imageRef = ref(getStorage(), "images");
-  const uploadTask = uploadBytesResumable(imageRef, theBlob);
-  const auth = getAuth(); // Get the Firebase Authentication instance
-  const user = auth.currentUser; // Get the currently logged-in user
-  if (!user) {
-    console.log("No user is logged in");
-    return;
-  }
-  uploadTask.on(
-    "state_changed",
-    (snapshot) => {
-      // ...existing code for state change events
-    },
-    (error) => {
-      // Handle unsuccessful uploads
-    },
-    () => {
-      // Handle successful uploads on complete
-      getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
-        console.log("File available at", downloadURL);
-
-        // Update the user's profilePicture field with the reference to the uploaded image
-        const userDocRef = doc(FIREBASE_DB, "users", user.uid);
-        const userDoc = await getDoc(userDocRef);
-
-        if (userDoc.exists()) {
-          await updateDoc(userDocRef, {
-            profilePicture: downloadURL,
-          });
-          console.log("Profile picture reference updated successfully");
-        } else {
-          console.log("User document does not exist");
-        }
-      });
-    }
-  );
-}
 
 export const fetchProfilePictureFromFirestore = async () => {
   const auth = getAuth(); // Get the Firebase Authentication instance
@@ -414,3 +346,49 @@ export async function updateChatRoomLastChangeTime(id: string): Promise<void> {
     console.error("Error updating document: ", error);
   }
 }
+
+export const updateUserExpoToken = async (expoToken: string): Promise<void> => {
+  try {
+    const auth = getAuth();
+    const user = auth.currentUser;
+    if (!user) {
+      console.log("No user is logged in");
+      return;
+    }
+
+    // Check if the user is in session
+    const userRef = doc(FIREBASE_DB, "users", user.uid);
+    const userSnapshot = await getDoc(userRef);
+
+    if (userSnapshot.exists()) {
+      // Update the "expoToken" field for the user
+      await updateDoc(userRef, {
+        expoToken: expoToken,
+      });
+    } else {
+      console.log("User not found in Firestore.");
+    }
+  } catch (error) {
+    console.error("Error updating expo token:", error);
+  }
+};
+
+export const getExpoTokenById = async (uid: string) => {
+  try {
+    const db = FIREBASE_DB;
+    const userRef = doc(db, "users", uid);
+    const userSnapshot = await getDoc(userRef);
+    if (userSnapshot.exists()) {
+      const userData = userSnapshot.data();
+      const expoToken = userData.expoToken;
+
+      return expoToken;
+    } else {
+      console.log("User data not found.");
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+    throw error;
+  }
+};

@@ -120,7 +120,11 @@ const AllChats = () => {
               key={chatRoom.id}
               style={styles.groupCard}
               onPress={() => {
-                navigation.navigate("SingleChat", { id: chatRoom.id });
+                navigation.navigate("SingleChat", {
+                  id: chatRoom.id,
+                  chatRoomOwner1Id: chatRoom.ownerIds[0],
+                  chatRoomOwner2Id: chatRoom.ownerIds[1],
+                });
               }}
             >
               {chatRoom.ownerIds[0] != currentUser?.uid && (

@@ -18,7 +18,8 @@ import {
 import { setDoc, doc } from "firebase/firestore";
 import { User } from "../types";
 import { endsWithCanadianUniversitySuffix } from "../utils/emailVerification";
-
+import { initializeExpoToken } from "../utils/notifications";
+import { updateUserExpoToken } from "../utils/db";
 const Login = () => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
@@ -28,6 +29,12 @@ const Login = () => {
     setLoading(true);
     try {
       const response = await signInWithEmailAndPassword(auth, email, password);
+      const expoToken = await initializeExpoToken();
+      if (expoToken == undefined) {
+        console.log("issue with expo token");
+        return;
+      }
+      await updateUserExpoToken(expoToken);
     } catch (e: any) {
       console.log(e);
       alert("Sign in failed" + e.message);
@@ -50,8 +57,10 @@ const Login = () => {
       setEmail("");
       setPassword("");
       await sendEmailVerification(auth.currentUser!);
+      const expoToken = await initializeExpoToken();
       const user: User = {
         uid: response.user.uid,
+        expoToken: expoToken,
         email: response.user.email,
         name: null,
         emoji: "🙂",
@@ -61,6 +70,7 @@ const Login = () => {
         onGoingSession: null,
         profilePicture: null,
       };
+
       await setDoc(doc(FIREBASE_DB, "users", response.user.uid), user);
       Keyboard.dismiss();
       await signOut(auth);

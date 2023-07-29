@@ -1,5 +1,6 @@
 export type User = {
   uid: string;
+  expoToken: string | undefined; // If expoToken === "", it indicates that the user is not signed in
   email: string | null;
   name: string | null;
   emoji: string | "🙂";
@@ -40,4 +41,18 @@ export type ChatRoom = {
   ownerIds: string[]; // Array of Users
   ownerNames: string[];
   lastChangeTime: number;
+};
+
+// The params need to be passed in when navigating between the screens
+export type RootStackParamList = {
+  Map: {};
+  Profile: {};
+  Test: {};
+  ListView: {};
+  AllChats: {};
+  SingleChat: {
+    id: string;
+    chatRoomOwner1Id: string;
+    chatRoomOwner2Id: string;
+  };
 };
