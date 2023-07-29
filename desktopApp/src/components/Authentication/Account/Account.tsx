@@ -42,8 +42,7 @@ function Account() {
       </div>
       <FormItem
         label="Username"
-        // placeholder={curUser.name}
-        placeholder="Name"
+        placeholder={curUser.username}
         onChange={setUsername}
       />
       {/* <FormItem
@@ -78,6 +77,7 @@ function Account() {
 
   return (
     <div className={styles.Account}>
+      {accountPage}
       <button
         className={styles.Header__container__inner__utility}
         type="button"
@@ -86,7 +86,6 @@ function Account() {
         Logout
       </button>
 
-      {accountPage}
     </div>
   );
 }

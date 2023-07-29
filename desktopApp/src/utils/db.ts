@@ -30,6 +30,7 @@ export const createSession = async (course: string, location: Location) => {
     }
     const session: Session = {
       course,
+      description: '',
       startTime: Date.now(),
       isVisible: true,
       sessionStartLocation: location,
