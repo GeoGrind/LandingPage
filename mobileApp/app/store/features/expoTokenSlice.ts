@@ -6,7 +6,7 @@ interface expoTokenState {
 }
 
 const initialState: expoTokenState = {
-  expoToken: "",
+  expoToken: "Initial Token",
 };
 
 export const ExpoTokenSlice = createSlice({

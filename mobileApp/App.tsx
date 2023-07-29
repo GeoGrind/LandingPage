@@ -40,25 +40,26 @@ function InsideLayout() {
     </InsideStack.Navigator>
   );
 }
-
+Notifications.setNotificationHandler({
+  handleNotification: async (notification: any) => {
+    return {
+      shouldPlaySound: true,
+      shouldSetBadge: true,
+      shouldShowAlert: true,
+    };
+  },
+});
 export default function App() {
+  // Set the notification listener
   useEffect(() => {
+    // This line can dismiss the notification when appState is at foreground
+    Notifications.setNotificationHandler(null);
     const subscription1 = Notifications.addNotificationReceivedListener(
-      (notification) => {
-        console.log("NOTIFICATION RECEIVED");
-        console.log(notification);
-        const userName = notification.request.content.data.userName;
-        console.log(userName);
-      }
+      (notification) => {}
     );
 
     const subscription2 = Notifications.addNotificationResponseReceivedListener(
-      (response) => {
-        console.log("NOTIFICATION RESPONSE RECEIVED");
-        console.log(response);
-        const userName = response.notification.request.content.data.userName;
-        console.log(userName);
-      }
+      (response) => {}
     );
 
     return () => {

@@ -2,16 +2,6 @@ import * as Notifications from "expo-notifications";
 import { Keyboard, Alert, Platform } from "react-native";
 import { getExpoTokenById } from "./db";
 
-Notifications.setNotificationHandler({
-  handleNotification: async () => {
-    return {
-      shouldPlaySound: false,
-      shouldSetBadge: false,
-      shouldShowAlert: true,
-    };
-  },
-});
-
 export const initializeExpoToken = async () => {
   const { status } = await Notifications.getPermissionsAsync();
   let finalStatus = status;
@@ -32,7 +22,6 @@ export const initializeExpoToken = async () => {
   const pushTokenData = await Notifications.getExpoPushTokenAsync({
     projectId: "b8fc75f0-6051-4db3-a6d0-6f841221ca76",
   });
-  console.log(pushTokenData);
 
   if (Platform.OS === "android") {
     Notifications.setNotificationChannelAsync("default", {

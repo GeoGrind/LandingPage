@@ -78,11 +78,13 @@ const SingleChat = ({ route, navigation }: Props) => {
     const messageRef = doc(msgCollectionRef!, documentId);
     await setDoc(messageRef, newMessage);
     await updateChatRoomLastChangeTime(id);
+
     if (chatRoomOwner1Id === currentUser?.uid) {
       await sendNotificationById(chatRoomOwner2Id);
     } else {
       await sendNotificationById(chatRoomOwner1Id);
     }
+
     setMessage("");
   };
 

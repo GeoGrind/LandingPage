@@ -20,6 +20,7 @@ import { User } from "../types";
 import { endsWithCanadianUniversitySuffix } from "../utils/emailVerification";
 import { initializeExpoToken } from "../utils/notifications";
 import { updateUserExpoToken } from "../utils/db";
+import * as Notifications from "expo-notifications";
 const Login = () => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
