@@ -3,7 +3,7 @@ import 'leaflet/dist/leaflet.css';
 import { Icon } from 'leaflet';
 import { useEffect, useState } from 'react';
 import { fetchActiveUsers } from 'utils/db';
-import PopupContent from './PopupContent/PopupContent';
+import MapPopup from './MapPopup/MapPopup';
 import markerIconPng from '../../../assets/956fd6.png';
 import { User } from '../../types/user.type';
 import styles from './Map.module.scss';
@@ -52,9 +52,8 @@ function Map() {
                 })
               }
             >
-              <Popup className={styles.Map__popup}>
-                <PopupContent user={user} />
-              </Popup>
+              <MapPopup user={user}/>
+
             </Marker>
           )
       )}
