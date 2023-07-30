@@ -44,7 +44,7 @@ export type ChatRoom = {
 };
 
 // The params need to be passed in when navigating between the screens
-export type RootStackParamList = {
+export type InsideRootStackParamList = {
   Map: {};
   Profile: {};
   Test: {};
@@ -55,4 +55,8 @@ export type RootStackParamList = {
     chatRoomOwner1Id: string;
     chatRoomOwner2Id: string;
   };
+};
+
+export type OutsideRootStackParamList = {
+  Login: {};
 };

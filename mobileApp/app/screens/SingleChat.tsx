@@ -27,9 +27,9 @@ import { updateChatRoomLastChangeTime } from "../utils/db";
 import { formatTime } from "../utils/util";
 import { ScrollView } from "react-native";
 import { getMessaging, getToken } from "firebase/messaging";
-import { RootStackParamList } from "../types";
+import { InsideRootStackParamList } from "../types";
 import { sendNotificationById } from "../utils/notifications";
-type Props = NativeStackScreenProps<RootStackParamList, "SingleChat">;
+type Props = NativeStackScreenProps<InsideRootStackParamList, "SingleChat">;
 
 const SingleChat = ({ route, navigation }: Props) => {
   const { id, chatRoomOwner1Id, chatRoomOwner2Id } = route.params;

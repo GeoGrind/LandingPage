@@ -15,10 +15,15 @@ import AllChats from "./app/screens/AllChats";
 import SingleChat from "./app/screens/SingleChat";
 import { createStackNavigator } from "@react-navigation/stack";
 import * as Notifications from "expo-notifications";
-import { RootStackParamList } from "./app/types";
+import {
+  InsideRootStackParamList,
+  OutsideRootStackParamList,
+} from "./app/types";
+
 const Stack = createNativeStackNavigator();
 
-const InsideStack = createStackNavigator<RootStackParamList>();
+const InsideStack = createStackNavigator<InsideRootStackParamList>();
+const OutsideStack = createStackNavigator<OutsideRootStackParamList>();
 
 function InsideLayout() {
   return (
@@ -38,6 +43,17 @@ function InsideLayout() {
         initialParams={{ id: "temp" }}
       />
     </InsideStack.Navigator>
+  );
+}
+function OutsideLayout() {
+  return (
+    <OutsideStack.Navigator>
+      <Stack.Screen
+        name="Login"
+        component={Login}
+        options={{ headerShown: false }}
+      />
+    </OutsideStack.Navigator>
   );
 }
 Notifications.setNotificationHandler({
@@ -96,8 +112,8 @@ export default function App() {
             />
           ) : (
             <Stack.Screen
-              name="Login"
-              component={Login}
+              name="Outside"
+              component={OutsideLayout}
               options={{ headerShown: false }}
             />
           )}
