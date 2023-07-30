@@ -31,6 +31,8 @@ import { getUserLocation } from "../utils/db";
 import { useDispatch } from "react-redux";
 import { updateLocation } from "../store/features/locationSlice";
 import { store } from "../store/store";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+
 const Map = () => {
   const [inSessionUsers, setInSessionUsers] = useState<User[]>([]);
   const [showForm, setShowForm] = useState(false);
@@ -196,13 +198,18 @@ const Map = () => {
         <View style={styles.profilePicture}>
           <Button title="Profile" onPress={handleProfileClick} />
         </View>
+        <View style={styles.roundButton}>
+          <FontAwesome5
+            name="plus"
+            size={24}
+            color="white"
+            onPress={() => setShowForm(true)}
+          />
+        </View>
         <View style={styles.buttonContainer}>
           <Navbar
             onRefreshClick={() => {
               fetchData();
-            }}
-            onStartSessionClick={() => {
-              setShowForm(true);
             }}
             onStopSessionClick={handleStopSessionClick}
             onSignOffClick={handleSignOffClick}
@@ -305,6 +312,18 @@ const styles = StyleSheet.create({
     width: 200, // Adjust the width as needed
     padding: 10,
     borderRadius: 5,
+  },
+  roundButton: {
+    width: 90,
+    height: 90,
+    borderRadius: 45,
+    backgroundColor: "black",
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
+    bottom: 60, // Adjust this value as per your Navbar's height
+    alignSelf: "center",
+    zIndex: 1,
   },
 });
 

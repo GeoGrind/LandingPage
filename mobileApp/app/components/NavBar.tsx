@@ -4,7 +4,6 @@ import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 
 type Props = {
   onRefreshClick: () => void;
-  onStartSessionClick: () => void;
   onStopSessionClick: () => void;
   onSignOffClick: () => void;
   onTestClick: () => void;
@@ -14,7 +13,6 @@ type Props = {
 
 const Navbar: React.FC<Props> = ({
   onRefreshClick,
-  onStartSessionClick,
   onStopSessionClick,
   onSignOffClick,
   onTestClick,
@@ -29,12 +27,7 @@ const Navbar: React.FC<Props> = ({
         color="black"
         onPress={onRefreshClick}
       />
-      <FontAwesome5
-        name="play"
-        size={30}
-        color="black"
-        onPress={onStartSessionClick}
-      />
+
       <FontAwesome5
         name="stop"
         size={30}
