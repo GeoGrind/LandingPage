@@ -28,7 +28,7 @@ import Navbar from "../components/NavBar";
 import { Keyboard } from "react-native";
 import { updateUserExpoToken } from "../utils/db";
 import { getUserLocation } from "../utils/db";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { updateLocation } from "../store/features/locationSlice";
 import { store } from "../store/store";
 const Map = () => {
@@ -268,8 +268,9 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     position: "absolute",
-    bottom: 16,
+    bottom: 0,
     alignSelf: "center",
+    width: "100%",
   },
   formContainer: {
     flex: 1,

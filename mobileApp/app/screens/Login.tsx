@@ -111,7 +111,7 @@ const Login = () => {
           <>
             <Button title="Login" onPress={() => signIn()} />
             <Button
-              title="Sign up"
+              title="Create a free account"
               onPress={() => navigation.navigate("Signup")}
             />
           </>
