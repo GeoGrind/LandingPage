@@ -5,18 +5,30 @@ import FormButton from 'components/Authentication/Form/FormButton/FormButton';
 import { createSession } from 'utils/db';
 import styles from './CreateSession.module.scss';
 import icon from '../../../assets/956fd6.png';
+import { Session } from 'types/session.type';
 
 function CreateSession() {
   const navigate = useNavigate();
   const [course, setCourse] = useState('');
+  const [description, setDescription] = useState('');
+  const [isPrivate, setIsPrivate] = useState(true);
   // const [location, setLocation] = useState({ longitude: 0, latitude: 0 });
 
   const onCreate = async (e) => {
     e.preventDefault();
-    await createSession(course, {
-      longitude: 48.8566,
-      latitude: 2.3522,
-    });
+    const session: Session = {
+      course,
+      startTime: Date.now(),
+      isPrivate,
+      location: {
+        longitude: 48.8566,
+        latitude: 2.3522,
+      },
+      numberOfCheerers: 0,
+      cheerers: [],
+      description,
+    };
+    await createSession(session);
     console.log('created session');
     navigate('/home');
   };
@@ -42,8 +54,9 @@ function CreateSession() {
           </strong>
         </div>
         <div className={styles.CreateSession__form}>
-          <FormItem label="course" onChange={setCourse} />
-          {/* <FormItem label="location" onChange={setLocation} /> */}
+          <FormItem label="Course" onChange={setCourse} />
+          <FormItem label="Description" onChange={setDescription} />
+          {/* <FormItem label="Privacy" onChange={setIsPrivate} /> */}
           <FormButton label="Create" onClick={onCreate} />
         </div>
       </div>

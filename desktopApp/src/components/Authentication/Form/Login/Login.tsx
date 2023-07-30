@@ -57,8 +57,8 @@ function Login() {
           <strong className={styles.Login__header}>Log in</strong>
         </div>
         <div className={styles.Login__form}>
-          <FormItem label="email" onChange={setEmail} />
-          <FormItem label="password" onChange={setPassword} />
+          <FormItem label="Email" onChange={setEmail} />
+          <FormItem label="Password" onChange={setPassword} />
           <FormButton label="Log in" onClick={onLogin} />
         </div>
 

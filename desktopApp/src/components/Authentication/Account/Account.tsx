@@ -42,16 +42,9 @@ function Account() {
       </div>
       <FormItem
         label="Username"
-        // placeholder={curUser.name}
-        placeholder="Name"
+        placeholder={curUser.username}
         onChange={setUsername}
       />
-      {/* <FormItem
-        label="Email"
-        // placeholder={curUser.name}
-        placeholder={curUser.email}
-        onChange={setEmail}
-      /> */}
       <FormItem
         label="Program"
         // placeholder={curUser.program}
@@ -67,17 +60,17 @@ function Account() {
       startTime: {curUser.onGoingSession?.startTime}
       <br />
       <br />
-      sessionStartLocationLong:{' '}
-      {curUser.onGoingSession?.sessionStartLocation?.longitude}
+      sessionStartLocationLong: {curUser.onGoingSession?.location?.longitude}
       <br />
-      sessionStartLocationLat:{' '}
-      {curUser.onGoingSession?.sessionStartLocation?.latitude}
+      sessionStartLocationLat: {curUser.onGoingSession?.location?.latitude}
       <br />
     </div>
   );
 
   return (
     <div className={styles.Account}>
+      {accountPage}
+
       <button
         className={styles.Header__container__inner__utility}
         type="button"
@@ -85,8 +78,6 @@ function Account() {
       >
         Logout
       </button>
-
-      {accountPage}
     </div>
   );
 }

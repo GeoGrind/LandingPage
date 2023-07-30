@@ -8,17 +8,18 @@ interface IMapPopupProps {
 
 function MapPopup({ user }: IMapPopupProps) {
   return (
-    <Popup>
-      <div className={styles.MapPopup}>
-        <div className={styles.MapPopup__username}>{user.email}</div>
-        <button
-          // className={styles.MapPopup}
-          type="button"
-          onClick={() => alert('test')}
-        >
-          test 123
-        </button>
+    <Popup className={styles.MapPopup}>
+      <div className={styles.MapPopup__username}>{user.username}</div>
+      <div className={styles.MapPopup__description}>
+        {user.onGoingSession?.description}
       </div>
+      <button
+        className={styles.MapPopup__button}
+        type="button"
+        onClick={() => alert('test')}
+      >
+        session info
+      </button>
     </Popup>
   );
 }
