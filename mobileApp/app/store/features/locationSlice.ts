@@ -10,14 +10,14 @@ const initialState: locationState = {
 };
 
 export const LocationSlice = createSlice({
-  name: "expoToken",
+  name: "location",
   initialState,
   reducers: {
-    addExpoToken: (state, action: PayloadAction<{ location: Location }>) => {
+    updateLocation: (state, action: PayloadAction<{ location: Location }>) => {
       state.location = action.payload.location;
     },
   },
 });
 
 export default LocationSlice.reducer;
-export const { addExpoToken } = LocationSlice.actions;
+export const { updateLocation } = LocationSlice.actions;

@@ -27,7 +27,10 @@ import UserDotInfo from "./UserDotInfo";
 import Navbar from "../components/NavBar";
 import { Keyboard } from "react-native";
 import { updateUserExpoToken } from "../utils/db";
-
+import { getUserLocation } from "../utils/db";
+import { useDispatch, useSelector } from "react-redux";
+import { updateLocation } from "../store/features/locationSlice";
+import { store } from "../store/store";
 const Map = () => {
   const [inSessionUsers, setInSessionUsers] = useState<User[]>([]);
   const [showForm, setShowForm] = useState(false);
@@ -37,10 +40,19 @@ const Map = () => {
   const appState = useRef(AppState.currentState);
   const { currentUser } = FIREBASE_AUTH;
   const [input, setInput] = useState<string>("");
-
+  const dispatch = useDispatch();
   useEffect(() => {
     fetchData();
   }, []);
+
+  const updateUI = async () => {
+    await fetchData();
+    console.log(store.getState().location);
+    const newLocation = await getUserLocation();
+    if (newLocation) {
+      dispatch(updateLocation({ location: newLocation }));
+    }
+  };
 
   // This tracks if the user exit the app.
   useEffect(() => {
@@ -50,7 +62,7 @@ const Map = () => {
         nextAppState === "active"
       ) {
         // Fetch the data when the user comes back.
-        fetchData();
+        updateUI();
       }
       appState.current = nextAppState;
     });
@@ -62,7 +74,7 @@ const Map = () => {
   // This use effect can fetch the data when there is a navigation even happened
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
-      fetchData();
+      updateUI();
     });
     return unsubscribe;
   }, [navigation]);
