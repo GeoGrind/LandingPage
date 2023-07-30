@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "mobileApp",
-    "slug": "mobileapp",
+    "slug": "mobileApp",
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
@@ -15,7 +15,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.study.buddyyyyy",
-      "buildNumber": "21"
+      "buildNumber": "23"
     },
     "android": {
       "adaptiveIcon": {
@@ -43,13 +43,20 @@
         {
           "photosPermission": "The app accesses your photos to let you share them with your friends."
         }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
+        }
       ]
     ],
     "extra": {
       "eas": {
-        "projectId": "b8fc75f0-6051-4db3-a6d0-6f841221ca76"
+        "projectId": "f29924bc-c60c-4993-b528-eaf70eb53b0c"
       }
-    },
-    "owner": "justinp1209"
+    }
   }
 }
