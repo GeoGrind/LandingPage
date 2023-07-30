@@ -27,8 +27,6 @@ import UserDotInfo from "./UserDotInfo";
 import Navbar from "../components/NavBar";
 import { Keyboard } from "react-native";
 import { updateUserExpoToken } from "../utils/db";
-import { useSelector, useDispatch } from "react-redux";
-import { addExpoToken } from "../store/features/expoTokenSlice";
 
 const Map = () => {
   const [inSessionUsers, setInSessionUsers] = useState<User[]>([]);
