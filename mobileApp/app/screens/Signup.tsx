@@ -95,7 +95,6 @@ const Signup = () => {
           </>
         )}
       </KeyboardAvoidingView>
-      <Text>Sign up page</Text>
     </View>
   );
 };

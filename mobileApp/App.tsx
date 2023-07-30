@@ -73,6 +73,7 @@ Notifications.setNotificationHandler({
 });
 export default function App() {
   // Set the notification listener
+  const [user, setUser] = useState<User | null>(null);
   useEffect(() => {
     // This line can dismiss the notification when appState is at foreground
     Notifications.setNotificationHandler(null);
@@ -83,28 +84,15 @@ export default function App() {
     const subscription2 = Notifications.addNotificationResponseReceivedListener(
       (response) => {}
     );
-
+    onAuthStateChanged(FIREBASE_AUTH, (user) => {
+      setUser(user);
+    });
     return () => {
       subscription1.remove();
       subscription2.remove();
     };
   }, []);
-
   // End of notification stuff
-
-  const [user, setUser] = useState<User | null>(null);
-  const handleKeyboardFrameChange = (event: any) => {
-    onAuthStateChanged(FIREBASE_AUTH, (user) => {
-      setUser(user);
-    });
-  };
-  useEffect(() => {
-    const keyboardListener = Keyboard.addListener(
-      "keyboardWillChangeFrame",
-      handleKeyboardFrameChange
-    );
-    return () => keyboardListener.remove();
-  }, []);
 
   return (
     <Provider store={store}>
