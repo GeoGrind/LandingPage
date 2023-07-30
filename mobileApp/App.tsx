@@ -19,6 +19,7 @@ import {
   InsideRootStackParamList,
   OutsideRootStackParamList,
 } from "./app/types";
+import Signup from "./app/screens/Signup";
 
 const Stack = createNativeStackNavigator();
 
@@ -51,6 +52,11 @@ function OutsideLayout() {
       <Stack.Screen
         name="Login"
         component={Login}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Signup"
+        component={Signup}
         options={{ headerShown: false }}
       />
     </OutsideStack.Navigator>
