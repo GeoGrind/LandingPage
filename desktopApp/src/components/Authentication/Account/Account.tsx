@@ -45,6 +45,12 @@ function Account() {
         placeholder={curUser.username}
         onChange={setUsername}
       />
+      {/* <FormItem
+        label="Email"
+        // placeholder={curUser.name}
+        placeholder={curUser.email}
+        onChange={setEmail}
+      /> */}
       <FormItem
         label="Program"
         // placeholder={curUser.program}
@@ -60,9 +66,11 @@ function Account() {
       startTime: {curUser.onGoingSession?.startTime}
       <br />
       <br />
-      sessionStartLocationLong: {curUser.onGoingSession?.location?.longitude}
+      sessionStartLocationLong:{' '}
+      {curUser.onGoingSession?.sessionStartLocation?.longitude}
       <br />
-      sessionStartLocationLat: {curUser.onGoingSession?.location?.latitude}
+      sessionStartLocationLat:{' '}
+      {curUser.onGoingSession?.sessionStartLocation?.latitude}
       <br />
     </div>
   );
@@ -70,7 +78,6 @@ function Account() {
   return (
     <div className={styles.Account}>
       {accountPage}
-
       <button
         className={styles.Header__container__inner__utility}
         type="button"
@@ -78,6 +85,7 @@ function Account() {
       >
         Logout
       </button>
+
     </div>
   );
 }

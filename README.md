@@ -18,6 +18,10 @@ Current team members:
 - Delbert
 - Chris
 - Gloria
+- Kevin
 
 
 Jay is handling CI/CD for mobile auto deploy to appstore
+
+Useful links:
+https://www.figma.com/file/xjZxwoaVkefm2LhYi1lOV3/Group-Project?type=design&node-id=1-3&mode=design&t=8KEVeU05MInmb8V1-0
