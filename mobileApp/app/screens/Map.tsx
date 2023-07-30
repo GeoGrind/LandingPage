@@ -173,19 +173,9 @@ const Map = () => {
             );
           })}
         </MapView>
-        <View style={styles.searchBar}>
+        <View style={styles.searchContainer}>
           <TextInput
-            style={{
-              borderRadius: 10,
-              margin: 10,
-              color: "#000",
-              borderColor: "#666",
-              backgroundColor: "#FFF",
-              borderWidth: 1,
-              height: 45,
-              paddingHorizontal: 10,
-              fontSize: 18,
-            }}
+            style={styles.searchBar}
             placeholder={"Search"}
             placeholderTextColor={"#666"}
             value={input}
@@ -194,13 +184,14 @@ const Map = () => {
               console.log(s);
             }}
           />
+          <TouchableOpacity onPress={fetchData}>
+            <FontAwesome5 name="sync" size={30} color="black" />
+          </TouchableOpacity>
         </View>
-        <View style={styles.profilePicture}>
-          <Button title="Profile" onPress={handleProfileClick} />
-        </View>
+
         <View style={styles.roundButton}>
           <FontAwesome5
-            name="plus"
+            name="play"
             size={24}
             color="white"
             onPress={() => setShowForm(true)}
@@ -208,9 +199,6 @@ const Map = () => {
         </View>
         <View style={styles.buttonContainer}>
           <Navbar
-            onRefreshClick={() => {
-              fetchData();
-            }}
             onStopSessionClick={handleStopSessionClick}
             onSignOffClick={handleSignOffClick}
             onTestClick={() => {
@@ -222,6 +210,7 @@ const Map = () => {
             onChatClick={() => {
               navigation.navigate("AllChats");
             }}
+            onProfileClick={handleProfileClick}
           />
         </View>
 
@@ -261,17 +250,26 @@ const styles = StyleSheet.create({
   map: {
     flex: 1,
   },
-  searchBar: {
+  searchContainer: {
+    flexDirection: "row",
     position: "absolute",
     top: "5%",
-    left: "25%",
-    width: "50%",
-    justifyContent: "center",
+    width: "80%",
+    left: "10%", // Center the container
+    justifyContent: "space-between",
+    alignItems: "center",
   },
-  profilePicture: {
-    position: "absolute", //use absolute position to show button on top of the map
-    top: "5%", //for center align
-    alignSelf: "flex-end", //for align to right
+  searchBar: {
+    flex: 1,
+    borderRadius: 10,
+    margin: 10,
+    color: "#000",
+    borderColor: "#666",
+    backgroundColor: "#FFF",
+    borderWidth: 1,
+    height: 45,
+    paddingHorizontal: 10,
+    fontSize: 18,
   },
   buttonContainer: {
     position: "absolute",

@@ -3,31 +3,24 @@ import { View, StyleSheet } from "react-native";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 
 type Props = {
-  onRefreshClick: () => void;
   onStopSessionClick: () => void;
   onSignOffClick: () => void;
   onTestClick: () => void;
   onListViewClick: () => void;
   onChatClick: () => void;
+  onProfileClick: () => void;
 };
 
 const Navbar: React.FC<Props> = ({
-  onRefreshClick,
   onStopSessionClick,
   onSignOffClick,
   onTestClick,
   onListViewClick,
   onChatClick,
+  onProfileClick,
 }) => {
   return (
     <View style={styles.container}>
-      <FontAwesome5
-        name="sync"
-        size={30}
-        color="black"
-        onPress={onRefreshClick}
-      />
-
       <FontAwesome5
         name="stop"
         size={30}
@@ -41,17 +34,19 @@ const Navbar: React.FC<Props> = ({
         onPress={onSignOffClick}
       />
       <FontAwesome5 name="cog" size={30} color="black" onPress={onTestClick} />
-      {/* <FontAwesome5
-        name="list"
-        size={30}
-        color="black"
-        onPress={onListViewClick}
-      /> */}
+
       <FontAwesome5
         name="comments"
         size={30}
         color="black"
         onPress={onChatClick}
+      />
+
+      <FontAwesome5
+        name="user"
+        size={30}
+        color="black"
+        onPress={onProfileClick}
       />
     </View>
   );

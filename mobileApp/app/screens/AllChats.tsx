@@ -145,15 +145,6 @@ const AllChats = () => {
             </TouchableOpacity>
           ))}
       </ScrollView>
-
-      <Pressable
-        style={styles.fab}
-        onPress={() => {
-          navigation.navigate("Map");
-        }}
-      >
-        <Ionicons name="exit-outline" size={24} color="red" />
-      </Pressable>
     </View>
   );
 };
