@@ -1,12 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { ExpoTokenSlice } from "./features/expoTokenSlice";
 import { LocationSlice } from "./features/locationSlice";
+import { CurrentUserSlice } from "./features/currentUserSlice";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 
 export const store = configureStore({
   reducer: {
-    expoToken: ExpoTokenSlice.reducer,
     location: LocationSlice.reducer,
+    currentUser: CurrentUserSlice.reducer,
   },
 });
 
