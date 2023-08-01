@@ -1,4 +1,3 @@
-// This slices is for demonstration purpose
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { User } from "../../types";
 
@@ -14,19 +13,16 @@ export const CurrentUserSlice = createSlice({
   name: "currentUser",
   initialState,
   reducers: {
-    changeUserName: (state, action: PayloadAction<{ name: string }>) => {
+    setCurrentUser: (state, action: PayloadAction<User | null>) => {
+      state.currentUser = action.payload;
+    },
+    updateCurrentUser: (state, action: PayloadAction<Partial<User>>) => {
       if (state.currentUser) {
-        state.currentUser.name = action.payload.name;
+        state.currentUser = { ...state.currentUser, ...action.payload };
       }
     },
-    changeExpoToken: (state, action: PayloadAction<{ expoToken: string }>) => {
-      if (state.currentUser) {
-        state.currentUser.expoToken = action.payload.expoToken;
-      }
-    },
-    // Todos
   },
 });
 
 export default CurrentUserSlice.reducer;
-export const { changeUserName } = CurrentUserSlice.actions;
+export const { setCurrentUser, updateCurrentUser } = CurrentUserSlice.actions;

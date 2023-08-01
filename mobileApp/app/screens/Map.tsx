@@ -26,12 +26,13 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import Navbar from "../components/NavBar";
 import { Keyboard } from "react-native";
 import { useDispatch } from "react-redux";
-import { updateLocation } from "../store/features/locationSlice";
 import { store } from "../store/store";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import BottomSheet from "@gorhom/bottom-sheet";
 import { CustomizableBottomSheet } from "../components/CustomizableBottomSheet";
-
+import { getUserById } from "../utils/db";
+import { updateCurrentUser } from "../store/features/currentUserSlice";
+import { setCurrentUser } from "../store/features/currentUserSlice";
 const Map = () => {
   const [inSessionUsers, setInSessionUsers] = useState<User[]>([]);
   const [showForm, setShowForm] = useState(false);
@@ -56,11 +57,6 @@ const Map = () => {
   }, []);
   const updateUI = async () => {
     await fetchData();
-    console.log(store.getState().location);
-    const newLocation = await getUserLocation();
-    if (newLocation) {
-      dispatch(updateLocation({ location: newLocation }));
-    }
   };
 
   // This tracks if the user exit the app.

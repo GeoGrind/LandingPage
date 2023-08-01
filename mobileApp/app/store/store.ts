@@ -1,11 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { LocationSlice } from "./features/locationSlice";
 import { CurrentUserSlice } from "./features/currentUserSlice";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 
 export const store = configureStore({
   reducer: {
-    location: LocationSlice.reducer,
     currentUser: CurrentUserSlice.reducer,
   },
 });
