@@ -19,31 +19,14 @@ import { User } from "../types";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import { useNavigation, ParamListBase } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { store } from "../store/store";
+import { useSelector } from "react-redux";
 
 export default function Profile() {
-  const [currentUser, setCurrentUser] = useState<User>();
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
-  useEffect(() => {
-    const fetchAndSetData = async () => {
-      if (FIREBASE_AUTH.currentUser?.uid === undefined) {
-        console.log("Error when fetching user in profile.tsx");
-        return;
-      }
-      const currentUserFetched = await getUserById(
-        FIREBASE_AUTH.currentUser?.uid
-      );
-      setCurrentUser(currentUserFetched!);
-    };
-    try {
-      fetchAndSetData();
-    } catch (e) {
-      console.log("Profile.tsx", e);
-    }
-  }, []);
-
-  const handleFormSubmit = async () => {
-    // TODO: update user info
-  };
+  const currentUser = useSelector(
+    (state: any) => state.currentUser.currentUser
+  );
 
   return (
     <View style={styles.container}>
@@ -56,7 +39,7 @@ export default function Profile() {
               ellipsizeMode="tail"
               style={styles.textWrapper}
             >
-              {currentUser?.name ? currentUser.name : "Empty"}
+              {currentUser?.name}
             </Paragraph>
             <FontAwesome5 name="arrow-right" size={30} color="black" />
           </View>
@@ -71,7 +54,7 @@ export default function Profile() {
               ellipsizeMode="tail"
               style={styles.textWrapper}
             >
-              {currentUser?.email ? currentUser.email : "Empty"}
+              {currentUser?.email}
             </Paragraph>
             <FontAwesome5 name="arrow-right" size={30} color="black" />
           </View>
@@ -86,7 +69,7 @@ export default function Profile() {
               ellipsizeMode="tail"
               style={styles.textWrapper}
             >
-              {currentUser?.program ? currentUser.program : "Empty"}
+              {currentUser?.program}
             </Paragraph>
             <FontAwesome5 name="arrow-right" size={30} color="black" />
           </View>
@@ -101,9 +84,7 @@ export default function Profile() {
               ellipsizeMode="tail"
               style={styles.textWrapper}
             >
-              {currentUser?.yearOfGraduation
-                ? currentUser.yearOfGraduation
-                : "Empty"}
+              {currentUser?.yearOfGraduation}
             </Paragraph>
             <FontAwesome5 name="arrow-right" size={30} color="black" />
           </View>
@@ -118,7 +99,7 @@ export default function Profile() {
               ellipsizeMode="tail"
               style={styles.textWrapper}
             >
-              {currentUser?.emoji ? currentUser.emoji : "Empty"}
+              {currentUser?.emoji}
             </Paragraph>
             <FontAwesome5
               name="arrow-right"

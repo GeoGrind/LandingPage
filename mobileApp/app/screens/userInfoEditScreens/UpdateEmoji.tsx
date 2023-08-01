@@ -7,8 +7,14 @@ import { Text, TextInput } from "react-native";
 import { User } from "../../types";
 import { getUserById } from "../../utils/db";
 import { FIREBASE_AUTH } from "../../../FirebaseConfig";
-import EmojiModal from "react-native-emoji-modal";
+import EmojiPicker from "rn-emoji-keyboard";
+import { useDispatch } from "react-redux";
+import { updateCurrentUser } from "../../store/features/currentUserSlice";
+import { store } from "../../store/store";
 export default function UpdateEmoji() {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const dispatch = useDispatch();
+
   useEffect(() => {
     const fetchAndSetData = async () => {
       if (FIREBASE_AUTH.currentUser?.uid === undefined) {
@@ -28,34 +34,29 @@ export default function UpdateEmoji() {
   }, []);
 
   const handleOpenPress = () => {
-    bottomSheetRef.current?.expand();
+    setIsOpen(true);
   };
-  const handleSubmit = async () => {
-    updateUserFields({ emoji: emoji });
-  };
+
   const [emoji, setEmoji] = useState<string>();
   const bottomSheetRef = useRef<BottomSheet>(null);
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
       <Pressable style={styles.emojiContainer} onPress={handleOpenPress}>
-        <Text style={styles.emoji}>{emoji}</Text>
+        <Text style={styles.emoji}>
+          {store.getState().currentUser.currentUser?.emoji}
+        </Text>
       </Pressable>
 
-      <Button title="Submit your changes" onPress={handleSubmit} />
-      <BottomSheet
-        ref={bottomSheetRef}
-        index={-1}
-        snapPoints={["25%", "90%"]}
-        enablePanDownToClose={true}
-      >
-        <EmojiModal
-          onEmojiSelected={(emoji) => {
-            setEmoji(emoji!);
-            bottomSheetRef.current?.collapse();
-          }}
-        />
-      </BottomSheet>
+      <EmojiPicker
+        onEmojiSelected={async (emoji) => {
+          console.log(emoji);
+          dispatch(updateCurrentUser({ emoji: emoji.emoji }));
+          await updateUserFields({ emoji: emoji.emoji });
+        }}
+        open={isOpen}
+        onClose={() => setIsOpen(false)}
+      />
     </View>
   );
 }
