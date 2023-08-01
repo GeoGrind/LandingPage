@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import MapView, { Marker, Callout } from "react-native-maps";
 import {
   StyleSheet,
@@ -9,37 +9,59 @@ import {
   Text,
   AppState,
 } from "react-native";
-import { useState, useEffect } from "react";
 import "firebase/firestore";
 import {
   updateSession,
   getUserLocationAndStoreInDb,
   stopSessionOfCurrentUser,
   fetchActiveUsers,
+  updateUserExpoToken,
+  getUserLocation,
 } from "../utils/db";
-import { Button } from "react-native";
-import { signOut, getAuth } from "firebase/auth";
+import { signOut } from "firebase/auth";
 import { FIREBASE_AUTH } from "../../FirebaseConfig";
 import { Session, User } from "../types";
 import { useNavigation, ParamListBase } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import UserDotInfo from "./UserDotInfo";
 import Navbar from "../components/NavBar";
 import { Keyboard } from "react-native";
+import { useDispatch } from "react-redux";
+import { updateLocation } from "../store/features/locationSlice";
+import { store } from "../store/store";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import BottomSheet from "@gorhom/bottom-sheet";
+import { CustomizableBottomSheet } from "../components/CustomizableBottomSheet";
 
 const Map = () => {
   const [inSessionUsers, setInSessionUsers] = useState<User[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [formValues, setFormValues] = useState({ course: "" });
-  const [loading, setLoading] = React.useState(false);
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   const appState = useRef(AppState.currentState);
   const { currentUser } = FIREBASE_AUTH;
   const [input, setInput] = useState<string>("");
+  const [clickedUser, setClickedUser] = useState<User | null>(null);
+  const dispatch = useDispatch();
+
+  // Bottom sheet logic
+  const bottomSheetRef = useRef<BottomSheet>(null);
+  const handleOpenPress = (user: User) => {
+    setClickedUser(user);
+    bottomSheetRef.current?.expand();
+  };
+  // End of Bottom sheet logic
 
   useEffect(() => {
     fetchData();
   }, []);
+  const updateUI = async () => {
+    await fetchData();
+    console.log(store.getState().location);
+    const newLocation = await getUserLocation();
+    if (newLocation) {
+      dispatch(updateLocation({ location: newLocation }));
+    }
+  };
 
   // This tracks if the user exit the app.
   useEffect(() => {
@@ -48,12 +70,10 @@ const Map = () => {
         appState.current.match(/inactive|background/) &&
         nextAppState === "active"
       ) {
-        console.log("App has come to the foreground!");
         // Fetch the data when the user comes back.
-        fetchData();
+        updateUI();
       }
       appState.current = nextAppState;
-      console.log("AppState", appState.current);
     });
 
     return () => {
@@ -63,7 +83,7 @@ const Map = () => {
   // This use effect can fetch the data when there is a navigation even happened
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
-      fetchData();
+      updateUI();
     });
     return unsubscribe;
   }, [navigation]);
@@ -90,13 +110,13 @@ const Map = () => {
     const userLocation = await getUserLocationAndStoreInDb();
     newSession.sessionStartLocation = userLocation;
     await updateSession(newSession);
-    console.log(`Form submitted, course: ${formValues.course}`);
     fetchData();
   };
 
   const handleSignOffClick = async () => {
     try {
       await stopSessionOfCurrentUser();
+      await updateUserExpoToken("");
       await signOut(FIREBASE_AUTH);
     } catch (error) {
       console.log("Error signing off:", error);
@@ -126,113 +146,108 @@ const Map = () => {
         user.onGoingSession && user.onGoingSession.course.startsWith(input)
     );
   };
-  if (loading) {
-    return (
-      // TODO: Make the loading look better
-      <View style={styles.container}>
-        <Text>Loading...</Text>
-      </View>
-    );
-  } else {
-    return (
-      <View style={styles.container}>
-        <MapView
-          style={styles.map}
-          onTouchStart={() => {
-            // Dismiss the keyboard when the user taps on the map
-            Keyboard.dismiss();
-          }}
-        >
-          {filterUsers().map((user, index) => {
-            const isCurrentUser = user.uid === currentUser!.uid;
-            const pinColor = isCurrentUser ? "green" : "red";
-            return (
-              <Marker
-                key={index}
-                coordinate={{
-                  latitude: user.location!.latitude,
-                  longitude: user.location!.longitude,
-                }}
-                pinColor={pinColor}
-              >
-                <Callout>
-                  <UserDotInfo userMarker={user} />
-                </Callout>
-              </Marker>
-            );
-          })}
-        </MapView>
-        <View style={styles.searchBar}>
-          <TextInput
-            style={{
-              borderRadius: 10,
-              margin: 10,
-              color: "#000",
-              borderColor: "#666",
-              backgroundColor: "#FFF",
-              borderWidth: 1,
-              height: 45,
-              paddingHorizontal: 10,
-              fontSize: 18,
-            }}
-            placeholder={"Search"}
-            placeholderTextColor={"#666"}
-            value={input}
-            onChangeText={(s) => {
-              setInput(s);
-              console.log(s);
-            }}
-          />
-        </View>
-        <View style={styles.profilePicture}>
-          <Button title="Profile" onPress={handleProfileClick} />
-        </View>
-        <View style={styles.buttonContainer}>
-          <Navbar
-            onRefreshClick={() => {
-              fetchData();
-            }}
-            onStartSessionClick={() => {
-              setShowForm(true);
-            }}
-            onStopSessionClick={handleStopSessionClick}
-            onSignOffClick={handleSignOffClick}
-            onTestClick={() => {
-              navigation.navigate("Test");
-            }}
-            onListViewClick={() => {
-              navigation.navigate("ListView");
-            }}
-          />
-        </View>
 
-        {showForm && (
-          <Modal visible={showForm} transparent>
-            <TouchableOpacity
-              style={styles.modalContainer}
-              activeOpacity={1}
-              onPress={() => setShowForm(false)}
+  return (
+    <View style={styles.container}>
+      <MapView
+        style={styles.map}
+        onTouchStart={() => {
+          // Dismiss the keyboard when the user taps on the map
+          Keyboard.dismiss();
+        }}
+      >
+        {filterUsers().map((user, index) => {
+          return (
+            <Marker
+              key={index}
+              coordinate={{
+                latitude: user.location!.latitude,
+                longitude: user.location!.longitude,
+              }}
+              onPress={() => {
+                handleOpenPress(user);
+              }}
             >
-              <View style={styles.formContainer}>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Course Name"
-                  value={formValues.course}
-                  onChangeText={(text) => setFormValues({ course: text })}
-                />
-                <TouchableOpacity
-                  style={styles.submitButton}
-                  onPress={handleFormSubmit}
-                >
-                  <Text style={styles.submitButtonText}>Submit</Text>
-                </TouchableOpacity>
-              </View>
-            </TouchableOpacity>
-          </Modal>
-        )}
+              <Text>{user.emoji}</Text>
+            </Marker>
+          );
+        })}
+      </MapView>
+      <View style={styles.searchContainer}>
+        <TextInput
+          style={styles.searchBar}
+          placeholder={"Search"}
+          placeholderTextColor={"#666"}
+          value={input}
+          onChangeText={(s) => {
+            setInput(s);
+            console.log(s);
+          }}
+        />
+        <TouchableOpacity onPress={fetchData}>
+          <FontAwesome5 name="sync" size={30} color="black" />
+        </TouchableOpacity>
       </View>
-    );
-  }
+
+      <View style={styles.roundButton}>
+        <FontAwesome5
+          name="play"
+          size={24}
+          color="white"
+          onPress={() => setShowForm(true)}
+        />
+      </View>
+      <View style={styles.buttonContainer}>
+        <Navbar
+          onStopSessionClick={handleStopSessionClick}
+          onSignOffClick={handleSignOffClick}
+          onTestClick={() => {
+            navigation.navigate("Test");
+          }}
+          onListViewClick={() => {
+            navigation.navigate("ListView");
+          }}
+          onChatClick={() => {
+            navigation.navigate("AllChats");
+          }}
+          onProfileClick={handleProfileClick}
+        />
+      </View>
+
+      {showForm && (
+        <Modal visible={showForm} transparent>
+          <TouchableOpacity
+            style={styles.modalContainer}
+            activeOpacity={1}
+            onPress={() => setShowForm(false)}
+          >
+            <View style={styles.formContainer}>
+              <TextInput
+                style={styles.input}
+                placeholder="Course Name"
+                value={formValues.course}
+                onChangeText={(text) => setFormValues({ course: text })}
+              />
+              <TouchableOpacity
+                style={styles.submitButton}
+                onPress={handleFormSubmit}
+              >
+                <Text style={styles.submitButtonText}>Submit</Text>
+              </TouchableOpacity>
+            </View>
+          </TouchableOpacity>
+        </Modal>
+      )}
+
+      {clickedUser && (
+        <CustomizableBottomSheet
+          bottomSheetRef={bottomSheetRef}
+          sheetContent="Awesome 🎉"
+          userMarker={clickedUser}
+        />
+      )}
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
@@ -242,22 +257,32 @@ const styles = StyleSheet.create({
   map: {
     flex: 1,
   },
-  searchBar: {
+  searchContainer: {
+    flexDirection: "row",
     position: "absolute",
     top: "5%",
-    left: "25%",
-    width: "50%",
-    justifyContent: "center",
+    width: "80%",
+    left: "10%", // Center the container
+    justifyContent: "space-between",
+    alignItems: "center",
   },
-  profilePicture: {
-    position: "absolute", //use absolute position to show button on top of the map
-    top: "5%", //for center align
-    alignSelf: "flex-end", //for align to right
+  searchBar: {
+    flex: 1,
+    borderRadius: 10,
+    margin: 10,
+    color: "#000",
+    borderColor: "#666",
+    backgroundColor: "#FFF",
+    borderWidth: 1,
+    height: 45,
+    paddingHorizontal: 10,
+    fontSize: 18,
   },
   buttonContainer: {
     position: "absolute",
-    bottom: 16,
+    bottom: 0,
     alignSelf: "center",
+    width: "100%",
   },
   formContainer: {
     flex: 1,
@@ -287,11 +312,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
-  callout: {
-    height: 400,
-    width: 200, // Adjust the width as needed
-    padding: 10,
-    borderRadius: 5,
+  roundButton: {
+    width: 90,
+    height: 90,
+    borderRadius: 45,
+    backgroundColor: "black",
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
+    bottom: 60, // Adjust this value as per your Navbar's height
+    alignSelf: "center",
   },
 });
 

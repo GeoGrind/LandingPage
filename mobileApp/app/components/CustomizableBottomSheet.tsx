@@ -1,19 +1,21 @@
-import { StyleSheet, Text, View } from "react-native";
-import React from "react";
+import { RefObject, useState, useEffect } from "react";
+import BottomSheet from "@gorhom/bottom-sheet";
+import { View, Text, StyleSheet } from "react-native";
 import { User } from "../types";
-import { Button, Icon } from "react-native-elements";
-import { incrementNumberOfCheerers } from "../utils/db";
 import { getAuth } from "firebase/auth";
-import { useState, useEffect } from "react";
-import { createChatRoom } from "../utils/db";
-import { getChatRoomFromUserId } from "../utils/db";
 import { useNavigation, ParamListBase } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-// Note: User marker is the person who owns the marker, not the current Signed-in user
-type Props = {
+import {
+  incrementNumberOfCheerers,
+  getChatRoomFromUserId,
+  createChatRoom,
+} from "../utils/db";
+import { Button, Icon } from "react-native-elements";
+interface Props {
+  bottomSheetRef: RefObject<BottomSheet>;
+  sheetContent: string;
   userMarker: User;
-};
-
+}
 const updateCheerersInDB = async (uid: string) => {
   try {
     await incrementNumberOfCheerers(uid);
@@ -21,7 +23,6 @@ const updateCheerersInDB = async (uid: string) => {
     console.error("Error occurred while incrementing numberOfCheerers:", error);
   }
 };
-
 const handleChatPerson = async (
   navigation: NativeStackNavigationProp<ParamListBase>,
   person1Id: string,
@@ -31,20 +32,32 @@ const handleChatPerson = async (
     const chatRoomId = await getChatRoomFromUserId(person1Id, person2Id);
     if (chatRoomId == null) {
       const newChatRoomId = await createChatRoom(person1Id, person2Id);
-      navigation.navigate("SingleChat", { id: newChatRoomId });
+      navigation.navigate("SingleChat", {
+        id: newChatRoomId,
+        chatRoomOwner1Id: person1Id,
+        chatRoomOwner2Id: person2Id,
+      });
     } else {
-      navigation.navigate("SingleChat", { id: chatRoomId });
+      navigation.navigate("SingleChat", {
+        id: chatRoomId,
+        chatRoomOwner1Id: person1Id,
+        chatRoomOwner2Id: person2Id,
+      });
     }
   } catch (e) {
     console.log("handleChatPerson Error", e);
   }
 };
-
-export default function UserDotInfo({ userMarker }: Props) {
+export const CustomizableBottomSheet: React.FC<Props> = ({
+  bottomSheetRef,
+  userMarker,
+  sheetContent,
+}) => {
   const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(false);
   const auth = getAuth();
   const user = auth.currentUser;
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
+
   useEffect(() => {
     if (userMarker.onGoingSession) {
       setCheerers(userMarker.onGoingSession.numberOfCheerers || 0);
@@ -72,7 +85,17 @@ export default function UserDotInfo({ userMarker }: Props) {
   };
 
   return (
-    <View style={styles.container}>
+    <BottomSheet
+      ref={bottomSheetRef}
+      index={-1}
+      snapPoints={["25%", "50%"]}
+      enablePanDownToClose={true}
+    >
+      <View style={styles.customizableBottomSheetContentContainer}>
+        <Text>{userMarker.email}</Text>
+        <Text>{userMarker.emoji}</Text>
+      </View>
+
       <Text style={styles.text}>{userMarker.onGoingSession?.course}</Text>
       <Text style={styles.randomText}>
         This is a random paragraph. Lorem ipsum dolor sit amet, consectetur
@@ -97,11 +120,15 @@ export default function UserDotInfo({ userMarker }: Props) {
           onPress={() => handleChatPerson(navigation, userMarker.uid, user.uid)}
         />
       )}
-    </View>
+    </BottomSheet>
   );
-}
+};
 
 const styles = StyleSheet.create({
+  customizableBottomSheetContentContainer: {
+    flex: 1,
+    alignItems: "center",
+  },
   container: {
     flex: 1,
     alignItems: "flex-start",

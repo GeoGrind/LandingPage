@@ -49,12 +49,10 @@ const ListView = () => {
         appState.current.match(/inactive|background/) &&
         nextAppState === "active"
       ) {
-        console.log("App has come to the foreground!");
         // Fetch the data when the user comes back.
         fetchData();
       }
       appState.current = nextAppState;
-      console.log("AppState", appState.current);
     });
 
     return () => {
@@ -91,7 +89,6 @@ const ListView = () => {
     const userLocation = await getUserLocationAndStoreInDb();
     newSession.sessionStartLocation = userLocation;
     await updateSession(newSession);
-    console.log(`Form submitted, course: ${formValues.course}`);
     fetchData();
   };
 

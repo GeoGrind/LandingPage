@@ -6,6 +6,7 @@ import {
   Button,
   KeyboardAvoidingView,
   Keyboard,
+  Text,
 } from "react-native";
 import React from "react";
 import { FIREBASE_AUTH, FIREBASE_DB } from "../../FirebaseConfig";
@@ -21,30 +22,11 @@ import { endsWithCanadianUniversitySuffix } from "../utils/emailVerification";
 import { initializeExpoToken } from "../utils/notifications";
 import { updateUserExpoToken } from "../utils/db";
 import * as Notifications from "expo-notifications";
-import { useNavigation, ParamListBase } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-const Login = () => {
+const Signup = () => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [loading, setLoading] = React.useState(false);
-  const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   const auth = FIREBASE_AUTH;
-  const signIn = async () => {
-    setLoading(true);
-    try {
-      const response = await signInWithEmailAndPassword(auth, email, password);
-      const expoToken = await initializeExpoToken();
-      if (expoToken == undefined) {
-        console.log("issue with expo token");
-        return;
-      }
-      await updateUserExpoToken(expoToken);
-    } catch (e: any) {
-      console.log(e);
-      alert("Sign in failed" + e.message);
-    }
-    setLoading(false);
-  };
 
   const signUp = async () => {
     // if (endsWithCanadianUniversitySuffix(email) == false) {
@@ -109,11 +91,7 @@ const Login = () => {
           <ActivityIndicator size="large" color="blue" />
         ) : (
           <>
-            <Button title="Login" onPress={() => signIn()} />
-            <Button
-              title="Create a free account"
-              onPress={() => navigation.navigate("Signup")}
-            />
+            <Button title="Create an account" onPress={() => signUp()} />
           </>
         )}
       </KeyboardAvoidingView>
@@ -121,7 +99,7 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Signup;
 
 const styles = StyleSheet.create({
   container: {
