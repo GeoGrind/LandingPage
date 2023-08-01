@@ -58,6 +58,7 @@ export type InsideRootStackParamList = {
     chatRoomOwner1Id: string;
     chatRoomOwner2Id: string;
   };
+  UpdateEmoji: {};
 };
 
 export type OutsideRootStackParamList = {

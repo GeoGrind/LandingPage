@@ -17,9 +17,12 @@ import { FIREBASE_AUTH } from "../../FirebaseConfig";
 import { getUserById } from "../utils/db";
 import { User } from "../types";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import { useNavigation, ParamListBase } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 export default function Profile() {
   const [currentUser, setCurrentUser] = useState<User>();
+  const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   useEffect(() => {
     const fetchAndSetData = async () => {
       if (FIREBASE_AUTH.currentUser?.uid === undefined) {
@@ -61,7 +64,7 @@ export default function Profile() {
       </Card>
       <Card style={styles.card}>
         <Card.Content style={styles.content}>
-          <Title>Name:</Title>
+          <Title>Email:</Title>
           <View style={styles.rightSection}>
             <Paragraph
               numberOfLines={1}
@@ -71,6 +74,60 @@ export default function Profile() {
               {currentUser?.email ? currentUser.email : "Empty"}
             </Paragraph>
             <FontAwesome5 name="arrow-right" size={30} color="black" />
+          </View>
+        </Card.Content>
+      </Card>
+      <Card style={styles.card}>
+        <Card.Content style={styles.content}>
+          <Title>Program:</Title>
+          <View style={styles.rightSection}>
+            <Paragraph
+              numberOfLines={1}
+              ellipsizeMode="tail"
+              style={styles.textWrapper}
+            >
+              {currentUser?.program ? currentUser.program : "Empty"}
+            </Paragraph>
+            <FontAwesome5 name="arrow-right" size={30} color="black" />
+          </View>
+        </Card.Content>
+      </Card>
+      <Card style={styles.card}>
+        <Card.Content style={styles.content}>
+          <Title>Year of Graduation:</Title>
+          <View style={styles.rightSection}>
+            <Paragraph
+              numberOfLines={1}
+              ellipsizeMode="tail"
+              style={styles.textWrapper}
+            >
+              {currentUser?.yearOfGraduation
+                ? currentUser.yearOfGraduation
+                : "Empty"}
+            </Paragraph>
+            <FontAwesome5 name="arrow-right" size={30} color="black" />
+          </View>
+        </Card.Content>
+      </Card>
+      <Card style={styles.card}>
+        <Card.Content style={styles.content}>
+          <Title>Status:</Title>
+          <View style={styles.rightSection}>
+            <Paragraph
+              numberOfLines={1}
+              ellipsizeMode="tail"
+              style={styles.textWrapper}
+            >
+              {currentUser?.emoji ? currentUser.emoji : "Empty"}
+            </Paragraph>
+            <FontAwesome5
+              name="arrow-right"
+              size={30}
+              color="black"
+              onPress={() => {
+                navigation.navigate("UpdateEmoji");
+              }}
+            />
           </View>
         </Card.Content>
       </Card>
@@ -88,7 +145,7 @@ const styles = StyleSheet.create({
 
   card: {
     marginBottom: 10,
-    width: 300,
+    width: 350,
   },
   content: {
     flexDirection: "row",

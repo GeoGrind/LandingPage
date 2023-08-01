@@ -400,3 +400,28 @@ export const getUserById = async (uid: string) => {
     throw error;
   }
 };
+
+type UserFields = Partial<User>;
+export const updateUserFields = async (fields: UserFields): Promise<void> => {
+  try {
+    const auth = getAuth();
+    const user = auth.currentUser;
+    if (!user) {
+      console.log("No user is logged in");
+      return;
+    }
+
+    // Check if the user is in session
+    const userRef = doc(FIREBASE_DB, "users", user.uid);
+    const userSnapshot = await getDoc(userRef);
+
+    if (userSnapshot.exists()) {
+      // Update the fields for the user
+      await updateDoc(userRef, fields);
+    } else {
+      console.log("User not found in Firestore.");
+    }
+  } catch (error) {
+    console.error("Error updating user fields:", error);
+  }
+};

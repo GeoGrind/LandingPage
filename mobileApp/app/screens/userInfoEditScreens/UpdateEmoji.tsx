@@ -1,26 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import { StatusBar } from "expo-status-bar";
-import {
-  StyleSheet,
-  Button,
-  View,
-  Alert,
-  Platform,
-  Pressable,
-} from "react-native";
-import * as Notifications from "expo-notifications";
-import { sendNotificationById } from "../utils/notifications";
+import { StyleSheet, Button, View, Pressable } from "react-native";
 import BottomSheet from "@gorhom/bottom-sheet";
-import { updateUserFields } from "../utils/db";
+import { updateUserFields } from "../../utils/db";
 import { Text, TextInput } from "react-native";
-import { User } from "../types";
-import { getUserById } from "../utils/db";
-import { FIREBASE_AUTH } from "../../FirebaseConfig";
+import { User } from "../../types";
+import { getUserById } from "../../utils/db";
+import { FIREBASE_AUTH } from "../../../FirebaseConfig";
 import EmojiModal from "react-native-emoji-modal";
-
-export default function Test() {
-  const [currentUser, setCurrentUser] = useState<User>();
-
+export default function UpdateEmoji() {
   useEffect(() => {
     const fetchAndSetData = async () => {
       if (FIREBASE_AUTH.currentUser?.uid === undefined) {
@@ -30,7 +18,6 @@ export default function Test() {
       const currentUserFetched = await getUserById(
         FIREBASE_AUTH.currentUser?.uid
       );
-      setCurrentUser(currentUserFetched!);
       setEmoji(currentUserFetched?.emoji);
     };
     try {
