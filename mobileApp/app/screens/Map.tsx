@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import MapView, { Marker, Callout } from "react-native-maps";
 import {
   StyleSheet,
@@ -9,52 +9,46 @@ import {
   Text,
   AppState,
 } from "react-native";
-import { useState, useEffect, useMemo, useCallback, RefObject } from "react";
 import "firebase/firestore";
 import {
   updateSession,
   getUserLocationAndStoreInDb,
   stopSessionOfCurrentUser,
   fetchActiveUsers,
+  updateUserExpoToken,
+  getUserLocation,
 } from "../utils/db";
-import { Button, Image } from "react-native";
-import { signOut, getAuth } from "firebase/auth";
+import { signOut } from "firebase/auth";
 import { FIREBASE_AUTH } from "../../FirebaseConfig";
 import { Session, User } from "../types";
 import { useNavigation, ParamListBase } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import UserDotInfo from "./UserDotInfo";
 import Navbar from "../components/NavBar";
 import { Keyboard } from "react-native";
-import { updateUserExpoToken } from "../utils/db";
-import { getUserLocation } from "../utils/db";
 import { useDispatch } from "react-redux";
 import { updateLocation } from "../store/features/locationSlice";
 import { store } from "../store/store";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
-import Test from "./Test";
 import BottomSheet from "@gorhom/bottom-sheet";
 import { CustomizableBottomSheet } from "../components/CustomizableBottomSheet";
-interface CustomBottomSheetProps {
-  bottomSheetRef: RefObject<BottomSheet>;
-  handleSheetChanges: (index: number) => void;
-  sheetContent: string;
-}
 
 const Map = () => {
   const [inSessionUsers, setInSessionUsers] = useState<User[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [formValues, setFormValues] = useState({ course: "" });
-  const [loading, setLoading] = React.useState(false);
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   const appState = useRef(AppState.currentState);
   const { currentUser } = FIREBASE_AUTH;
   const [input, setInput] = useState<string>("");
+  const [clickedUser, setClickedUser] = useState<User | null>(null);
   const dispatch = useDispatch();
 
   // Bottom sheet logic
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const handleOpenPress = () => bottomSheetRef.current?.expand();
+  const handleOpenPress = (user: User) => {
+    setClickedUser(user);
+    bottomSheetRef.current?.expand();
+  };
   // End of Bottom sheet logic
 
   useEffect(() => {
@@ -152,111 +146,108 @@ const Map = () => {
         user.onGoingSession && user.onGoingSession.course.startsWith(input)
     );
   };
-  if (loading) {
-    return (
-      // TODO: Make the loading look better
-      <View style={styles.container}>
-        <Text>Loading...</Text>
-      </View>
-    );
-  } else {
-    return (
-      <View style={styles.container}>
-        <MapView
-          style={styles.map}
-          onTouchStart={() => {
-            // Dismiss the keyboard when the user taps on the map
-            Keyboard.dismiss();
-          }}
-        >
-          {filterUsers().map((user, index) => {
-            return (
-              <Marker
-                key={index}
-                coordinate={{
-                  latitude: user.location!.latitude,
-                  longitude: user.location!.longitude,
-                }}
-                onPress={handleOpenPress}
-              >
-                <Text>{user.emoji}</Text>
-              </Marker>
-            );
-          })}
-        </MapView>
-        <View style={styles.searchContainer}>
-          <TextInput
-            style={styles.searchBar}
-            placeholder={"Search"}
-            placeholderTextColor={"#666"}
-            value={input}
-            onChangeText={(s) => {
-              setInput(s);
-              console.log(s);
-            }}
-          />
-          <TouchableOpacity onPress={fetchData}>
-            <FontAwesome5 name="sync" size={30} color="black" />
-          </TouchableOpacity>
-        </View>
 
-        <View style={styles.roundButton}>
-          <FontAwesome5
-            name="play"
-            size={24}
-            color="white"
-            onPress={() => setShowForm(true)}
-          />
-        </View>
-        <View style={styles.buttonContainer}>
-          <Navbar
-            onStopSessionClick={handleStopSessionClick}
-            onSignOffClick={handleSignOffClick}
-            onTestClick={() => {
-              navigation.navigate("Test");
-            }}
-            onListViewClick={() => {
-              navigation.navigate("ListView");
-            }}
-            onChatClick={() => {
-              navigation.navigate("AllChats");
-            }}
-            onProfileClick={handleProfileClick}
-          />
-        </View>
-
-        {showForm && (
-          <Modal visible={showForm} transparent>
-            <TouchableOpacity
-              style={styles.modalContainer}
-              activeOpacity={1}
-              onPress={() => setShowForm(false)}
+  return (
+    <View style={styles.container}>
+      <MapView
+        style={styles.map}
+        onTouchStart={() => {
+          // Dismiss the keyboard when the user taps on the map
+          Keyboard.dismiss();
+        }}
+      >
+        {filterUsers().map((user, index) => {
+          return (
+            <Marker
+              key={index}
+              coordinate={{
+                latitude: user.location!.latitude,
+                longitude: user.location!.longitude,
+              }}
+              onPress={() => {
+                handleOpenPress(user);
+              }}
             >
-              <View style={styles.formContainer}>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Course Name"
-                  value={formValues.course}
-                  onChangeText={(text) => setFormValues({ course: text })}
-                />
-                <TouchableOpacity
-                  style={styles.submitButton}
-                  onPress={handleFormSubmit}
-                >
-                  <Text style={styles.submitButtonText}>Submit</Text>
-                </TouchableOpacity>
-              </View>
-            </TouchableOpacity>
-          </Modal>
-        )}
+              <Text>{user.emoji}</Text>
+            </Marker>
+          );
+        })}
+      </MapView>
+      <View style={styles.searchContainer}>
+        <TextInput
+          style={styles.searchBar}
+          placeholder={"Search"}
+          placeholderTextColor={"#666"}
+          value={input}
+          onChangeText={(s) => {
+            setInput(s);
+            console.log(s);
+          }}
+        />
+        <TouchableOpacity onPress={fetchData}>
+          <FontAwesome5 name="sync" size={30} color="black" />
+        </TouchableOpacity>
+      </View>
 
+      <View style={styles.roundButton}>
+        <FontAwesome5
+          name="play"
+          size={24}
+          color="white"
+          onPress={() => setShowForm(true)}
+        />
+      </View>
+      <View style={styles.buttonContainer}>
+        <Navbar
+          onStopSessionClick={handleStopSessionClick}
+          onSignOffClick={handleSignOffClick}
+          onTestClick={() => {
+            navigation.navigate("Test");
+          }}
+          onListViewClick={() => {
+            navigation.navigate("ListView");
+          }}
+          onChatClick={() => {
+            navigation.navigate("AllChats");
+          }}
+          onProfileClick={handleProfileClick}
+        />
+      </View>
+
+      {showForm && (
+        <Modal visible={showForm} transparent>
+          <TouchableOpacity
+            style={styles.modalContainer}
+            activeOpacity={1}
+            onPress={() => setShowForm(false)}
+          >
+            <View style={styles.formContainer}>
+              <TextInput
+                style={styles.input}
+                placeholder="Course Name"
+                value={formValues.course}
+                onChangeText={(text) => setFormValues({ course: text })}
+              />
+              <TouchableOpacity
+                style={styles.submitButton}
+                onPress={handleFormSubmit}
+              >
+                <Text style={styles.submitButtonText}>Submit</Text>
+              </TouchableOpacity>
+            </View>
+          </TouchableOpacity>
+        </Modal>
+      )}
+
+      {clickedUser && (
         <CustomizableBottomSheet
           bottomSheetRef={bottomSheetRef}
           sheetContent="Awesome 🎉"
+          userMarker={clickedUser}
         />
-      </View>
-    );
-  }
+      )}
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({

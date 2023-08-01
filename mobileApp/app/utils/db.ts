@@ -253,7 +253,6 @@ export const createChatRoom = async (
     const chatRoom: ChatRoom = {
       id: documentId,
       ownerIds: [userId1, userId2],
-      ownerNames: [userName1, userName2],
       lastChangeTime: Date.now(),
     };
     const chatRoomRef = doc(chatRoomCollectionRef!, documentId);

@@ -36,7 +36,7 @@ const AllChats = () => {
           const chatRoom: ChatRoom = {
             id: doc.id,
             ownerIds: data.ownerIds || [],
-            ownerNames: data.ownerNames,
+
             lastChangeTime: data.lastChangeTime,
           };
           return chatRoom;
@@ -77,6 +77,7 @@ const AllChats = () => {
       }, {});
 
       setIdToEmoji((prevEmojis) => ({ ...prevEmojis, ...updatedEmojis }));
+      console.log(idToEmoji);
       setChatRooms(chatRoomsData);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -128,18 +129,10 @@ const AllChats = () => {
               }}
             >
               {chatRoom.ownerIds[0] != currentUser?.uid && (
-                <Text>
-                  {chatRoom.ownerNames[0] === null
-                    ? idToEmoji[chatRoom.ownerIds[0]]
-                    : chatRoom.ownerNames[0]}
-                </Text>
+                <Text>{idToEmoji[chatRoom.ownerIds[0]]}</Text>
               )}
               {chatRoom.ownerIds[1] != currentUser?.uid && (
-                <Text>
-                  {chatRoom.ownerNames[1] === null
-                    ? idToEmoji[chatRoom.ownerIds[1]]
-                    : chatRoom.ownerNames[1]}
-                </Text>
+                <Text>{idToEmoji[chatRoom.ownerIds[1]]}</Text>
               )}
               <Text>{formatTime(chatRoom.lastChangeTime)}</Text>
             </TouchableOpacity>

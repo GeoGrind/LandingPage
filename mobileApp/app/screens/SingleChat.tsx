@@ -33,6 +33,7 @@ type Props = NativeStackScreenProps<InsideRootStackParamList, "SingleChat">;
 
 const SingleChat = ({ route, navigation }: Props) => {
   const { id, chatRoomOwner1Id, chatRoomOwner2Id } = route.params;
+
   const { currentUser } = FIREBASE_AUTH;
   const [messages, setMessages] = useState<DocumentData[]>([]);
   const [message, setMessage] = useState<string>("");
@@ -61,31 +62,33 @@ const SingleChat = ({ route, navigation }: Props) => {
   }, []);
 
   const sendMessage = async () => {
-    const msg = message.trim();
-    if (msg.length === 0) return;
+    try {
+      const msg = message.trim();
+      if (msg.length === 0) return;
+      const msgCollectionRef = collection(
+        FIREBASE_DB,
+        `chatRooms/${id}/messages`
+      );
+      const documentId = uuidv4();
+      const newMessage: Message = {
+        id: documentId,
+        message: msg,
+        sender: currentUser!.uid,
+        createdAt: Date.now(),
+      };
+      const messageRef = doc(msgCollectionRef!, documentId);
+      await setDoc(messageRef, newMessage);
+      await updateChatRoomLastChangeTime(id);
+      if (chatRoomOwner1Id === currentUser?.uid) {
+        await sendNotificationById(chatRoomOwner2Id);
+      } else {
+        await sendNotificationById(chatRoomOwner1Id);
+      }
 
-    const msgCollectionRef = collection(
-      FIREBASE_DB,
-      `chatRooms/${id}/messages`
-    );
-    const documentId = uuidv4();
-    const newMessage: Message = {
-      id: documentId,
-      message: msg,
-      sender: currentUser!.uid,
-      createdAt: Date.now(),
-    };
-    const messageRef = doc(msgCollectionRef!, documentId);
-    await setDoc(messageRef, newMessage);
-    await updateChatRoomLastChangeTime(id);
-
-    if (chatRoomOwner1Id === currentUser?.uid) {
-      await sendNotificationById(chatRoomOwner2Id);
-    } else {
-      await sendNotificationById(chatRoomOwner1Id);
+      setMessage("");
+    } catch (e) {
+      console.log("messages failed to send", e);
     }
-
-    setMessage("");
   };
 
   const renderMessage = ({ item }: { item: DocumentData }) => {
