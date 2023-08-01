@@ -8,7 +8,11 @@ export type User = {
   location: Location | null;
   isInSession: boolean;
   onGoingSession: Session | null;
-  profilePicture: string | null;
+  program: string | null;
+  yearOfGraduation: number | null;
+  region: string | null;
+  gender: string | null;
+  university: string | null;
 };
 
 export type Location = {

@@ -167,33 +167,6 @@ export const stopSessionOfCurrentUser = async () => {
   }
 };
 
-export const fetchProfilePictureFromFirestore = async () => {
-  const auth = getAuth(); // Get the Firebase Authentication instance
-  const user = auth.currentUser;
-  if (!user) {
-    console.log("Failed to fetch profile picture");
-    return null;
-  }
-
-  try {
-    const userDocRef = doc(FIREBASE_DB, "users", user.uid);
-    const userDocSnap = await getDoc(userDocRef);
-
-    if (userDocSnap.exists()) {
-      const userData = userDocSnap.data();
-      const profilePicture = userData.profilePicture;
-
-      return profilePicture;
-    } else {
-      console.log("User document does not exist");
-      return null;
-    }
-  } catch (error) {
-    console.log("Error fetching profile picture:", error);
-    return null;
-  }
-};
-
 // A function that adds a new cheerer to a session being referred to
 export const incrementNumberOfCheerers = async (uid: string): Promise<void> => {
   // uid -> owner of the marker being clicked
@@ -382,6 +355,42 @@ export const getExpoTokenById = async (uid: string) => {
       const expoToken = userData.expoToken;
 
       return expoToken;
+    } else {
+      console.log("User data not found.");
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+    throw error;
+  }
+};
+
+export const getUserById = async (uid: string) => {
+  try {
+    const db = FIREBASE_DB;
+    const userRef = doc(db, "users", uid);
+
+    const userSnapshot = await getDoc(userRef);
+
+    if (userSnapshot.exists()) {
+      const userData = userSnapshot.data();
+      const user: User = {
+        uid: userData.uid,
+        expoToken: userData.expoToken,
+        email: userData.email,
+        name: userData.name,
+        emoji: userData.emoji,
+        termCourses: userData.termCourses,
+        location: userData.location,
+        isInSession: userData.isInSession,
+        onGoingSession: userData.onGoingSession,
+        program: userData.program,
+        yearOfGraduation: userData.yearOfGraduation,
+        region: userData.region,
+        gender: userData.gender,
+        university: userData.university,
+      };
+      return user;
     } else {
       console.log("User data not found.");
       return null;
