@@ -54,7 +54,11 @@ const Signup = () => {
         location: null,
         isInSession: false,
         onGoingSession: null,
-        profilePicture: null,
+        program: null,
+        yearOfGraduation: null,
+        region: null,
+        gender: null,
+        university: null,
       };
 
       await setDoc(doc(FIREBASE_DB, "users", response.user.uid), user);

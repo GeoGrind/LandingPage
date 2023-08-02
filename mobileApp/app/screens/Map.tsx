@@ -26,12 +26,13 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import Navbar from "../components/NavBar";
 import { Keyboard } from "react-native";
 import { useDispatch } from "react-redux";
-import { updateLocation } from "../store/features/locationSlice";
 import { store } from "../store/store";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import BottomSheet from "@gorhom/bottom-sheet";
 import { CustomizableBottomSheet } from "../components/CustomizableBottomSheet";
-
+import { getUserById } from "../utils/db";
+import { updateCurrentUser } from "../store/features/currentUserSlice";
+import { setCurrentUser } from "../store/features/currentUserSlice";
 const Map = () => {
   const [inSessionUsers, setInSessionUsers] = useState<User[]>([]);
   const [showForm, setShowForm] = useState(false);
@@ -51,17 +52,22 @@ const Map = () => {
   };
   // End of Bottom sheet logic
 
+  // Set up redux when it mounts
+  const fetchAndSetData = async () => {
+    console.log("sync with DB");
+    if (FIREBASE_AUTH.currentUser?.uid === undefined) {
+      console.log("Error when fetching user in profile.tsx");
+      return;
+    }
+    const currentUserFetched = await getUserById(
+      FIREBASE_AUTH.currentUser?.uid
+    );
+    dispatch(setCurrentUser(currentUserFetched));
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
-  const updateUI = async () => {
-    await fetchData();
-    console.log(store.getState().location);
-    const newLocation = await getUserLocation();
-    if (newLocation) {
-      dispatch(updateLocation({ location: newLocation }));
-    }
-  };
 
   // This tracks if the user exit the app.
   useEffect(() => {
@@ -71,7 +77,7 @@ const Map = () => {
         nextAppState === "active"
       ) {
         // Fetch the data when the user comes back.
-        updateUI();
+        fetchData();
       }
       appState.current = nextAppState;
     });
@@ -83,13 +89,14 @@ const Map = () => {
   // This use effect can fetch the data when there is a navigation even happened
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
-      updateUI();
+      fetchData();
     });
     return unsubscribe;
   }, [navigation]);
 
   const fetchData = async () => {
     const temp1 = await fetchActiveUsers();
+    await fetchAndSetData();
     setInSessionUsers(temp1);
   };
 

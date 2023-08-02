@@ -20,7 +20,8 @@ import {
   OutsideRootStackParamList,
 } from "./app/types";
 import Signup from "./app/screens/Signup";
-
+import UpdateEmoji from "./app/screens/userInfoEditScreens/UpdateEmoji";
+import UpdateBase from "./app/screens/userInfoEditScreens/UpdateBase";
 const Stack = createNativeStackNavigator();
 
 const InsideStack = createStackNavigator<InsideRootStackParamList>();
@@ -38,6 +39,8 @@ function InsideLayout() {
       <InsideStack.Screen name="Test" component={Test} />
       <InsideStack.Screen name="ListView" component={ListView} />
       <InsideStack.Screen name="AllChats" component={AllChats} />
+      <InsideStack.Screen name="UpdateEmoji" component={UpdateEmoji} />
+      <InsideStack.Screen name="UpdateBase" component={UpdateBase} />
       <InsideStack.Screen
         name="SingleChat"
         component={SingleChat}

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   Button,
   View,
@@ -6,100 +6,174 @@ import {
   TextInput,
   Keyboard,
   TouchableWithoutFeedback,
+  StyleSheet,
 } from "react-native";
+import { Card, Title, Paragraph } from "react-native-paper";
+
 import Modal, { ReactNativeModal } from "react-native-modal";
 import { MultipleSelectList } from "react-native-dropdown-select-list";
 import { updateUserProfile } from "../utils/db";
+import { FIREBASE_AUTH } from "../../FirebaseConfig";
+import { getUserById } from "../utils/db";
+import { User } from "../types";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import { useNavigation, ParamListBase } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { store } from "../store/store";
+import { useSelector } from "react-redux";
 
 export default function Profile() {
-  const [isModalVisible, setModalVisible] = useState(false);
-  const toggleModal = () => {
-    setModalVisible(!isModalVisible);
-  };
-  const modalViewRef = useRef<ReactNativeModal>(null);
-  const handleTouchOutsideKeyboard = () => {
-    Keyboard.dismiss();
-  };
-  // State variables for the form inputs
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [emoji, setEmoji] = useState("");
-
-  // Test
-  const [selectedCourses, setSelectedCourses] = React.useState([]);
-  const data = [
-    { key: "1", value: "CS 240" },
-    { key: "2", value: "CS 245" },
-    { key: "3", value: "STAT 331" },
-    { key: "4", value: "MATH 135" },
-  ];
-
-  // Function to handle form submission
-  const handleFormSubmit = async () => {
-    await updateUserProfile(firstName, lastName, emoji, selectedCourses);
-  };
+  const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
+  const currentUser = useSelector(
+    (state: any) => state.currentUser.currentUser
+  );
 
   return (
-    <TouchableWithoutFeedback onPress={handleTouchOutsideKeyboard}>
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <Button title="Show modal" onPress={toggleModal} />
-        <Modal
-          isVisible={isModalVisible}
-          onBackdropPress={handleTouchOutsideKeyboard}
-          ref={modalViewRef}
-          backdropOpacity={1}
-          backdropColor={"white"}
-        >
-          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <View
-              style={{
-                flex: 1,
-                alignItems: "center",
-                justifyContent: "center",
-              }}
+    <View style={styles.container}>
+      <Card style={styles.card}>
+        <Card.Content style={styles.content}>
+          <Title>Name:</Title>
+          <View style={styles.rightSection}>
+            <Paragraph
+              numberOfLines={1}
+              ellipsizeMode="tail"
+              style={styles.textWrapper}
             >
-              <View
-                style={{
-                  flex: 1,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Text>Enter your details:</Text>
-                <TextInput
-                  placeholder="First Name"
-                  value={firstName}
-                  onChangeText={setFirstName}
-                  placeholderTextColor="black"
-                  style={{ color: "black" }}
-                />
-                <TextInput
-                  placeholder="Last Name"
-                  value={lastName}
-                  onChangeText={setLastName}
-                  placeholderTextColor="black"
-                  style={{ color: "black" }}
-                />
-                <TextInput
-                  placeholder="Emoji"
-                  value={emoji}
-                  onChangeText={setEmoji}
-                  placeholderTextColor="black"
-                  style={{ color: "black" }}
-                />
-                <MultipleSelectList
-                  setSelected={(val: any) => setSelectedCourses(val)}
-                  data={data}
-                  save="value"
-                  label="Categories"
-                />
-                <Button title="Submit" onPress={handleFormSubmit} />
-                <Button title="Hide modal" onPress={toggleModal} />
-              </View>
-            </View>
-          </TouchableWithoutFeedback>
-        </Modal>
-      </View>
-    </TouchableWithoutFeedback>
+              {currentUser?.name}
+            </Paragraph>
+            <FontAwesome5
+              name="arrow-right"
+              size={30}
+              color="black"
+              onPress={() => {
+                navigation.navigate("UpdateBase", {
+                  field: "name",
+                });
+              }}
+            />
+          </View>
+        </Card.Content>
+      </Card>
+      <Card style={styles.card}>
+        <Card.Content style={styles.content}>
+          <Title>Email:</Title>
+          <View style={styles.rightSection}>
+            <Paragraph
+              numberOfLines={1}
+              ellipsizeMode="tail"
+              style={styles.textWrapper}
+            >
+              {currentUser?.email}
+            </Paragraph>
+            <FontAwesome5
+              name="arrow-right"
+              size={30}
+              color="black"
+              onPress={() => {
+                navigation.navigate("UpdateBase", {
+                  field: "email",
+                });
+              }}
+            />
+          </View>
+        </Card.Content>
+      </Card>
+      <Card style={styles.card}>
+        <Card.Content style={styles.content}>
+          <Title>Program:</Title>
+          <View style={styles.rightSection}>
+            <Paragraph
+              numberOfLines={1}
+              ellipsizeMode="tail"
+              style={styles.textWrapper}
+            >
+              {currentUser?.program}
+            </Paragraph>
+            <FontAwesome5
+              name="arrow-right"
+              size={30}
+              color="black"
+              onPress={() => {
+                navigation.navigate("UpdateBase", {
+                  field: "program",
+                });
+              }}
+            />
+          </View>
+        </Card.Content>
+      </Card>
+      <Card style={styles.card}>
+        <Card.Content style={styles.content}>
+          <Title>Year of Graduation:</Title>
+          <View style={styles.rightSection}>
+            <Paragraph
+              numberOfLines={1}
+              ellipsizeMode="tail"
+              style={styles.textWrapper}
+            >
+              {currentUser?.yearOfGraduation}
+            </Paragraph>
+            <FontAwesome5
+              name="arrow-right"
+              size={30}
+              color="black"
+              onPress={() => {
+                navigation.navigate("UpdateBase", {
+                  field: "yearOfGraduation",
+                });
+              }}
+            />
+          </View>
+        </Card.Content>
+      </Card>
+      <Card style={styles.card}>
+        <Card.Content style={styles.content}>
+          <Title>Status:</Title>
+          <View style={styles.rightSection}>
+            <Paragraph
+              numberOfLines={1}
+              ellipsizeMode="tail"
+              style={styles.textWrapper}
+            >
+              {currentUser?.emoji}
+            </Paragraph>
+            <FontAwesome5
+              name="arrow-right"
+              size={30}
+              color="black"
+              onPress={() => {
+                navigation.navigate("UpdateEmoji");
+              }}
+            />
+          </View>
+        </Card.Content>
+      </Card>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  card: {
+    marginBottom: 10,
+    width: 350,
+  },
+  content: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  rightSection: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  textWrapper: {
+    marginRight: 10, // Add the desired spacing here (e.g., 10)
+  },
+});

@@ -46,46 +46,6 @@ const Login = () => {
     setLoading(false);
   };
 
-  const signUp = async () => {
-    // if (endsWithCanadianUniversitySuffix(email) == false) {
-    //   alert("Your university email is not registered in our system");
-    //   return;
-    // }
-    setLoading(true);
-    try {
-      const response = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      setEmail("");
-      setPassword("");
-      await sendEmailVerification(auth.currentUser!);
-      const expoToken = await initializeExpoToken();
-      const user: User = {
-        uid: response.user.uid,
-        expoToken: expoToken,
-        email: response.user.email,
-        name: null,
-        emoji: "🙂",
-        termCourses: [],
-        location: null,
-        isInSession: false,
-        onGoingSession: null,
-        profilePicture: null,
-      };
-
-      await setDoc(doc(FIREBASE_DB, "users", response.user.uid), user);
-      Keyboard.dismiss();
-      await signOut(auth);
-      alert("Check your emails");
-    } catch (e: any) {
-      console.log(e);
-      alert("Sign up failed" + e.message);
-    }
-    setLoading(false);
-  };
-
   return (
     <View style={styles.container}>
       <KeyboardAvoidingView behavior="padding">
