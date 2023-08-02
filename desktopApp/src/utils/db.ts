@@ -23,26 +23,17 @@ export const fetchActiveUsers = async (): Promise<User[]> => {
   return users;
 };
 
-export const createSession = async (course: string, location: Location) => {
+export const createSession = async (session: Session) => {
   try {
     if (!FIREBASE_AUTH.currentUser) {
       return;
     }
-    const session: Session = {
-      course,
-      description: '',
-      startTime: Date.now(),
-      isVisible: true,
-      sessionStartLocation: location,
-      numberOfCheerers: 0,
-      cheerers: [],
-    };
     const userRef = doc(FIREBASE_DB, 'users', FIREBASE_AUTH.currentUser.uid);
     await updateDoc(userRef, { onGoingSession: session });
     await updateDoc(userRef, { isInSession: true });
-    await updateDoc(userRef, { location });
+    await updateDoc(userRef, { location: session.location });
   } catch (error) {
-    console.log("Erorr updating user's session:", error);
+    console.log("Error updating user's session:", error);
   }
 };
 

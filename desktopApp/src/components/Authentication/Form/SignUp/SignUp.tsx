@@ -10,7 +10,7 @@ import icon from '../../../../../assets/956fd6.png';
 import { User } from 'types/user.type';
 
 function isUwaterlooEmail(email: string) {
-  return (email.endsWith('@uwaterloo.ca'));
+  return email.endsWith('@uwaterloo.ca');
 }
 
 function SignUp() {
@@ -22,10 +22,10 @@ function SignUp() {
 
   const onSubmit = async (e: React.ChangeEvent<HTMLInputElement>) => {
     // call function to check all errors here
-    if (!isUwaterlooEmail(email)) { 
+    if (!isUwaterlooEmail(email)) {
       setErrors([...errors, 'Invalid UWaterloo Email']);
-      console.log('inposter! ' + email);
-      return; 
+      console.log('imposter::', email);
+      return;
     }
 
     e.preventDefault();
@@ -37,7 +37,7 @@ function SignUp() {
       );
       const user: User = {
         uid: response.user.uid,
-        username: username,
+        username,
         email: response.user.email || '',
         location: null,
         isInSession: false,
@@ -45,7 +45,7 @@ function SignUp() {
         profilePicture: null,
       };
 
-      console.log("The username is: " + username);
+      console.log('The username is: ', username);
       await createUser(user);
       navigate('/login');
     } catch {
@@ -81,13 +81,10 @@ function SignUp() {
           <FormItem label="Email" onChange={setEmail} />
           <FormItem label="Password" onChange={setPassword} />
           <FormButton label="Sign Up" onClick={onSubmit} />
-          { errors.length>0 && <div>ur Mom</div>}
+          {errors.length > 0 && <div>ur Mom</div>}
         </div>
 
-        <div className={styles.SignUp__right__bottom}>
-          Or sign up with
-          <div className={styles.SignUp__social}>Google</div>
-        </div>
+        <div className={styles.SignUp__right__bottom}>Change Later</div>
       </div>
     </div>
   );

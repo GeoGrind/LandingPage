@@ -18,7 +18,7 @@ function FormItem({ label, placeholder, onChange }: IFormItemProps) {
         className={styles.FormItem__input}
         onChange={(e) => onChange(e.target.value)}
         id={label}
-        type={label === 'password' ? 'password' : 'text'}
+        type={label === 'Password' ? 'password' : 'text'}
         placeholder={placeholder}
       />
     </div>
