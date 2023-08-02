@@ -11,41 +11,24 @@ import EmojiPicker from "rn-emoji-keyboard";
 import { useDispatch } from "react-redux";
 import { updateCurrentUser } from "../../store/features/currentUserSlice";
 import { store } from "../../store/store";
+import { useSelector } from "react-redux";
+
 export default function UpdateEmoji() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    const fetchAndSetData = async () => {
-      if (FIREBASE_AUTH.currentUser?.uid === undefined) {
-        console.log("Error when fetching user in profile.tsx");
-        return;
-      }
-      const currentUserFetched = await getUserById(
-        FIREBASE_AUTH.currentUser?.uid
-      );
-      setEmoji(currentUserFetched?.emoji);
-    };
-    try {
-      fetchAndSetData();
-    } catch (e) {
-      console.log("Test.tsx", e);
-    }
-  }, []);
-
   const handleOpenPress = () => {
     setIsOpen(true);
   };
-
-  const [emoji, setEmoji] = useState<string>();
+  const currentUser = useSelector(
+    (state: any) => state.currentUser.currentUser
+  );
   const bottomSheetRef = useRef<BottomSheet>(null);
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
       <Pressable style={styles.emojiContainer} onPress={handleOpenPress}>
-        <Text style={styles.emoji}>
-          {store.getState().currentUser.currentUser?.emoji}
-        </Text>
+        <Text style={styles.emoji}>{currentUser?.emoji}</Text>
       </Pressable>
 
       <EmojiPicker

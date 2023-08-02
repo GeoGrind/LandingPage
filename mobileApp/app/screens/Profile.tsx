@@ -41,7 +41,16 @@ export default function Profile() {
             >
               {currentUser?.name}
             </Paragraph>
-            <FontAwesome5 name="arrow-right" size={30} color="black" />
+            <FontAwesome5
+              name="arrow-right"
+              size={30}
+              color="black"
+              onPress={() => {
+                navigation.navigate("UpdateBase", {
+                  field: "name",
+                });
+              }}
+            />
           </View>
         </Card.Content>
       </Card>
@@ -56,7 +65,16 @@ export default function Profile() {
             >
               {currentUser?.email}
             </Paragraph>
-            <FontAwesome5 name="arrow-right" size={30} color="black" />
+            <FontAwesome5
+              name="arrow-right"
+              size={30}
+              color="black"
+              onPress={() => {
+                navigation.navigate("UpdateBase", {
+                  field: "email",
+                });
+              }}
+            />
           </View>
         </Card.Content>
       </Card>
@@ -71,7 +89,16 @@ export default function Profile() {
             >
               {currentUser?.program}
             </Paragraph>
-            <FontAwesome5 name="arrow-right" size={30} color="black" />
+            <FontAwesome5
+              name="arrow-right"
+              size={30}
+              color="black"
+              onPress={() => {
+                navigation.navigate("UpdateBase", {
+                  field: "program",
+                });
+              }}
+            />
           </View>
         </Card.Content>
       </Card>
@@ -86,7 +113,16 @@ export default function Profile() {
             >
               {currentUser?.yearOfGraduation}
             </Paragraph>
-            <FontAwesome5 name="arrow-right" size={30} color="black" />
+            <FontAwesome5
+              name="arrow-right"
+              size={30}
+              color="black"
+              onPress={() => {
+                navigation.navigate("UpdateBase", {
+                  field: "yearOfGraduation",
+                });
+              }}
+            />
           </View>
         </Card.Content>
       </Card>
