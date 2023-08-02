@@ -1,11 +1,18 @@
 .MapPopup {
-  &__username {
-    color: red;
-    font-size: 24px;
+  &__top {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 12px;
+    &__username {
+      font-size: 14px;
+    }
   }
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 70px;
-  width: 100px;
+
+  &__container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 12px;
+  }
 }
