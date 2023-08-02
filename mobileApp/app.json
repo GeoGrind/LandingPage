@@ -15,7 +15,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.study.buddyyyyy",
-      "buildNumber": "23"
+      "buildNumber": "26"
     },
     "android": {
       "adaptiveIcon": {
