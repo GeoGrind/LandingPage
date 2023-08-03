@@ -17,6 +17,7 @@ import {
   fetchActiveUsers,
   updateUserExpoToken,
   getUserLocation,
+  updateUserFields,
 } from "../utils/db";
 import { signOut } from "firebase/auth";
 import { FIREBASE_AUTH } from "../../FirebaseConfig";
@@ -33,6 +34,7 @@ import { CustomizableBottomSheet } from "../components/CustomizableBottomSheet";
 import { getUserById } from "../utils/db";
 import { updateCurrentUser } from "../store/features/currentUserSlice";
 import { setCurrentUser } from "../store/features/currentUserSlice";
+import { useSelector } from "react-redux";
 const Map = () => {
   const [inSessionUsers, setInSessionUsers] = useState<User[]>([]);
   const [showForm, setShowForm] = useState(false);
@@ -43,7 +45,9 @@ const Map = () => {
   const [input, setInput] = useState<string>("");
   const [clickedUser, setClickedUser] = useState<User | null>(null);
   const dispatch = useDispatch();
-
+  const currentUserRedux = useSelector(
+    (state: any) => state.currentUser.currentUser
+  );
   // Bottom sheet logic
   const bottomSheetRef = useRef<BottomSheet>(null);
   const handleOpenPress = (user: User) => {
@@ -113,11 +117,21 @@ const Map = () => {
       numberOfCheerers: 0,
       cheerers: [],
     };
+    const curLocation = await getUserLocation();
+    newSession.sessionStartLocation = curLocation;
 
-    const userLocation = await getUserLocationAndStoreInDb();
-    newSession.sessionStartLocation = userLocation;
-    await updateSession(newSession);
-    fetchData();
+    dispatch(
+      updateCurrentUser({
+        location: curLocation,
+        isInSession: true,
+        onGoingSession: newSession,
+      })
+    );
+    updateUserFields({
+      isInSession: true,
+      onGoingSession: newSession,
+      location: curLocation,
+    });
   };
 
   const handleSignOffClick = async () => {
@@ -133,7 +147,13 @@ const Map = () => {
     // TODO: Needs the UI update immediately after the button is clicked
     try {
       await stopSessionOfCurrentUser();
-      await fetchData();
+      dispatch(
+        updateCurrentUser({
+          location: null,
+          isInSession: false,
+          onGoingSession: null,
+        })
+      );
     } catch (error) {
       console.log("Error stopping session:", error);
     }
@@ -164,6 +184,9 @@ const Map = () => {
         }}
       >
         {filterUsers().map((user, index) => {
+          if (user.uid === currentUser?.uid) {
+            return null;
+          }
           return (
             <Marker
               key={index}
@@ -179,6 +202,20 @@ const Map = () => {
             </Marker>
           );
         })}
+        {currentUserRedux?.isInSession && (
+          <Marker
+            key={10000000}
+            coordinate={{
+              latitude: currentUserRedux?.location.latitude,
+              longitude: currentUserRedux?.location.longitude,
+            }}
+            onPress={() => {
+              handleOpenPress(currentUserRedux);
+            }}
+          >
+            <Text>{currentUserRedux?.emoji}</Text>
+          </Marker>
+        )}
       </MapView>
       <View style={styles.searchContainer}>
         <TextInput
