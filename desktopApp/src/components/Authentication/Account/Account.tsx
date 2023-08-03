@@ -36,10 +36,6 @@ function Account() {
 
   const accountPage = curUser && (
     <div>
-      <div className={styles.Account__picture}>
-        {/* insert pfp here */}
-        {curUser.profilePicture}
-      </div>
       <FormItem
         label="Username"
         placeholder={curUser.username}
@@ -57,20 +53,17 @@ function Account() {
         placeholder="My Program"
         onChange={setProgram}
       />
-      isInSession: {curUser.isInSession ? 'yeah' : 'nope'}
       <br />
-      Session: {curUser.onGoingSession?.course}
+      Session: {curUser.session?.course}
       <br />
-      course: {curUser.onGoingSession?.course}
+      course: {curUser.session?.course}
       <br />
-      startTime: {curUser.onGoingSession?.startTime}
+      startTime: {curUser.session?.startTime}
       <br />
       <br />
-      sessionStartLocationLong:{' '}
-      {curUser.onGoingSession?.sessionStartLocation?.longitude}
+      sessionStartLocationLong: {curUser.session?.location.longitude}
       <br />
-      sessionStartLocationLat:{' '}
-      {curUser.onGoingSession?.sessionStartLocation?.latitude}
+      sessionStartLocationLat: {curUser.session?.location.latitude}
       <br />
     </div>
   );
@@ -85,7 +78,6 @@ function Account() {
       >
         Logout
       </button>
-
     </div>
   );
 }

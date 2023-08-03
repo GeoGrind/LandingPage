@@ -31,7 +31,7 @@ function Header() {
   });
 
   const authOptions =
-    curUser && (curUser as User).isInSession ? (
+    curUser && (curUser as User).session ? (
       <div className={styles.Header__container__inner__nav}>
         <button
           className={styles.Header__container__inner__nav__item}

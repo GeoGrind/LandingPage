@@ -29,10 +29,13 @@ function Map({ activeUsers }: IMapProps) {
       />
       {activeUsers.map(
         (user) =>
-          user.location && (
+          user.session && (
             <Marker
               key={user.uid}
-              position={[user.location.longitude, user.location.latitude]}
+              position={[
+                user.session.location.longitude,
+                user.session.location.latitude,
+              ]}
               icon={
                 new Icon({
                   iconUrl: markerIconPng,
