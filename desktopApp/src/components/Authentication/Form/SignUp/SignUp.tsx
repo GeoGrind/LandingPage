@@ -37,12 +37,13 @@ function SignUp() {
       );
       const user: User = {
         uid: response.user.uid,
-        username,
         email: response.user.email || '',
-        location: null,
-        isInSession: false,
-        onGoingSession: null,
-        profilePicture: null,
+        username,
+        program: 'math',
+        yearOfGraduation: 2026,
+        status: 'emoji',
+        bio: 'dummy bio',
+        session: null,
       };
 
       console.log('The username is: ', username);

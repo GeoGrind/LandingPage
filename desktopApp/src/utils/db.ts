@@ -1,14 +1,12 @@
 import {
   collection,
   doc,
-  getDoc,
   getDocs,
   setDoc,
   updateDoc,
 } from 'firebase/firestore';
 import { User } from 'types/user.type';
 import { Session } from 'types/session.type';
-import { Location } from 'types/location.type';
 import { FIREBASE_AUTH, FIREBASE_DB } from '../firebase';
 
 export const fetchActiveUsers = async (): Promise<User[]> => {
@@ -16,7 +14,7 @@ export const fetchActiveUsers = async (): Promise<User[]> => {
   const snapshot = await getDocs(docRef);
   const users: Array<User> = [];
   snapshot.forEach((user) => {
-    if (user.data().isInSession === true) {
+    if (user.data().session !== null) {
       users.push(user.data() as User);
     }
   });
@@ -29,8 +27,7 @@ export const createSession = async (session: Session) => {
       return;
     }
     const userRef = doc(FIREBASE_DB, 'users', FIREBASE_AUTH.currentUser.uid);
-    await updateDoc(userRef, { onGoingSession: session });
-    await updateDoc(userRef, { isInSession: true });
+    await updateDoc(userRef, { session });
     await updateDoc(userRef, { location: session.location });
   } catch (error) {
     console.log("Error updating user's session:", error);
@@ -51,9 +48,7 @@ export const stopSessionOfCurrentUser = async () => {
       return;
     }
     const userRef = doc(FIREBASE_DB, 'users', FIREBASE_AUTH.currentUser.uid);
-    await updateDoc(userRef, { location: null });
-    await updateDoc(userRef, { onGoingSession: null });
-    await updateDoc(userRef, { isInSession: false });
+    await updateDoc(userRef, { session: null });
   } catch (error) {
     console.log('Error in logout clean up:', error);
   }

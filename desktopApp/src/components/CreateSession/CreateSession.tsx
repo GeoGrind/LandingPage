@@ -21,11 +21,10 @@ function CreateSession() {
       startTime: Date.now(),
       isPrivate,
       location: {
+        label: 'dummy label',
         longitude: 48.8566,
         latitude: 2.3522,
       },
-      numberOfCheerers: 0,
-      cheerers: [],
       description,
     };
     await createSession(session);
