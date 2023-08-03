@@ -8,22 +8,11 @@ import markerIconPng from '../../../assets/956fd6.png';
 import { User } from '../../types/user.type';
 import styles from './Map.module.scss';
 
-function Map() {
-  const [activeUsers, setActiveUsers] = useState<User[]>([]);
+interface IMapProps {
+  activeUsers: Array<User>;
+}
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const users = await fetchActiveUsers();
-      setActiveUsers(users);
-    };
-    fetchData();
-    const timer = setInterval(fetchData, 30000);
-
-    return () => {
-      clearInterval(timer);
-    };
-  }, []);
-
+function Map({ activeUsers }: IMapProps) {
   return (
     <MapContainer
       className={styles.Map}
@@ -52,8 +41,7 @@ function Map() {
                 })
               }
             >
-              <MapPopup user={user}/>
-
+              <MapPopup user={user} />
             </Marker>
           )
       )}
