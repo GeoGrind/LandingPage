@@ -83,13 +83,6 @@ const AllChats = () => {
       console.error("Error fetching data:", error);
     }
   };
-  // Fetch data when naviagation happens
-  useFocusEffect(
-    React.useCallback(() => {
-      fetchChatRoomsData();
-      return () => {};
-    }, [])
-  );
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
