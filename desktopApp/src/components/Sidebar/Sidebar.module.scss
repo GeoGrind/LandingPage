@@ -13,8 +13,16 @@
 
   gap: 12px;
 
-  &__search {
+  &__minimized {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 5400;
+    height: 300px;
+    width: 300px;
+  }
 
+  &__search {
   }
 
   &__activeUsersList {

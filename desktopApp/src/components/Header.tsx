@@ -1,33 +1,37 @@
 import { Link } from 'react-router-dom';
-import firebase, { FIREBASE_AUTH } from 'firebase';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { useState } from 'react';
-import {
-  getCurrentUser,
-  getUserByUid,
-  stopSessionOfCurrentUser,
-} from 'utils/db';
+import React, { useEffect, useState } from 'react';
+import { getCurrentUser, stopSessionOfCurrentUser } from 'utils/db';
+import { User } from 'types/user.type';
 import styles from './Header.module.scss';
 import icon from '../../assets/956fd6.png';
-import { User } from 'types/user.type';
 
-function Header() {
+interface IHeaderProps {
+  setShowLogin: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowSignUp: React.Dispatch<React.SetStateAction<boolean>>;
+  fetchData: () => Promise<void>;
+}
+function Header({ setShowLogin, setShowSignUp, fetchData }: IHeaderProps) {
   const auth = getAuth();
 
   const [isLoggedin, setIsLoggedIn] = useState(false);
   const [curUser, setCurUser] = useState(undefined);
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      setIsLoggedIn(true);
-      getCurrentUser(setCurUser);
-      // User is signed in, see docs for a list of available properties
-      // https://firebase.google.com/docs/reference/js/auth.user
-      // ...
-    } else {
-      setIsLoggedIn(false);
-      // User is signed out
-      // ...
-    }
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      console.log('AUTH STATE CHANGED!!');
+      if (user) {
+        setIsLoggedIn(true);
+        getCurrentUser(setCurUser);
+        // User is signed in, see docs for a list of available properties
+        // https://firebase.google.com/docs/reference/js/auth.user
+        // ...
+      } else {
+        setIsLoggedIn(false);
+        // User is signed out
+        // ...
+      }
+    });
   });
 
   const authOptions =
@@ -51,6 +55,7 @@ function Header() {
         </Link>
       </div>
     );
+
   return (
     <header className={styles.Header}>
       <div className={styles.Header__container}>
@@ -76,6 +81,16 @@ function Header() {
           </div>
 
           <div className={styles.Header__container__inner__utility}>
+            <button
+              className={styles.Header__container__inner__utility__item}
+              onClick={() => {
+                alert('fetched data');
+                fetchData();
+              }}
+              type="button"
+            >
+              FETCH DATA
+            </button>
             {isLoggedin ? (
               <Link
                 className={styles.Header__container__inner__utility__item}
@@ -84,12 +99,27 @@ function Header() {
                 Account
               </Link>
             ) : (
-              <Link
-                className={styles.Header__container__inner__utility__item}
-                to="/login"
-              >
-                Log In
-              </Link>
+              <>
+                <button
+                  className={styles.Header__container__inner__utility__item}
+                  onClick={() => {
+                    setShowLogin(true);
+                  }}
+                  type="button"
+                >
+                  login
+                </button>
+
+                <button
+                  className={styles.Header__container__inner__utility__item}
+                  onClick={() => {
+                    setShowSignUp(true);
+                  }}
+                  type="button"
+                >
+                  signup
+                </button>
+              </>
             )}
           </div>
         </div>

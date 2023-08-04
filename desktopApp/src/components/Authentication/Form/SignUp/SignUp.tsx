@@ -13,7 +13,11 @@ function isUwaterlooEmail(email: string) {
   return email.endsWith('@uwaterloo.ca');
 }
 
-function SignUp() {
+interface ISignUpProps {
+  setShowSignUp: any;
+}
+
+function SignUp({ setShowSignUp }: ISignUpProps) {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -57,7 +61,12 @@ function SignUp() {
   return (
     <div className={styles.SignUp}>
       <div className={styles.SignUp__left}>
-        <div className={styles.SignUp__header}>Welcome!</div>
+        <div className={styles.SignUp__header}>
+          Welcome!
+          <button type="button" onClick={() => setShowSignUp(false)}>
+            CLOSE SIGNUP
+          </button>
+        </div>
         <img
           className={styles.SignUp__logo}
           src={icon}

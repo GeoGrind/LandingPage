@@ -11,11 +11,9 @@ import Account from '../components/Authentication/Account/Account';
 export default function App() {
   return (
     <Router>
-      <Header />
+      <Home />
       <Routes>
         <Route path="/home" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<SignUp />} />
         <Route path="/account" element={<Account />} />
         <Route path="/createsession" element={<CreateSession />} />
       </Routes>
