@@ -18,12 +18,15 @@ import { Header } from "react-native-elements";
 import { doc, getDoc, getDocs } from "firebase/firestore";
 import { useFocusEffect } from "@react-navigation/native";
 import { formatTime } from "../utils/util";
-
+import Stories from "./Test";
+import { id } from "rn-emoji-keyboard";
 const AllChats = () => {
   const [chatRooms, setChatRooms] = useState<ChatRoom[]>([]);
   const { currentUser } = FIREBASE_AUTH;
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   const [idToEmoji, setIdToEmoji] = useState<{ [key: string]: string }>({});
+  const [idToNames, setIdToNames] = useState<{ [key: string]: string }>({});
+
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const fetchChatRoomsData = async () => {
@@ -36,7 +39,6 @@ const AllChats = () => {
           const chatRoom: ChatRoom = {
             id: doc.id,
             ownerIds: data.ownerIds || [],
-
             lastChangeTime: data.lastChangeTime,
           };
           return chatRoom;
@@ -62,8 +64,13 @@ const AllChats = () => {
         const userSnapshot = await getDoc(userRef);
         const userData = userSnapshot.data();
 
-        if (userData && userData.emoji) {
-          return { [userId]: userData.emoji };
+        if (userData) {
+          const emoji = userData.emoji || "";
+          const name = userData.name || "";
+          return {
+            emoji: { [userId]: emoji },
+            name: { [userId]: name },
+          };
         }
         return null;
       });
@@ -71,13 +78,22 @@ const AllChats = () => {
       const results = await Promise.all(promises);
       const updatedEmojis = results.reduce((acc, result) => {
         if (result) {
-          return { ...acc, ...result };
+          return { ...acc, ...result.emoji };
+        }
+        return acc;
+      }, {});
+      const updatedNames = results.reduce((acc, result) => {
+        if (result) {
+          return { ...acc, ...result.name };
         }
         return acc;
       }, {});
 
       setIdToEmoji((prevEmojis) => ({ ...prevEmojis, ...updatedEmojis }));
-      console.log(idToEmoji);
+      setIdToNames((prevNames) => ({
+        ...prevNames,
+        ...updatedNames,
+      }));
       setChatRooms(chatRoomsData);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -89,6 +105,13 @@ const AllChats = () => {
     await fetchChatRoomsData();
     setIsRefreshing(false);
   };
+  // Fetch data when naviagation happens
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchChatRoomsData();
+      return () => {};
+    }, [])
+  );
   return (
     <View style={styles.container}>
       <Header
@@ -101,36 +124,11 @@ const AllChats = () => {
         }}
         centerComponent={{ text: "Chats", style: { color: "#fff" } }}
       />
-      <ScrollView
-        contentContainerStyle={styles.scrollViewContent}
-        refreshControl={
-          <RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />
-        }
-      >
-        {chatRooms
-          .sort((a, b) => b.lastChangeTime - a.lastChangeTime) // Sort in descending order
-          .map((chatRoom: ChatRoom) => (
-            <TouchableOpacity
-              key={chatRoom.id}
-              style={styles.groupCard}
-              onPress={() => {
-                navigation.navigate("SingleChat", {
-                  id: chatRoom.id,
-                  chatRoomOwner1Id: chatRoom.ownerIds[0],
-                  chatRoomOwner2Id: chatRoom.ownerIds[1],
-                });
-              }}
-            >
-              {chatRoom.ownerIds[0] != currentUser?.uid && (
-                <Text>{idToEmoji[chatRoom.ownerIds[0]]}</Text>
-              )}
-              {chatRoom.ownerIds[1] != currentUser?.uid && (
-                <Text>{idToEmoji[chatRoom.ownerIds[1]]}</Text>
-              )}
-              <Text>{formatTime(chatRoom.lastChangeTime)}</Text>
-            </TouchableOpacity>
-          ))}
-      </ScrollView>
+      <Stories
+        chatRooms={chatRooms}
+        idToEmoji={idToEmoji}
+        idToNames={idToNames}
+      />
     </View>
   );
 };
