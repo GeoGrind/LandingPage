@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
-import MapView, { Marker, Callout } from "react-native-maps";
+import MapView, { Marker } from "react-native-maps";
 import {
   StyleSheet,
   View,
@@ -11,8 +11,6 @@ import {
 } from "react-native";
 import "firebase/firestore";
 import {
-  updateSession,
-  getUserLocationAndStoreInDb,
   stopSessionOfCurrentUser,
   fetchActiveUsers,
   updateUserExpoToken,
@@ -27,7 +25,6 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import Navbar from "../components/NavBar";
 import { Keyboard } from "react-native";
 import { useDispatch } from "react-redux";
-import { store } from "../store/store";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import BottomSheet from "@gorhom/bottom-sheet";
 import { CustomizableBottomSheet } from "../components/CustomizableBottomSheet";

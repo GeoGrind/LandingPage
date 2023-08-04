@@ -11,14 +11,12 @@ import {
 import React, { useLayoutEffect, useState } from "react";
 import {
   DocumentData,
-  addDoc,
   collection,
   onSnapshot,
   orderBy,
   query,
 } from "firebase/firestore";
 import { FIREBASE_DB, FIREBASE_AUTH } from "../../FirebaseConfig";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Message } from "../types";
 import "react-native-get-random-values";
 import { v4 as uuidv4 } from "uuid";
@@ -26,14 +24,17 @@ import { doc, setDoc } from "firebase/firestore";
 import { updateChatRoomLastChangeTime } from "../utils/db";
 import { formatTime } from "../utils/util";
 import { ScrollView } from "react-native";
-import { getMessaging, getToken } from "firebase/messaging";
-import { InsideRootStackParamList } from "../types";
 import { sendNotificationById } from "../utils/notifications";
-type Props = NativeStackScreenProps<InsideRootStackParamList, "SingleChat">;
-
-const SingleChat = ({ route, navigation }: Props) => {
-  const { id, chatRoomOwner1Id, chatRoomOwner2Id } = route.params;
-
+type Props = {
+  id: string;
+  chatRoomOwner1Id: string;
+  chatRoomOwner2Id: string;
+};
+const SingleChat: React.FC<Props> = ({
+  id,
+  chatRoomOwner1Id,
+  chatRoomOwner2Id,
+}) => {
   const { currentUser } = FIREBASE_AUTH;
   const [messages, setMessages] = useState<DocumentData[]>([]);
   const [message, setMessage] = useState<string>("");
@@ -59,7 +60,7 @@ const SingleChat = ({ route, navigation }: Props) => {
     });
 
     return unsubscribe;
-  }, []);
+  }, [id]);
 
   const sendMessage = async () => {
     try {
@@ -130,10 +131,6 @@ const SingleChat = ({ route, navigation }: Props) => {
           style={styles.messageInput}
         />
         <Button disabled={message === ""} title="Send" onPress={sendMessage} />
-        <Button
-          title="Go to the Map"
-          onPress={() => navigation.navigate("Map", {})}
-        />
       </View>
     </KeyboardAvoidingView>
   );

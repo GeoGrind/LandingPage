@@ -1,14 +1,5 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  Pressable,
-  ScrollView,
-  TouchableOpacity,
-  RefreshControl,
-} from "react-native";
+import { View, StyleSheet } from "react-native";
 import React, { useState } from "react";
-import { Ionicons } from "@expo/vector-icons";
 import { collection } from "firebase/firestore";
 import { FIREBASE_DB, FIREBASE_AUTH } from "../../FirebaseConfig";
 import { ChatRoom } from "../types";
@@ -17,9 +8,10 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Header } from "react-native-elements";
 import { doc, getDoc, getDocs } from "firebase/firestore";
 import { useFocusEffect } from "@react-navigation/native";
-import { formatTime } from "../utils/util";
-import Stories from "./Test";
-import { id } from "rn-emoji-keyboard";
+import Stories from "../components/Stories";
+import SingleChat from "./SingleChat";
+import BottomSheet from "@gorhom/bottom-sheet";
+import { useRef } from "react";
 const AllChats = () => {
   const [chatRooms, setChatRooms] = useState<ChatRoom[]>([]);
   const { currentUser } = FIREBASE_AUTH;
@@ -28,6 +20,21 @@ const AllChats = () => {
   const [idToNames, setIdToNames] = useState<{ [key: string]: string }>({});
 
   const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const [selectedChatOwner1Id, setSelectedChatOwner1Id] = useState<
+    string | null
+  >(null);
+  const [selectedChatOwner2Id, setSelectedChatOwner2Id] = useState<
+    string | null
+  >(null);
+  const [selectedChatRoomId, setSelectedChatRoomId] = useState<string | null>(
+    null
+  );
+  const bottomSheetRef = useRef<BottomSheet>(null);
+
+  const openBottomSheet = () => {
+    bottomSheetRef.current?.expand();
+  };
 
   const fetchChatRoomsData = async () => {
     try {
@@ -128,7 +135,21 @@ const AllChats = () => {
         chatRooms={chatRooms}
         idToEmoji={idToEmoji}
         idToNames={idToNames}
+        setSelectedChatOwner1Id={setSelectedChatOwner1Id}
+        setSelectedChatOwner2Id={setSelectedChatOwner2Id}
+        setSelectedChatRoomId={setSelectedChatRoomId}
+        openBottomSheet={openBottomSheet}
       />
+
+      {selectedChatOwner1Id && selectedChatOwner2Id && selectedChatRoomId && (
+        <BottomSheet ref={bottomSheetRef} index={1} snapPoints={["75%", "90%"]}>
+          <SingleChat
+            chatRoomOwner1Id={selectedChatOwner1Id}
+            chatRoomOwner2Id={selectedChatOwner2Id}
+            id={selectedChatRoomId}
+          />
+        </BottomSheet>
+      )}
     </View>
   );
 };
