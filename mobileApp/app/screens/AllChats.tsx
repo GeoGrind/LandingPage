@@ -1,5 +1,5 @@
 import { View, StyleSheet } from "react-native";
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { collection } from "firebase/firestore";
 import { FIREBASE_DB, FIREBASE_AUTH } from "../../FirebaseConfig";
 import { ChatRoom } from "../types";
@@ -18,8 +18,6 @@ const AllChats = () => {
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   const [idToEmoji, setIdToEmoji] = useState<{ [key: string]: string }>({});
   const [idToNames, setIdToNames] = useState<{ [key: string]: string }>({});
-
-  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const [selectedChatOwner1Id, setSelectedChatOwner1Id] = useState<
     string | null
@@ -50,6 +48,7 @@ const AllChats = () => {
           };
           return chatRoom;
         })
+        .sort((a, b) => b.lastChangeTime - a.lastChangeTime)
         .filter((chatRoom: ChatRoom) => {
           return (
             chatRoom.ownerIds[0] === currentUser?.uid ||
@@ -107,11 +106,6 @@ const AllChats = () => {
     }
   };
 
-  const handleRefresh = async () => {
-    setIsRefreshing(true);
-    await fetchChatRoomsData();
-    setIsRefreshing(false);
-  };
   // Fetch data when naviagation happens
   useFocusEffect(
     React.useCallback(() => {
@@ -119,6 +113,11 @@ const AllChats = () => {
       return () => {};
     }, [])
   );
+
+  // callbacks
+  const handleSheetChanges = useCallback((index: number) => {
+    fetchChatRoomsData();
+  }, []);
   return (
     <View style={styles.container}>
       <Header
@@ -142,7 +141,12 @@ const AllChats = () => {
       />
 
       {selectedChatOwner1Id && selectedChatOwner2Id && selectedChatRoomId && (
-        <BottomSheet ref={bottomSheetRef} index={1} snapPoints={["75%", "90%"]}>
+        <BottomSheet
+          ref={bottomSheetRef}
+          index={1}
+          snapPoints={["75%", "90%"]}
+          onChange={handleSheetChanges}
+        >
           <SingleChat
             chatRoomOwner1Id={selectedChatOwner1Id}
             chatRoomOwner2Id={selectedChatOwner2Id}

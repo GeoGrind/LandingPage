@@ -1,12 +1,10 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
-type Props = {
-  id: string | null;
-};
-const Test: React.FC<Props> = ({ id }) => {
+
+const Test = () => {
   return (
     <View>
-      <Text>{id}</Text>
+      <Text></Text>
     </View>
   );
 };

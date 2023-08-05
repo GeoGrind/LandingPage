@@ -8,7 +8,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-import React, { useLayoutEffect, useState } from "react";
+import React, { useLayoutEffect, useRef, useState } from "react";
 import {
   DocumentData,
   collection,
@@ -25,6 +25,8 @@ import { updateChatRoomLastChangeTime } from "../utils/db";
 import { formatTime } from "../utils/util";
 import { ScrollView } from "react-native";
 import { sendNotificationById } from "../utils/notifications";
+import { Dimensions } from "react-native";
+
 type Props = {
   id: string;
   chatRoomOwner1Id: string;
@@ -105,23 +107,39 @@ const SingleChat: React.FC<Props> = ({
         ]}
       >
         <Text style={styles.messageText}>{item.message}</Text>
-        <Text style={styles.time}>{formatTime(item.createdAt)}</Text>
+        <Text style={[styles.time, myMessage ? {} : { color: "black" }]}>
+          {formatTime(item.createdAt)}
+        </Text>
       </View>
     );
   };
+  const flatListRef = useRef<FlatList>(null);
+  const windowHeight = Dimensions.get("window").height;
+  const keyboardVerticalOffset = Platform.OS === "ios" ? windowHeight * 0.1 : 0;
 
   return (
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={keyboardVerticalOffset + 20}
     >
-      <ScrollView
-        contentContainerStyle={{ flexGrow: 1, justifyContent: "flex-end" }}
-      >
-        {messages.map((item) => (
-          <View key={item.id}>{renderMessage({ item })}</View>
-        ))}
-      </ScrollView>
+      <FlatList
+        ref={flatListRef}
+        data={messages}
+        keyExtractor={(item) => item.id}
+        renderItem={renderMessage}
+        contentContainerStyle={{ flexGrow: 1 }}
+        onContentSizeChange={() => {
+          if (messages.length > 0) {
+            flatListRef.current!.scrollToEnd({ animated: true });
+          }
+        }}
+        onLayout={() => {
+          if (messages.length > 0) {
+            flatListRef.current!.scrollToEnd({ animated: true });
+          }
+        }}
+      />
       <View style={styles.inputContainer}>
         <TextInput
           multiline
@@ -165,7 +183,7 @@ const styles = StyleSheet.create({
     alignSelf: "flex-end",
   },
   otherMessageContainer: {
-    backgroundColor: "#fff",
+    backgroundColor: "grey",
   },
   messageText: {
     fontSize: 16,

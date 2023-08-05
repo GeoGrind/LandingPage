@@ -34,86 +34,84 @@ const Stories: React.FC<Props> = ({
       showsHorizontalScrollIndicator={false}
       style={{ paddingVertical: 20 }}
     >
-      {chatRooms
-        .sort((a, b) => b.lastChangeTime - a.lastChangeTime)
-        .map((data, index) => {
-          return (
-            <TouchableOpacity
-              key={index}
-              onPress={() => {
-                setSelectedChatOwner1Id(data.ownerIds[0]);
-                setSelectedChatOwner2Id(data.ownerIds[1]);
-                setSelectedChatRoomId(data.id);
-                openBottomSheet();
+      {chatRooms.map((data, index) => {
+        return (
+          <TouchableOpacity
+            key={index}
+            onPress={() => {
+              setSelectedChatOwner1Id(data.ownerIds[0]);
+              setSelectedChatOwner2Id(data.ownerIds[1]);
+              setSelectedChatRoomId(data.id);
+              openBottomSheet();
+            }}
+          >
+            <View
+              style={{
+                flexDirection: "column",
+                paddingHorizontal: 8,
+                position: "relative",
               }}
             >
               <View
                 style={{
-                  flexDirection: "column",
-                  paddingHorizontal: 8,
-                  position: "relative",
+                  width: 68,
+                  height: 68,
+                  backgroundColor: "white",
+                  borderWidth: 1.8,
+                  borderRadius: 100,
+                  borderColor: "#c13584",
+                  justifyContent: "center",
+                  alignItems: "center",
                 }}
               >
-                <View
-                  style={{
-                    width: 68,
-                    height: 68,
-                    backgroundColor: "white",
-                    borderWidth: 1.8,
-                    borderRadius: 100,
-                    borderColor: "#c13584",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  {data.ownerIds[0] != currentUserRedux?.uid && (
-                    <Text
-                      style={{
-                        fontSize: 30,
-                        color: "black",
-                      }}
-                    >
-                      {idToEmoji[data?.ownerIds[0]]}
-                    </Text>
-                  )}
-                  {data.ownerIds[1] != currentUserRedux?.uid && (
-                    <Text
-                      style={{
-                        fontSize: 30,
-                        color: "black",
-                      }}
-                    >
-                      {idToEmoji[data?.ownerIds[1]]}
-                    </Text>
-                  )}
-                </View>
-
                 {data.ownerIds[0] != currentUserRedux?.uid && (
                   <Text
                     style={{
-                      textAlign: "center",
-                      fontSize: 10,
-                      opacity: 1,
+                      fontSize: 30,
+                      color: "black",
                     }}
                   >
-                    {idToNames[data?.ownerIds[0]]}
+                    {idToEmoji[data?.ownerIds[0]]}
                   </Text>
                 )}
                 {data.ownerIds[1] != currentUserRedux?.uid && (
                   <Text
                     style={{
-                      textAlign: "center",
-                      fontSize: 10,
-                      opacity: 1,
+                      fontSize: 30,
+                      color: "black",
                     }}
                   >
-                    {idToNames[data?.ownerIds[1]]}
+                    {idToEmoji[data?.ownerIds[1]]}
                   </Text>
                 )}
               </View>
-            </TouchableOpacity>
-          );
-        })}
+
+              {data.ownerIds[0] != currentUserRedux?.uid && (
+                <Text
+                  style={{
+                    textAlign: "center",
+                    fontSize: 10,
+                    opacity: 1,
+                  }}
+                >
+                  {idToNames[data?.ownerIds[0]]}
+                </Text>
+              )}
+              {data.ownerIds[1] != currentUserRedux?.uid && (
+                <Text
+                  style={{
+                    textAlign: "center",
+                    fontSize: 10,
+                    opacity: 1,
+                  }}
+                >
+                  {idToNames[data?.ownerIds[1]]}
+                </Text>
+              )}
+            </View>
+          </TouchableOpacity>
+        );
+      })}
     </ScrollView>
   );
 };

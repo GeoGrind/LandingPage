@@ -22,6 +22,7 @@ import {
 import Signup from "./app/screens/Signup";
 import UpdateEmoji from "./app/screens/userInfoEditScreens/UpdateEmoji";
 import UpdateBase from "./app/screens/userInfoEditScreens/UpdateBase";
+
 const Stack = createNativeStackNavigator();
 
 const InsideStack = createStackNavigator<InsideRootStackParamList>();
@@ -41,11 +42,6 @@ function InsideLayout() {
       <InsideStack.Screen name="AllChats" component={AllChats} />
       <InsideStack.Screen name="UpdateEmoji" component={UpdateEmoji} />
       <InsideStack.Screen name="UpdateBase" component={UpdateBase} />
-      <InsideStack.Screen
-        name="SingleChat"
-        component={SingleChat}
-        initialParams={{ id: "temp" }}
-      />
     </InsideStack.Navigator>
   );
 }
