@@ -13,6 +13,7 @@ export type User = {
   region: string | null;
   gender: string | null;
   university: string | null;
+  profilePicture: string | null;
 };
 
 export type Location = {
@@ -66,6 +67,7 @@ export type InsideRootStackParamList = {
   Profile: {
     id: string;
   };
+  UpdateProfilePicture: {};
 };
 
 export type OutsideRootStackParamList = {

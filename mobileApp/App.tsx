@@ -23,6 +23,7 @@ import Signup from "./app/screens/Signup";
 import UpdateEmoji from "./app/screens/userInfoEditScreens/UpdateEmoji";
 import UpdateBase from "./app/screens/userInfoEditScreens/UpdateBase";
 import Profile from "./app/screens/Profile";
+import UpdateProfilePicture from "./app/screens/userInfoEditScreens/UpdateProfilePicture";
 
 const Stack = createNativeStackNavigator();
 
@@ -44,6 +45,10 @@ function InsideLayout() {
       <InsideStack.Screen name="UpdateEmoji" component={UpdateEmoji} />
       <InsideStack.Screen name="UpdateBase" component={UpdateBase} />
       <InsideStack.Screen name="Profile" component={Profile} />
+      <InsideStack.Screen
+        name="UpdateProfilePicture"
+        component={UpdateProfilePicture}
+      />
     </InsideStack.Navigator>
   );
 }
