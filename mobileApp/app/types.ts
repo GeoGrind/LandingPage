@@ -63,6 +63,9 @@ export type InsideRootStackParamList = {
   UpdateBase: {
     field: string;
   };
+  Profile: {
+    id: string;
+  };
 };
 
 export type OutsideRootStackParamList = {
