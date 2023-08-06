@@ -12,7 +12,7 @@ import { Card, Title, Paragraph } from "react-native-paper";
 
 import Modal, { ReactNativeModal } from "react-native-modal";
 import { MultipleSelectList } from "react-native-dropdown-select-list";
-import { updateUserProfile } from "../utils/db";
+import { updateUserSetting } from "../utils/db";
 import { FIREBASE_AUTH } from "../../FirebaseConfig";
 import { getUserById } from "../utils/db";
 import { User } from "../types";
@@ -22,7 +22,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { store } from "../store/store";
 import { useSelector } from "react-redux";
 
-export default function Profile() {
+export default function Setting() {
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   const currentUser = useSelector(
     (state: any) => state.currentUser.currentUser

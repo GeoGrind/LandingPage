@@ -49,7 +49,7 @@ export type ChatRoom = {
 // The params need to be passed in when navigating between the screens
 export type InsideRootStackParamList = {
   Map: {};
-  Profile: {};
+  Setting: {};
   Test: {};
   ListView: {};
   AllChats: {};

@@ -261,7 +261,7 @@ export const getChatRoomFromUserId = async (
   }
 };
 
-export const updateUserProfile = async (
+export const updateUserSetting = async (
   firstName: string,
   lastName: string,
   emoji: string,
@@ -281,7 +281,7 @@ export const updateUserProfile = async (
       });
     }
   } catch (error) {
-    console.error("Error updating user profile:", error);
+    console.error("Error updating user setting:", error);
     throw error;
   }
 };

@@ -23,7 +23,6 @@ import { FIREBASE_AUTH } from "../../FirebaseConfig";
 import { Session, User } from "../types";
 import { useNavigation, ParamListBase } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import UserDotInfo from "./UserDotInfo";
 import Navbar from "../components/NavBar";
 import { Keyboard } from "react-native";
 import SessionCard from "../components/SessionCard";
@@ -109,8 +108,8 @@ const ListView = () => {
       console.log("Error stopping session:", error);
     }
   };
-  const handleProfileClick = () => {
-    navigation.navigate("Profile");
+  const handleSettingClick = () => {
+    navigation.navigate("Setting");
   };
 
   const filterUsers = () => {

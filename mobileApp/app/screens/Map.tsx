@@ -57,7 +57,7 @@ const Map = () => {
   const fetchAndSetData = async () => {
     console.log("sync with DB");
     if (FIREBASE_AUTH.currentUser?.uid === undefined) {
-      console.log("Error when fetching user in profile.tsx");
+      console.log("Error when fetching user in Setting.tsx");
       return;
     }
     const currentUserFetched = await getUserById(
@@ -155,8 +155,8 @@ const Map = () => {
       console.log("Error stopping session:", error);
     }
   };
-  const handleProfileClick = () => {
-    navigation.navigate("Profile");
+  const handleSettingClick = () => {
+    navigation.navigate("Setting");
   };
 
   const filterUsers = () => {
@@ -251,7 +251,7 @@ const Map = () => {
           onChatClick={() => {
             navigation.navigate("AllChats");
           }}
-          onProfileClick={handleProfileClick}
+          onSettingClick={handleSettingClick}
         />
       </View>
 

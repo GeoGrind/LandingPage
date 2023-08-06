@@ -2,7 +2,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Login from "./app/screens/Login";
 import Map from "./app/screens/Map";
-import Profile from "./app/screens/Profile";
+import Setting from "./app/screens/Setting";
 import { useEffect, useState } from "react";
 import { User, onAuthStateChanged } from "firebase/auth";
 import { FIREBASE_AUTH } from "./FirebaseConfig";
@@ -36,7 +36,7 @@ function InsideLayout() {
       }}
     >
       <InsideStack.Screen name="Map" component={Map} />
-      <InsideStack.Screen name="Profile" component={Profile} />
+      <InsideStack.Screen name="Setting" component={Setting} />
       <InsideStack.Screen name="Test" component={Test} />
       <InsideStack.Screen name="ListView" component={ListView} />
       <InsideStack.Screen name="AllChats" component={AllChats} />
