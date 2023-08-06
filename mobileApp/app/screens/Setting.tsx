@@ -1,26 +1,46 @@
-import React, { useState, useRef, useEffect } from "react";
-import {
-  Button,
-  View,
-  Text,
-  TextInput,
-  Keyboard,
-  TouchableWithoutFeedback,
-  StyleSheet,
-} from "react-native";
-import { Card, Title, Paragraph } from "react-native-paper";
-
-import Modal, { ReactNativeModal } from "react-native-modal";
-import { MultipleSelectList } from "react-native-dropdown-select-list";
-import { updateUserSetting } from "../utils/db";
-import { FIREBASE_AUTH } from "../../FirebaseConfig";
-import { getUserById } from "../utils/db";
-import { User } from "../types";
+import React from "react";
+import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import { useNavigation, ParamListBase } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { store } from "../store/store";
 import { useSelector } from "react-redux";
+
+function getIconByTitle(title: string) {
+  switch (title) {
+    case "Email": {
+      return <FontAwesome5 name="inbox" size={24} color="black" />;
+    }
+    case "Name": {
+      return <FontAwesome5 name="user" size={24} color="black" />;
+    }
+    case "Year": {
+      return <FontAwesome5 name="calendar-alt" size={24} color="black" />;
+    }
+
+    case "Program": {
+      return <FontAwesome5 name="graduation-cap" size={24} color="black" />;
+    }
+    case "Status": {
+      return <FontAwesome5 name="smile" size={24} color="black" />;
+    }
+    case "Courses": {
+      return <FontAwesome5 name="chalkboard-teacher" size={24} color="black" />;
+    }
+    default: {
+      return <Text>Error</Text>;
+    }
+  }
+}
+
+function CircleInfo({ title, onPress, style }: any) {
+  return (
+    <TouchableOpacity style={[styles.circleContainer, style]} onPress={onPress}>
+      <Text style={styles.circleTitle}>{title}</Text>
+      {getIconByTitle(title)}
+      <FontAwesome5 name="arrow-right" size={24} color="black" />
+    </TouchableOpacity>
+  );
+}
 
 export default function Setting() {
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
@@ -30,124 +50,34 @@ export default function Setting() {
 
   return (
     <View style={styles.container}>
-      <Card style={styles.card}>
-        <Card.Content style={styles.content}>
-          <Title>Name:</Title>
-          <View style={styles.rightSection}>
-            <Paragraph
-              numberOfLines={1}
-              ellipsizeMode="tail"
-              style={styles.textWrapper}
-            >
-              {currentUser?.name}
-            </Paragraph>
-            <FontAwesome5
-              name="arrow-right"
-              size={30}
-              color="black"
-              onPress={() => {
-                navigation.navigate("UpdateBase", {
-                  field: "name",
-                });
-              }}
-            />
-          </View>
-        </Card.Content>
-      </Card>
-      <Card style={styles.card}>
-        <Card.Content style={styles.content}>
-          <Title>Email:</Title>
-          <View style={styles.rightSection}>
-            <Paragraph
-              numberOfLines={1}
-              ellipsizeMode="tail"
-              style={styles.textWrapper}
-            >
-              {currentUser?.email}
-            </Paragraph>
-            <FontAwesome5
-              name="arrow-right"
-              size={30}
-              color="black"
-              onPress={() => {
-                navigation.navigate("UpdateBase", {
-                  field: "email",
-                });
-              }}
-            />
-          </View>
-        </Card.Content>
-      </Card>
-      <Card style={styles.card}>
-        <Card.Content style={styles.content}>
-          <Title>Program:</Title>
-          <View style={styles.rightSection}>
-            <Paragraph
-              numberOfLines={1}
-              ellipsizeMode="tail"
-              style={styles.textWrapper}
-            >
-              {currentUser?.program}
-            </Paragraph>
-            <FontAwesome5
-              name="arrow-right"
-              size={30}
-              color="black"
-              onPress={() => {
-                navigation.navigate("UpdateBase", {
-                  field: "program",
-                });
-              }}
-            />
-          </View>
-        </Card.Content>
-      </Card>
-      <Card style={styles.card}>
-        <Card.Content style={styles.content}>
-          <Title>Year of Graduation:</Title>
-          <View style={styles.rightSection}>
-            <Paragraph
-              numberOfLines={1}
-              ellipsizeMode="tail"
-              style={styles.textWrapper}
-            >
-              {currentUser?.yearOfGraduation}
-            </Paragraph>
-            <FontAwesome5
-              name="arrow-right"
-              size={30}
-              color="black"
-              onPress={() => {
-                navigation.navigate("UpdateBase", {
-                  field: "yearOfGraduation",
-                });
-              }}
-            />
-          </View>
-        </Card.Content>
-      </Card>
-      <Card style={styles.card}>
-        <Card.Content style={styles.content}>
-          <Title>Status:</Title>
-          <View style={styles.rightSection}>
-            <Paragraph
-              numberOfLines={1}
-              ellipsizeMode="tail"
-              style={styles.textWrapper}
-            >
-              {currentUser?.emoji}
-            </Paragraph>
-            <FontAwesome5
-              name="arrow-right"
-              size={30}
-              color="black"
-              onPress={() => {
-                navigation.navigate("UpdateEmoji");
-              }}
-            />
-          </View>
-        </Card.Content>
-      </Card>
+      <CircleInfo
+        title="Name"
+        onPress={() => navigation.navigate("UpdateBase", { field: "name" })}
+        style={styles.circle1}
+      />
+
+      <CircleInfo
+        title="Program"
+        onPress={() => navigation.navigate("UpdateBase", { field: "program" })}
+        style={styles.circle2}
+      />
+      <CircleInfo
+        title="Year"
+        onPress={() =>
+          navigation.navigate("UpdateBase", { field: "yearOfGraduation" })
+        }
+        style={styles.circle3}
+      />
+      <CircleInfo
+        title="Status"
+        onPress={() => navigation.navigate("UpdateEmoji")}
+        style={styles.circle4}
+      />
+      <CircleInfo
+        title="Courses"
+        onPress={() => navigation.navigate("UpdateEmoji")}
+        style={styles.circle5}
+      />
     </View>
   );
 }
@@ -156,24 +86,62 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
+    position: "relative", // Important for absolute positioning
+  },
+  circleContainer: {
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#e0e0e0",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    position: "absolute", // Absolute position
+  },
+  circleTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  circleInfo: {
+    fontSize: 14,
+    textAlign: "center",
+    marginBottom: 8,
+  },
+  circle1: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    top: 30, // Predefined Y position
+    left: 40, // Predefined X position
   },
 
-  card: {
-    marginBottom: 10,
-    width: 350,
+  circle2: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    top: 350,
+    right: 30,
   },
-  content: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+  circle3: {
+    width: 90,
+    height: 90,
+    borderRadius: 45,
+    top: 100,
+    right: 50,
   },
-  rightSection: {
-    flexDirection: "row",
-    alignItems: "center",
+  circle4: {
+    width: 110,
+    height: 110,
+    borderRadius: 55,
+    bottom: 80,
+    left: 200,
   },
-  textWrapper: {
-    marginRight: 10, // Add the desired spacing here (e.g., 10)
+  circle5: {
+    width: 110,
+    height: 110,
+    borderRadius: 65,
+    bottom: 400,
+    left: 20,
   },
 });
