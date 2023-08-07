@@ -1,4 +1,4 @@
-import { MapContainer, TileLayer, Marker } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, ZoomControl } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Icon } from 'leaflet';
 import MapPopup from './MapPopup/MapPopup';
@@ -15,7 +15,8 @@ function Map({ activeUsers }: IMapProps) {
     <MapContainer
       className={styles.Map}
       center={[43.472286, -80.544861]}
-      zoomDelta={0.1}
+      zoomControl={false}
+      zoomDelta={2}
       zoom={14}
       minZoom={3}
       maxZoom={18}
@@ -25,6 +26,7 @@ function Map({ activeUsers }: IMapProps) {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution="Map data © OpenStreetMap contributors"
       />
+      <ZoomControl position="bottomright" />
       {activeUsers.map(
         (user) =>
           user.session && (

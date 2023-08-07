@@ -46,12 +46,7 @@ function Header({
         <div className={styles.Header__container__inner}>
           <div className={styles.Header__container__inner__logo}>
             <Link to="/">
-              <img
-                className={styles.Header__logo}
-                src={icon}
-                height={40}
-                alt="Logo"
-              />
+              <img src={icon} height={40} alt="Logo" />
             </Link>
           </div>
           <div className={styles.Header__container__inner__nav}>
