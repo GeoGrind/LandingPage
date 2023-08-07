@@ -1,8 +1,6 @@
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Icon } from 'leaflet';
-import { useEffect, useState } from 'react';
-import { fetchActiveUsers } from 'utils/db';
 import MapPopup from './MapPopup/MapPopup';
 import markerIconPng from '../../../assets/956fd6.png';
 import { User } from '../../types/user.type';
@@ -40,7 +38,7 @@ function Map({ activeUsers }: IMapProps) {
                 new Icon({
                   iconUrl: markerIconPng,
                   iconSize: [25, 41],
-                  iconAnchor: [12, 41],
+                  iconAnchor: [12, 20],
                 })
               }
             >
