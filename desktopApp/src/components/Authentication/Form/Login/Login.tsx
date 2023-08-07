@@ -22,7 +22,8 @@ function Login({ setShowLogin }: ILoginProps) {
       .then((userCredential) => {
         // Signed in
         const { user } = userCredential;
-        navigate('/home');
+        setShowLogin(false);
+        navigate('/');
         console.log(user);
         return null;
       })

@@ -43,16 +43,16 @@ function SignUp({ setShowSignUp }: ISignUpProps) {
         uid: response.user.uid,
         email: response.user.email || '',
         username,
-        program: 'math',
         yearOfGraduation: 2026,
-        status: 'emoji',
+        university: 'University of Waterloo',
+        program: 'math',
+        termCourses: [],
         bio: 'dummy bio',
         session: null,
       };
 
-      console.log('The username is: ', username);
       await createUser(user);
-      navigate('/login');
+      setShowSignUp(false);
     } catch {
       console.log(e);
     }
@@ -76,8 +76,8 @@ function SignUp({ setShowSignUp }: ISignUpProps) {
         />
         <div className={styles.SignUp__left__footer}>
           Already have an account?{' '}
-          <NavLink className={styles.link} to="/login">
-            Log in
+          <NavLink className={styles.link} to="/">
+            CHANGE LATER!!
           </NavLink>
         </div>
       </div>

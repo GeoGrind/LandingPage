@@ -29,7 +29,7 @@ function CreateSession() {
     };
     await createSession(session);
     console.log('created session');
-    navigate('/home');
+    navigate('/');
   };
 
   return (
