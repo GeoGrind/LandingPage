@@ -11,9 +11,7 @@ import {
 } from "react-native";
 import "firebase/firestore";
 import {
-  stopSessionOfCurrentUser,
   fetchActiveUsers,
-  updateUserExpoToken,
   getUserLocation,
   updateUserFields,
 } from "../utils/db";
@@ -133,8 +131,14 @@ const Map = () => {
 
   const handleSignOffClick = async () => {
     try {
-      await stopSessionOfCurrentUser();
-      await updateUserExpoToken("");
+      updateUserFields({
+        location: null,
+        onGoingSession: null,
+        isInSession: false,
+      });
+      await updateUserFields({
+        expoToken: "",
+      });
       await signOut(FIREBASE_AUTH);
     } catch (error) {
       console.log("Error signing off:", error);
@@ -143,7 +147,11 @@ const Map = () => {
   const handleStopSessionClick = async () => {
     // TODO: Needs the UI update immediately after the button is clicked
     try {
-      await stopSessionOfCurrentUser();
+      updateUserFields({
+        location: null,
+        onGoingSession: null,
+        isInSession: false,
+      });
       dispatch(
         updateCurrentUser({
           location: null,

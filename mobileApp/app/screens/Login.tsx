@@ -11,7 +11,7 @@ import { FIREBASE_AUTH } from "../../FirebaseConfig";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { endsWithCanadianUniversitySuffix } from "../utils/emailVerification";
 import { initializeExpoToken } from "../utils/notifications";
-import { updateUserExpoToken } from "../utils/db";
+import { updateUserFields } from "../utils/db";
 import { useNavigation, ParamListBase } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 const Login = () => {
@@ -29,7 +29,9 @@ const Login = () => {
         console.log("issue with expo token");
         return;
       }
-      await updateUserExpoToken(expoToken);
+      await updateUserFields({
+        expoToken: expoToken,
+      });
     } catch (e: any) {
       console.log(e);
       alert("Sign in failed" + e.message);

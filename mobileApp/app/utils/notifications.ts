@@ -1,6 +1,6 @@
 import * as Notifications from "expo-notifications";
 import { Keyboard, Alert, Platform } from "react-native";
-import { getExpoTokenById, getUserById } from "./db";
+import { getUserById } from "./db";
 
 export const initializeExpoToken = async () => {
   const { status } = await Notifications.getPermissionsAsync();
