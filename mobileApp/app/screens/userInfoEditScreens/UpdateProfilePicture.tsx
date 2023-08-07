@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button, Image, View, Text } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import { handleUpload } from "../../utils/db";
+import { getUserById, handleUpload } from "../../utils/db";
 import { FIREBASE_AUTH } from "../../../FirebaseConfig";
 import { useNavigation, ParamListBase } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -13,12 +13,12 @@ export default function UpdateProfilePicture() {
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
 
   useEffect(() => {
-    // Fetch the user's profile picture from Firestore here
     const fetchProfilePicture = async () => {
-      // Replace 'fetchProfilePictureFromFirestore' with your own logic to retrieve the profile picture
       const profilePicture = await fetchProfilePictureFromFirestore();
-      // Update the 'image' state with the fetched profile picture
-      setImage(profilePicture);
+      const user = await getUserById(currentUser!.uid);
+      if (user?.profilePicture) {
+        setImage(user?.profilePicture);
+      }
     };
     fetchProfilePicture();
   }, []);
