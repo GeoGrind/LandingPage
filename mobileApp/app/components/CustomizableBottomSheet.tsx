@@ -24,29 +24,9 @@ const updateCheerersInDB = async (uid: string) => {
   }
 };
 const handleChatPerson = async (
-  navigation: NativeStackNavigationProp<ParamListBase>,
-  person1Id: string,
-  person2Id: string
+  navigation: NativeStackNavigationProp<ParamListBase>
 ) => {
-  try {
-    const chatRoomId = await getChatRoomFromUserId(person1Id, person2Id);
-    if (chatRoomId == null) {
-      const newChatRoomId = await createChatRoom(person1Id, person2Id);
-      navigation.navigate("SingleChat", {
-        id: newChatRoomId,
-        chatRoomOwner1Id: person1Id,
-        chatRoomOwner2Id: person2Id,
-      });
-    } else {
-      navigation.navigate("SingleChat", {
-        id: chatRoomId,
-        chatRoomOwner1Id: person1Id,
-        chatRoomOwner2Id: person2Id,
-      });
-    }
-  } catch (e) {
-    console.log("handleChatPerson Error", e);
-  }
+  navigation.navigate("AllChats");
 };
 export const CustomizableBottomSheet: React.FC<Props> = ({
   bottomSheetRef,
@@ -117,7 +97,7 @@ export const CustomizableBottomSheet: React.FC<Props> = ({
           title={"Chat with me"}
           icon={<Icon name="chat" type="material" color="white" />}
           buttonStyle={styles.button}
-          onPress={() => handleChatPerson(navigation, userMarker.uid, user.uid)}
+          onPress={() => handleChatPerson(navigation)}
         />
       )}
     </BottomSheet>

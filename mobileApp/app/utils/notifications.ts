@@ -1,6 +1,6 @@
 import * as Notifications from "expo-notifications";
 import { Keyboard, Alert, Platform } from "react-native";
-import { getExpoTokenById } from "./db";
+import { getExpoTokenById, getUserById } from "./db";
 
 export const initializeExpoToken = async () => {
   const { status } = await Notifications.getPermissionsAsync();
@@ -46,7 +46,8 @@ export function scheduleNotificationHandler() {
 }
 
 export const sendNotificationById = async (id: string) => {
-  const expoToken = await getExpoTokenById(id);
+  const user = await getUserById(id);
+  const expoToken = user?.expoToken;
   if (expoToken === "") {
     return;
   }

@@ -44,9 +44,6 @@ function CircleInfo({ title, onPress, style }: any) {
 
 export default function Setting() {
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
-  const currentUser = useSelector(
-    (state: any) => state.currentUser.currentUser
-  );
 
   return (
     <View style={styles.container}>
