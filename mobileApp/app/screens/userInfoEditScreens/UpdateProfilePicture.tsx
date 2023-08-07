@@ -3,7 +3,6 @@ import { Button, Image, View, Text } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { handleUpload } from "../../utils/db";
 import { FIREBASE_AUTH } from "../../../FirebaseConfig";
-import { User } from "../../types";
 import { useNavigation, ParamListBase } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { fetchProfilePictureFromFirestore } from "../../utils/db";

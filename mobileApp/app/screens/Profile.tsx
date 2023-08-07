@@ -8,7 +8,7 @@ import { User } from "../types";
 import { useState } from "react";
 type Props = NativeStackScreenProps<InsideRootStackParamList, "Profile">;
 
-const Profile = ({ route, navigation }: Props) => {
+const Profile = ({ route }: Props) => {
   const { id } = route.params;
   const [targetUser, setTargetUser] = useState<User | null>(null);
 

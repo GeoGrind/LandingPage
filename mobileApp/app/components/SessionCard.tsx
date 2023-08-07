@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet } from "react-native";
-import { Card, ListItem, Image } from "react-native-elements";
+import { Card } from "react-native-elements";
 import { Session } from "../types";
 
 import * as React from "react";
@@ -15,14 +15,7 @@ interface SessionCardProps {
 }
 
 const SessionCard: React.FC<SessionCardProps> = ({ session }) => {
-  const {
-    course,
-    startTime,
-    isVisible,
-    sessionStartLocation,
-    numberOfCheerers,
-    cheerers,
-  } = session;
+  const { course, startTime, numberOfCheerers, cheerers } = session;
 
   return (
     <Card>

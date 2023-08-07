@@ -1,10 +1,7 @@
 import React from "react";
 import { View, Text, ScrollView, TouchableOpacity } from "react-native";
-import { useNavigation } from "@react-navigation/native";
 import { ChatRoom } from "../types";
 import { useSelector } from "react-redux";
-import { ParamListBase } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 type Props = {
   chatRooms: ChatRoom[];
   idToEmoji: { [key: string]: string };
@@ -23,8 +20,6 @@ const Stories: React.FC<Props> = ({
   setSelectedChatRoomId,
   openBottomSheet,
 }) => {
-  const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
-  console.log(idToNames);
   const currentUserRedux = useSelector(
     (state: any) => state.currentUser.currentUser
   );

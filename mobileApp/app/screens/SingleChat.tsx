@@ -23,7 +23,6 @@ import { v4 as uuidv4 } from "uuid";
 import { doc, setDoc } from "firebase/firestore";
 import { updateChatRoomLastChangeTime } from "../utils/db";
 import { formatTime } from "../utils/util";
-import { ScrollView } from "react-native";
 import { sendNotificationById } from "../utils/notifications";
 import { Dimensions } from "react-native";
 

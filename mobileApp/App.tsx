@@ -9,10 +9,7 @@ import { FIREBASE_AUTH } from "./FirebaseConfig";
 import { Provider } from "react-redux";
 import { store } from "./app/store/store";
 import Test from "./app/screens/Test";
-import { Keyboard, Alert, Platform } from "react-native";
-import ListView from "./app/screens/ListView";
 import AllChats from "./app/screens/AllChats";
-import SingleChat from "./app/screens/SingleChat";
 import { createStackNavigator } from "@react-navigation/stack";
 import * as Notifications from "expo-notifications";
 import {
@@ -40,7 +37,6 @@ function InsideLayout() {
       <InsideStack.Screen name="Map" component={Map} />
       <InsideStack.Screen name="Setting" component={Setting} />
       <InsideStack.Screen name="Test" component={Test} />
-      <InsideStack.Screen name="ListView" component={ListView} />
       <InsideStack.Screen name="AllChats" component={AllChats} />
       <InsideStack.Screen name="UpdateEmoji" component={UpdateEmoji} />
       <InsideStack.Screen name="UpdateBase" component={UpdateBase} />

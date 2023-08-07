@@ -1,16 +1,12 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Button, View, Pressable } from "react-native";
+import { StyleSheet, View, Pressable } from "react-native";
 import BottomSheet from "@gorhom/bottom-sheet";
 import { updateUserFields } from "../../utils/db";
-import { Text, TextInput } from "react-native";
-import { User } from "../../types";
-import { getUserById } from "../../utils/db";
-import { FIREBASE_AUTH } from "../../../FirebaseConfig";
+import { Text } from "react-native";
 import EmojiPicker from "rn-emoji-keyboard";
 import { useDispatch } from "react-redux";
 import { updateCurrentUser } from "../../store/features/currentUserSlice";
-import { store } from "../../store/store";
 import { useSelector } from "react-redux";
 
 export default function UpdateEmoji() {

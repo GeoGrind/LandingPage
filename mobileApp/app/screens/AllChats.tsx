@@ -7,7 +7,6 @@ import { useNavigation, ParamListBase } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Header } from "react-native-elements";
 import { doc, getDoc, getDocs } from "firebase/firestore";
-import { useFocusEffect } from "@react-navigation/native";
 import Stories from "../components/Stories";
 import SingleChat from "./SingleChat";
 import BottomSheet from "@gorhom/bottom-sheet";

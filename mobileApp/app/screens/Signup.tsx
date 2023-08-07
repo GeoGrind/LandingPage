@@ -6,22 +6,18 @@ import {
   Button,
   KeyboardAvoidingView,
   Keyboard,
-  Text,
 } from "react-native";
 import React from "react";
 import { FIREBASE_AUTH, FIREBASE_DB } from "../../FirebaseConfig";
 import {
   createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
   sendEmailVerification,
   signOut,
 } from "firebase/auth";
 import { setDoc, doc } from "firebase/firestore";
 import { User } from "../types";
-import { endsWithCanadianUniversitySuffix } from "../utils/emailVerification";
 import { initializeExpoToken } from "../utils/notifications";
-import { updateUserExpoToken } from "../utils/db";
-import * as Notifications from "expo-notifications";
+
 const Signup = () => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
@@ -59,6 +55,7 @@ const Signup = () => {
         region: null,
         gender: null,
         university: null,
+        profilePicture: null,
       };
 
       await setDoc(doc(FIREBASE_DB, "users", response.user.uid), user);
