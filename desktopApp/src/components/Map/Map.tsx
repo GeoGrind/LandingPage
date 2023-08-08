@@ -1,6 +1,13 @@
-import { MapContainer, TileLayer, Marker, ZoomControl } from 'react-leaflet';
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  ZoomControl,
+  useMap,
+} from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Icon } from 'leaflet';
+import { useEffect } from 'react';
 import MapPopup from './MapPopup/MapPopup';
 import markerIconPng from '../../../assets/956fd6.png';
 import { User } from '../../types/user.type';
@@ -11,6 +18,13 @@ interface IMapProps {
 }
 
 function Map({ activeUsers }: IMapProps) {
+  const RecenterAutomatically = ({ lat, lng }) => {
+    const map = useMap();
+    useEffect(() => {
+      map.setView([lat, lng]);
+    }, [lat, lng]);
+    return null;
+  };
   return (
     <MapContainer
       className={styles.Map}
@@ -27,6 +41,8 @@ function Map({ activeUsers }: IMapProps) {
         attribution="Map data © OpenStreetMap contributors"
       />
       <ZoomControl position="bottomright" />
+      <RecenterAutomatically lat={43.472286} lng={-80.544861} />
+
       {activeUsers.map(
         (user) =>
           user.session && (

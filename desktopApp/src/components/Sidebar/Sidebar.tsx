@@ -1,20 +1,20 @@
 import { User } from 'types/user.type';
 import { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import styles from './Sidebar.module.scss';
 import logo from '../../../assets/956fd6.png';
 import discoveryIcon from '../../../assets/discoveryIcon.svg';
 import chatsIcon from '../../../assets/chatsIcon.svg';
 import profileIcon from '../../../assets/profileIcon.svg';
 
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-
 interface ISidebarProps {
+  curUser: User | undefined;
   activeUsers: Array<User>;
 }
 
-function Sidebar({ activeUsers }: ISidebarProps) {
+function Sidebar({ curUser, activeUsers }: ISidebarProps) {
   const [isSideBarExpanded, setIsSideBarExpanded] = useState<boolean>(true);
 
   if (!isSideBarExpanded) {
@@ -27,6 +27,27 @@ function Sidebar({ activeUsers }: ISidebarProps) {
           }}
         >
           SHOW THE SIDEBAR
+        </button>
+      </div>
+    );
+  }
+
+  if (curUser === undefined) {
+    return (
+      <div className={styles.Sidebar}>
+        <Link to="/" className={styles.Sidebar__logo}>
+          <img src={logo} height={35} alt="Logo" />
+          App Name
+        </Link>
+        <div className={styles.Sidebar__items}>Login or Signup for more!</div>
+        <button
+          type="button"
+          className={styles.Sidebar__toggle}
+          onClick={() => {
+            setIsSideBarExpanded(false);
+          }}
+        >
+          <ChevronLeftIcon className={styles.Sidebar__toggle__icon} />
         </button>
       </div>
     );
@@ -68,7 +89,7 @@ function Sidebar({ activeUsers }: ISidebarProps) {
           </div>
         </div>
 
-        <div className={styles.Sidebar__items__item}>
+        <Link to="/chats" className={styles.Sidebar__items__item}>
           <img
             src={chatsIcon}
             height={35}
@@ -76,8 +97,8 @@ function Sidebar({ activeUsers }: ISidebarProps) {
             className={styles.Sidebar__items__item__logo}
           />
           Chats
-        </div>
-        <div className={styles.Sidebar__items__item}>
+        </Link>
+        <Link to="/account" className={styles.Sidebar__items__item}>
           <img
             src={profileIcon}
             height={35}
@@ -85,7 +106,7 @@ function Sidebar({ activeUsers }: ISidebarProps) {
             className={styles.Sidebar__items__item__logo}
           />
           Profile
-        </div>
+        </Link>
       </div>
 
       <button

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { FIREBASE_AUTH } from '../../../../firebase';
 import styles from './Login.module.scss';
@@ -8,11 +8,11 @@ import icon from '../../../../../assets/956fd6.png';
 import FormButton from '../FormButton/FormButton';
 
 interface ILoginProps {
-  setShowLogin: any;
+  setShowLogin: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowSignUp: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-function Login({ setShowLogin }: ILoginProps) {
-  const navigate = useNavigate();
+function Login({ setShowLogin, setShowSignUp }: ILoginProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -23,7 +23,6 @@ function Login({ setShowLogin }: ILoginProps) {
         // Signed in
         const { user } = userCredential;
         setShowLogin(false);
-        navigate('/');
         console.log(user);
         return null;
       })
@@ -32,10 +31,6 @@ function Login({ setShowLogin }: ILoginProps) {
         const errorMessage = error.message;
         console.log(errorCode, errorMessage);
       });
-  };
-
-  const forgotPassword = () => {
-    return null;
   };
 
   return (
@@ -56,9 +51,16 @@ function Login({ setShowLogin }: ILoginProps) {
         />
         <div className={styles.Login__left__footer}>
           No account?{' '}
-          <NavLink className={styles.link} to="/signup">
+          <button
+            type="button"
+            className={styles.link}
+            onClick={() => {
+              setShowLogin(false);
+              setShowSignUp(true);
+            }}
+          >
             Create one
-          </NavLink>
+          </button>
         </div>
       </div>
 
