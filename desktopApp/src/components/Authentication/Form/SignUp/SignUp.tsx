@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { createUser } from 'utils/db';
 import { FIREBASE_AUTH } from '../../../../firebase';
@@ -14,11 +14,11 @@ function isUwaterlooEmail(email: string) {
 }
 
 interface ISignUpProps {
-  setShowSignUp: any;
+  setShowLogin: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowSignUp: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-function SignUp({ setShowSignUp }: ISignUpProps) {
-  const navigate = useNavigate();
+function SignUp({ setShowLogin, setShowSignUp }: ISignUpProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
@@ -76,9 +76,16 @@ function SignUp({ setShowSignUp }: ISignUpProps) {
         />
         <div className={styles.SignUp__left__footer}>
           Already have an account?{' '}
-          <NavLink className={styles.link} to="/">
-            CHANGE LATER!!
-          </NavLink>
+          <button
+            type="button"
+            className={styles.link}
+            onClick={() => {
+              setShowSignUp(false);
+              setShowLogin(true);
+            }}
+          >
+            Log in
+          </button>
         </div>
       </div>
 

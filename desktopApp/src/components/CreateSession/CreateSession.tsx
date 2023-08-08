@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import FormItem from 'components/Authentication/Form/FormItem/FormItem';
 import FormButton from 'components/Authentication/Form/FormButton/FormButton';
 import { createSession } from 'utils/db';
+import { Session } from 'types/session.type';
 import styles from './CreateSession.module.scss';
 import icon from '../../../assets/956fd6.png';
-import { Session } from 'types/session.type';
 
-function CreateSession() {
-  const navigate = useNavigate();
+interface ICreateSessionProps {
+  setShowCreateSession: React.Dispatch<React.SetStateAction<boolean>>;
+}
+function CreateSession({ setShowCreateSession }: ICreateSessionProps) {
   const [course, setCourse] = useState('');
   const [description, setDescription] = useState('');
   const [isPrivate, setIsPrivate] = useState(true);
@@ -28,14 +29,18 @@ function CreateSession() {
       description,
     };
     await createSession(session);
-    console.log('created session');
-    navigate('/');
+    setShowCreateSession(false);
   };
 
   return (
     <div className={styles.CreateSession}>
       <div className={styles.CreateSession__left}>
-        <div className={styles.CreateSession__header}>Welcome!</div>
+        <div className={styles.CreateSession__header}>
+          Welcome!
+          <button type="button" onClick={() => setShowCreateSession(false)}>
+            CLOSE CREATE SESSION
+          </button>
+        </div>
         <img
           className={styles.CreateSession__logo}
           src={icon}

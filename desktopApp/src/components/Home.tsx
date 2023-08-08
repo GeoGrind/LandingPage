@@ -8,6 +8,7 @@ import Sidebar from './Sidebar/Sidebar';
 import Login from './Authentication/Form/Login/Login';
 import SignUp from './Authentication/Form/SignUp/SignUp';
 import Header from './Header/Header';
+import CreateSession from './CreateSession/CreateSession';
 
 function Home() {
   const auth = getAuth();
@@ -15,6 +16,7 @@ function Home() {
   const [activeUsers, setActiveUsers] = useState<User[]>([]);
   const [showLogin, setShowLogin] = useState<boolean>(!!curUser);
   const [showSignUp, setShowSignUp] = useState<boolean>(!!curUser);
+  const [showCreateSession, setShowCreateSession] = useState<boolean>(false);
 
   const fetchData = async () => {
     const users = await fetchActiveUsers();
@@ -43,12 +45,20 @@ function Home() {
         curUser={curUser}
         setShowLogin={setShowLogin}
         setShowSignUp={setShowSignUp}
+        setShowCreateSession={setShowCreateSession}
         fetchData={fetchData}
       />
-      {showLogin && <Login setShowLogin={setShowLogin} />}
-      {showSignUp && <SignUp setShowSignUp={setShowSignUp} />}
+      {showLogin && (
+        <Login setShowLogin={setShowLogin} setShowSignUp={setShowSignUp} />
+      )}
+      {showSignUp && (
+        <SignUp setShowLogin={setShowLogin} setShowSignUp={setShowSignUp} />
+      )}
+      {showCreateSession && (
+        <CreateSession setShowCreateSession={setShowCreateSession} />
+      )}
       <Map activeUsers={activeUsers} />
-      <Sidebar activeUsers={activeUsers} />
+      <Sidebar curUser={curUser} activeUsers={activeUsers} />
     </div>
   );
 }
