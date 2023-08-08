@@ -1,12 +1,14 @@
-import { Location } from './location.type';
 import { Session } from './session.type';
 
 export type User = {
   uid: string;
   email: string;
   username: string;
-  location: Location | null;
-  isInSession: boolean;
-  onGoingSession: Session | null;
-  profilePicture: string | null;
+  yearOfGraduation: number;
+  university: string | null;
+  program: string;
+  termCourses: string[];
+
+  bio: string;
+  session: Session | null;
 };

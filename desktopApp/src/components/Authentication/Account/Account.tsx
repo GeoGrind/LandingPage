@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { User } from 'types/user.type';
 import { Location } from 'types/location.type';
 import { getCurrentUser } from 'utils/db';
@@ -8,14 +8,22 @@ import { FIREBASE_AUTH } from '../../../firebase';
 import styles from './Account.module.scss';
 import FormItem from '../Form/FormItem/FormItem';
 
-function Account() {
+interface IAccountProps {
+  curUser: User | undefined;
+}
+
+function Account({ curUser }: IAccountProps) { // cur user is currently not working (not being passed in)
   const navigate = useNavigate();
-  const [curUser, setCurUser] = useState<User | undefined>(undefined);
-  // const [username, setUsername] = useState(curUser.name);
-  const [username, setUsername] = useState('my username');
-  // const [program, setProgram] = useState(curUser.program);
-  const [program, setProgram] = useState('my program');
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState(curUser?.username);
+  const [yearOfGraduation, setYearOfGraduation] = useState(
+    curUser?.yearOfGraduation
+  );
+  const [university, setUniversity] = useState(curUser?.university);
+  const [program, setProgram] = useState(curUser?.program);
+  const [termCourses, setTermCourses] = useState(curUser?.termCourses);
+  const [bio, setBio] = useState(curUser?.bio);
+
+  // const [email, setEmail] = useState(''); // shouldnt make this editable
 
   const handleLogout = () => {
     signOut(FIREBASE_AUTH)
@@ -30,53 +38,40 @@ function Account() {
         // An error happened.
       });
   };
-  useEffect(() => {
-    getCurrentUser(setCurUser);
-  }, []);
 
   const accountPage = curUser && (
     <div>
-      <div className={styles.Account__picture}>
-        {/* insert pfp here */}
-        {curUser.profilePicture}
-      </div>
       <FormItem
         label="Username"
         placeholder={curUser.username}
         onChange={setUsername}
       />
-      {/* <FormItem
-        label="Email"
-        // placeholder={curUser.name}
-        placeholder={curUser.email}
-        onChange={setEmail}
-      /> */}
       <FormItem
         label="Program"
         // placeholder={curUser.program}
         placeholder="My Program"
         onChange={setProgram}
       />
-      isInSession: {curUser.isInSession ? 'yeah' : 'nope'}
       <br />
-      Session: {curUser.onGoingSession?.course}
+      Session: {curUser.session?.course}
       <br />
-      course: {curUser.onGoingSession?.course}
+      course: {curUser.session?.course}
       <br />
-      startTime: {curUser.onGoingSession?.startTime}
+      startTime: {curUser.session?.startTime}
       <br />
       <br />
-      sessionStartLocationLong:{' '}
-      {curUser.onGoingSession?.sessionStartLocation?.longitude}
+      sessionStartLocationLong: {curUser.session?.location.longitude}
       <br />
-      sessionStartLocationLat:{' '}
-      {curUser.onGoingSession?.sessionStartLocation?.latitude}
+      sessionStartLocationLat: {curUser.session?.location.latitude}
       <br />
     </div>
   );
 
   return (
     <div className={styles.Account}>
+      <Link className={styles.Header__container__inner__nav__item} to="/">
+        Home
+      </Link>
       {accountPage}
       <button
         className={styles.Header__container__inner__utility}
@@ -85,7 +80,6 @@ function Account() {
       >
         Logout
       </button>
-
     </div>
   );
 }

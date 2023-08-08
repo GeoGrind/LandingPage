@@ -14,6 +14,7 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
+import { getCurrentUser } from 'utils/db';
 
 const DiscordRPC = require('discord-rpc');
 
@@ -149,7 +150,7 @@ async function setActivity() {
 
   rpc.setActivity({
     details: `Hello`,
-    state: 'hey',
+    state: 'test',
     startTimestamp,
     largeImageKey: 'fuji',
     largeImageText: 'large',

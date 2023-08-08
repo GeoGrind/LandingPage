@@ -1,18 +1,55 @@
 .MapPopup {
-  &__top {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    gap: 12px;
-    &__username {
-      font-size: 14px;
-    }
-  }
-
   &__container {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    gap: 12px;
+    gap: 4px;
+
+    &__top {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      gap: 12px;
+
+      &__left {
+        flex-direction: column;
+        &__profile {
+        }
+        &__course {
+          text-align: center;
+        }
+      }
+      &__right {
+        flex-direction: column;
+        &__username {
+          font-size: 14px;
+        }
+        &__description {
+          font-size: 12px;
+        }
+      }
+    }
+    &__bottom {
+      display: flex;
+      flex-direction: row-reverse;
+
+      &__button {
+        width: 30px;
+        height: 30px;
+        background: #c3c7cac4;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        border-radius: 50%;
+        border: none;
+        text-decoration: none;
+        transition: 300ms ease;
+
+        &:hover {
+          background-color: #956fd6;
+        }
+      }
+    }
   }
 }

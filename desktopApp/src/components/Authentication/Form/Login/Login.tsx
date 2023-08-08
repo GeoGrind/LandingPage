@@ -7,7 +7,11 @@ import FormItem from '../FormItem/FormItem';
 import icon from '../../../../../assets/956fd6.png';
 import FormButton from '../FormButton/FormButton';
 
-function Login() {
+interface ILoginProps {
+  setShowLogin: any;
+}
+
+function Login({ setShowLogin }: ILoginProps) {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -18,7 +22,8 @@ function Login() {
       .then((userCredential) => {
         // Signed in
         const { user } = userCredential;
-        navigate('/home');
+        setShowLogin(false);
+        navigate('/');
         console.log(user);
         return null;
       })
@@ -36,7 +41,12 @@ function Login() {
   return (
     <div className={styles.Login}>
       <div className={styles.Login__left}>
-        <div className={styles.Login__header}>Welcome!</div>
+        <div className={styles.Login__header}>
+          Welcome!
+          <button type="button" onClick={() => setShowLogin(false)}>
+            CLOSE LOGIn
+          </button>
+        </div>
         <img
           className={styles.Login__logo}
           src={icon}

@@ -1,0 +1,70 @@
+.Sidebar {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 256px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: #c5c5c5;
+  z-index: 500;
+
+  &__logo {
+    display: flex;
+    padding: 0 20px;
+    height: 52px;
+    gap: 12px;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+    border-bottom: 1px solid #a99d9d;
+  }
+
+  &__items {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+
+    &__item {
+      display: flex;
+      padding: 14px 24px;
+      align-items: center;
+
+      font-family: 'Google Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      line-height: 20px;
+      border-bottom: 1px solid #a99d9d;
+      &__logo {
+        margin-right: 16px;
+      }
+    }
+  }
+
+  &__toggle {
+    height: 44px;
+    width: 100%;
+    position: relative;
+    background-color: #a7a7a7;
+    border: 0;
+    cursor: pointer;
+    height: 44px;
+    padding: 10px 24px;
+    position: relative;
+
+    &__icon {
+      position: absolute;
+      right: 22px;
+      top: 10px;
+    }
+  }
+
+  &__minimized {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 5400;
+    height: 300px;
+    width: 300px;
+  }
+}

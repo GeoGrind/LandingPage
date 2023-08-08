@@ -13,7 +13,11 @@ function isUwaterlooEmail(email: string) {
   return email.endsWith('@uwaterloo.ca');
 }
 
-function SignUp() {
+interface ISignUpProps {
+  setShowSignUp: any;
+}
+
+function SignUp({ setShowSignUp }: ISignUpProps) {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -37,17 +41,18 @@ function SignUp() {
       );
       const user: User = {
         uid: response.user.uid,
-        username,
         email: response.user.email || '',
-        location: null,
-        isInSession: false,
-        onGoingSession: null,
-        profilePicture: null,
+        username,
+        yearOfGraduation: 2026,
+        university: 'University of Waterloo',
+        program: 'math',
+        termCourses: [],
+        bio: 'dummy bio',
+        session: null,
       };
 
-      console.log('The username is: ', username);
       await createUser(user);
-      navigate('/login');
+      setShowSignUp(false);
     } catch {
       console.log(e);
     }
@@ -56,7 +61,12 @@ function SignUp() {
   return (
     <div className={styles.SignUp}>
       <div className={styles.SignUp__left}>
-        <div className={styles.SignUp__header}>Welcome!</div>
+        <div className={styles.SignUp__header}>
+          Welcome!
+          <button type="button" onClick={() => setShowSignUp(false)}>
+            CLOSE SIGNUP
+          </button>
+        </div>
         <img
           className={styles.SignUp__logo}
           src={icon}
@@ -66,8 +76,8 @@ function SignUp() {
         />
         <div className={styles.SignUp__left__footer}>
           Already have an account?{' '}
-          <NavLink className={styles.link} to="/login">
-            Log in
+          <NavLink className={styles.link} to="/">
+            CHANGE LATER!!
           </NavLink>
         </div>
       </div>
