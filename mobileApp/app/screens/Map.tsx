@@ -53,7 +53,6 @@ const Map = () => {
 
   // Set up redux when it mounts
   const fetchAndSetData = async () => {
-    console.log("sync with DB");
     if (FIREBASE_AUTH.currentUser?.uid === undefined) {
       console.log("Error when fetching user in Setting.tsx");
       return;

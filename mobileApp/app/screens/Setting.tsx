@@ -26,6 +26,9 @@ function getIconByTitle(title: string) {
     case "Courses": {
       return <FontAwesome5 name="chalkboard-teacher" size={24} color="black" />;
     }
+    case "Profile Picture": {
+      return <FontAwesome5 name="portrait" size={24} color="black" />;
+    }
     default: {
       return <Text>Error</Text>;
     }
@@ -74,6 +77,11 @@ export default function Setting() {
         title="Courses"
         onPress={() => navigation.navigate("UpdateEmoji")}
         style={styles.circle5}
+      />
+      <CircleInfo
+        title="Profile Picture"
+        onPress={() => navigation.navigate("UpdateProfilePicture")}
+        style={styles.circle6}
       />
     </View>
   );
@@ -139,6 +147,13 @@ const styles = StyleSheet.create({
     height: 110,
     borderRadius: 65,
     bottom: 400,
+    left: 20,
+  },
+  circle6: {
+    width: 130,
+    height: 130,
+    borderRadius: 65,
+    bottom: 200,
     left: 20,
   },
 });

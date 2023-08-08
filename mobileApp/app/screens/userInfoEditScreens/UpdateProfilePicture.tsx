@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Button, Image, View, Text } from "react-native";
+import { View } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { getUserById, handleUpload } from "../../utils/db";
 import { FIREBASE_AUTH } from "../../../FirebaseConfig";
 import { useNavigation, ParamListBase } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { fetchProfilePictureFromFirestore } from "../../utils/db";
+import { Button } from "react-native-paper";
+import { Avatar } from "react-native-elements";
 
 export default function UpdateProfilePicture() {
   const [image, setImage] = useState<string | null>(null);
@@ -37,6 +39,7 @@ export default function UpdateProfilePicture() {
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
+      selectionLimit: 1,
     });
 
     if (!result.canceled) {
@@ -64,18 +67,56 @@ export default function UpdateProfilePicture() {
 
   const uploadImage = async () => {
     handleUpload(image!);
+    navigation.navigate("Setting");
   };
 
   return (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-      <Text>{currentUser?.email}</Text>
-      <Button title="Pick from library" onPress={pickImageFromLibrary} />
-      <Button title="Take a picture" onPress={takePicture} />
-      <Button title="Upload" onPress={uploadImage} />
-      <Button title="Exit" onPress={() => navigation.navigate("Map")} />
+    <View
+      style={{
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 20,
+      }}
+    >
       {image && (
-        <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
+        <View style={{ marginBottom: 20 }}>
+          <Avatar
+            size={150}
+            rounded
+            source={{
+              uri: image,
+            }}
+          />
+        </View>
       )}
+
+      <Button
+        icon="image-album"
+        mode="contained"
+        onPress={pickImageFromLibrary}
+        style={{ marginVertical: 10, width: 200 }} // Set fixed width here
+      >
+        Choose from library
+      </Button>
+
+      <Button
+        icon="camera"
+        mode="contained"
+        onPress={takePicture}
+        style={{ marginVertical: 10, width: 200 }} // And here
+      >
+        Take a picture
+      </Button>
+
+      <Button
+        icon="upload"
+        mode="contained"
+        onPress={uploadImage}
+        style={{ marginVertical: 10, width: 200 }} // And here
+      >
+        Upload your picture
+      </Button>
     </View>
   );
 }

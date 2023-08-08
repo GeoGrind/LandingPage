@@ -105,16 +105,6 @@ const AllChats = () => {
     }
   };
 
-  // Maybe this stuff can be removed
-  // Fetch data when naviagation happens
-  // useFocusEffect(
-  //   React.useCallback(() => {
-  //     console.log("test1");
-  //     fetchChatRoomsData();
-  //     return () => {};
-  //   }, [])
-  // );
-
   // callbacks
   const handleSheetChanges = useCallback((index: number) => {
     fetchChatRoomsData();
