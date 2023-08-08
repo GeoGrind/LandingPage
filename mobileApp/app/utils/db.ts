@@ -293,7 +293,7 @@ export const updateUserFields = async (fields: UserFields): Promise<void> => {
 export async function handleUpload(uri: string) {
   const fetchResponse = await fetch(uri);
   const theBlob = await fetchResponse.blob();
-  const imageRef = ref(getStorage(), "images");
+  const imageRef = ref(getStorage(), `images/${Date.now()}.jpeg`);
   const uploadTask = uploadBytesResumable(imageRef, theBlob);
   const auth = getAuth(); // Get the Firebase Authentication instance
   const user = auth.currentUser; // Get the currently logged-in user

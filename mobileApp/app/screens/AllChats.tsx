@@ -17,6 +17,9 @@ const AllChats = () => {
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   const [idToEmoji, setIdToEmoji] = useState<{ [key: string]: string }>({});
   const [idToNames, setIdToNames] = useState<{ [key: string]: string }>({});
+  const [idToProfilePictures, setIdToProfilePictures] = useState<{
+    [key: string]: string;
+  }>({});
 
   const [selectedChatOwner1Id, setSelectedChatOwner1Id] = useState<
     string | null
@@ -72,15 +75,24 @@ const AllChats = () => {
         if (userData) {
           const emoji = userData.emoji || "";
           const name = userData.name || "";
+          const profilePicture = userData.profilePicture || "";
           return {
             emoji: { [userId]: emoji },
             name: { [userId]: name },
+            profilePicture: { [userId]: profilePicture },
           };
         }
         return null;
       });
 
       const results = await Promise.all(promises);
+      //profilePicture
+      const updatedProfilePictures = results.reduce((acc, result) => {
+        if (result) {
+          return { ...acc, ...result.profilePicture };
+        }
+        return acc;
+      }, {});
       const updatedEmojis = results.reduce((acc, result) => {
         if (result) {
           return { ...acc, ...result.emoji };
@@ -93,7 +105,10 @@ const AllChats = () => {
         }
         return acc;
       }, {});
-
+      setIdToProfilePictures((prevProfilePictures) => ({
+        ...prevProfilePictures,
+        ...updatedProfilePictures,
+      }));
       setIdToEmoji((prevEmojis) => ({ ...prevEmojis, ...updatedEmojis }));
       setIdToNames((prevNames) => ({
         ...prevNames,
@@ -130,6 +145,7 @@ const AllChats = () => {
         chatRooms={chatRooms}
         idToEmoji={idToEmoji}
         idToNames={idToNames}
+        idToProfilePictures={idToProfilePictures}
         setSelectedChatOwner1Id={setSelectedChatOwner1Id}
         setSelectedChatOwner2Id={setSelectedChatOwner2Id}
         setSelectedChatRoomId={setSelectedChatRoomId}

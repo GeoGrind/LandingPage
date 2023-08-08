@@ -55,7 +55,8 @@ const Signup = () => {
         region: null,
         gender: null,
         university: null,
-        profilePicture: null,
+        profilePicture:
+          "https://www.tenforums.com/geek/gars/images/2/types/thumb_15951118880user.png",
       };
 
       await setDoc(doc(FIREBASE_DB, "users", response.user.uid), user);

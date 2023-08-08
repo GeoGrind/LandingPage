@@ -2,10 +2,13 @@ import React from "react";
 import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import { ChatRoom } from "../types";
 import { useSelector } from "react-redux";
+import { Avatar } from "react-native-elements";
+
 type Props = {
   chatRooms: ChatRoom[];
   idToEmoji: { [key: string]: string };
   idToNames: { [key: string]: string };
+  idToProfilePictures: { [key: string]: string };
   setSelectedChatOwner1Id: React.Dispatch<React.SetStateAction<string | null>>;
   setSelectedChatOwner2Id: React.Dispatch<React.SetStateAction<string | null>>;
   setSelectedChatRoomId: React.Dispatch<React.SetStateAction<string | null>>;
@@ -15,6 +18,7 @@ const Stories: React.FC<Props> = ({
   chatRooms,
   idToEmoji,
   idToNames,
+  idToProfilePictures,
   setSelectedChatOwner1Id,
   setSelectedChatOwner2Id,
   setSelectedChatRoomId,
@@ -60,24 +64,22 @@ const Stories: React.FC<Props> = ({
                 }}
               >
                 {data.ownerIds[0] != currentUserRedux?.uid && (
-                  <Text
-                    style={{
-                      fontSize: 30,
-                      color: "black",
+                  <Avatar
+                    rounded
+                    source={{
+                      uri: idToProfilePictures[data?.ownerIds[0]],
                     }}
-                  >
-                    {idToEmoji[data?.ownerIds[0]]}
-                  </Text>
+                    size={65}
+                  />
                 )}
                 {data.ownerIds[1] != currentUserRedux?.uid && (
-                  <Text
-                    style={{
-                      fontSize: 30,
-                      color: "black",
+                  <Avatar
+                    rounded
+                    source={{
+                      uri: idToProfilePictures[data?.ownerIds[1]],
                     }}
-                  >
-                    {idToEmoji[data?.ownerIds[1]]}
-                  </Text>
+                    size={65}
+                  />
                 )}
               </View>
 

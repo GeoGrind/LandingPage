@@ -13,7 +13,9 @@ export type User = {
   region: string | null;
   gender: string | null;
   university: string | null;
-  profilePicture: string | null;
+  profilePicture:
+    | string
+    | "https://www.tenforums.com/geek/gars/images/2/types/thumb_15951118880user.png";
 };
 
 export type Location = {
