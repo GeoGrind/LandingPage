@@ -3,6 +3,8 @@ import { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import styles from './Sidebar.module.scss';
 import logo from '../../../assets/956fd6.png';
 import discoveryIcon from '../../../assets/discoveryIcon.svg';
@@ -16,17 +18,50 @@ interface ISidebarProps {
 
 function Sidebar({ curUser, activeUsers }: ISidebarProps) {
   const [isSideBarExpanded, setIsSideBarExpanded] = useState<boolean>(true);
+  const [isDiscoveryOpen, setIsDiscoveryOpen] = useState<boolean>(true);
 
   if (!isSideBarExpanded) {
     return (
-      <div className={styles.Sidebar__minimized}>
+      <div className={styles.Sidebar__collapsed}>
+        <Link to="/" className={styles.Sidebar__logo}>
+          <img src={logo} height={35} alt="Logo" />
+        </Link>
+        <div className={styles.Sidebar__items__collapsed}>
+          <div className={styles.Sidebar__items__item}>
+            <img
+              src={discoveryIcon}
+              height={33}
+              alt="Discovery"
+              className={styles.Sidebar__items__item__logo}
+            />
+          </div>
+
+          <Link to="/chats" className={styles.Sidebar__items__item}>
+            <img
+              src={chatsIcon}
+              height={30}
+              alt="Chats"
+              className={styles.Sidebar__items__item__logo}
+            />
+          </Link>
+          <Link to="/account" className={styles.Sidebar__items__item}>
+            <img
+              src={profileIcon}
+              height={30}
+              alt="Profile"
+              className={styles.Sidebar__items__item__logo}
+            />
+          </Link>
+        </div>
+
         <button
           type="button"
+          className={styles.Sidebar__toggle__collapsed}
           onClick={() => {
             setIsSideBarExpanded(true);
           }}
         >
-          SHOW THE SIDEBAR
+          <ChevronRightIcon className={styles.Sidebar__toggle__icon} />
         </button>
       </div>
     );
@@ -60,39 +95,50 @@ function Sidebar({ curUser, activeUsers }: ISidebarProps) {
         App Name
       </Link>
       <div className={styles.Sidebar__items}>
-        <div className={styles.Sidebar__items__item}>
+        <button
+          type="button"
+          className={styles.Sidebar__items__item}
+          onClick={() => {
+            setIsDiscoveryOpen(!isDiscoveryOpen);
+          }}
+        >
           <img
             src={discoveryIcon}
-            height={40}
-            alt="Logo"
+            height={33}
+            alt="Discovery"
             className={styles.Sidebar__items__item__logo}
           />
           Discovery
-        </div>
-
-        <div className={styles.Sidebar__items__item}>
-          <div className={styles.Sidebar__search}>
+          {isDiscoveryOpen ? <ExpandMoreIcon /> : <ExpandLessIcon />}
+        </button>
+        {isDiscoveryOpen ? (
+          <div className={styles.Sidebar__discovery}>
             <input
-              className={styles.Sidebar__search__input}
+              className={styles.Sidebar__discovery__input}
               placeholder="Search"
             />
-            <div className={styles.Sidebar__activeUsersList}>
+            <div className={styles.Sidebar__discovery__activeUsersList}>
               {activeUsers.map(
                 (user) =>
                   user.session?.location && (
-                    <div className={styles.sidebar__activeUsersList__item}>
-                      {user.username}
+                    <div
+                      className={
+                        styles.Sidebar__discovery__activeUsersList__item
+                      }
+                    >
+                      {user.username}, {user.session.course}
+                      <br />
+                      {user.session.description}
                     </div>
                   )
               )}
             </div>
           </div>
-        </div>
-
+        ) : null}
         <Link to="/chats" className={styles.Sidebar__items__item}>
           <img
             src={chatsIcon}
-            height={35}
+            height={30}
             alt="Chats"
             className={styles.Sidebar__items__item__logo}
           />
@@ -101,7 +147,7 @@ function Sidebar({ curUser, activeUsers }: ISidebarProps) {
         <Link to="/account" className={styles.Sidebar__items__item}>
           <img
             src={profileIcon}
-            height={35}
+            height={30}
             alt="Profile"
             className={styles.Sidebar__items__item__logo}
           />

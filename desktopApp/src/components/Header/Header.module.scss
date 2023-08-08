@@ -1,12 +1,13 @@
 .Header {
-  width: calc(100vw - 210px);
+  // width: calc(100vw - 210px);
+  width: 100vw;
   left: 210px;
   height: 56px;
   background: #eee;
   display: flex;
   align-items: center;
   position: sticky;
-  z-index: 500;
+  z-index: 400;
 
   &__container {
     padding-right: 30px;
