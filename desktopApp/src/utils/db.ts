@@ -73,3 +73,15 @@ export const getCurrentUser = async (setUser: any): Promise<void> => {
     console.log('Error getting user', error);
   }
 };
+
+export async function updateChatRoomLastChangeTime(id: string): Promise<void> {
+  const chatRoomRef = doc(collection(FIREBASE_DB, 'chatRooms'), id);
+  try {
+    await updateDoc(chatRoomRef, {
+      lastChangeTime: Date.now(),
+    });
+    console.log(`Document with ID ${id} updated successfully.`);
+  } catch (error) {
+    console.error('Error updating document: ', error);
+  }
+}
