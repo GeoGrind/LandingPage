@@ -15,17 +15,21 @@ function SingleMessage({ curUser, message, senderId }: ISingleMessageProps) {
   useEffect(() => {
     // ref.current?.scrollIntoView({ behavior: 'smooth' });
   }, [message]);
-  const messageClass = senderId === curUser.uid ? 'sent' : 'received';
 
   return (
     // <div ref={ref} className={styles[`SingleMessage--${messageClass}`]}>
-    <div className={styles[`SingleMessage--${messageClass}`]}>
-      <img src={logo} alt="Profile" height={20}/>
 
-      <div className={styles[`SingleMessage--${messageClass}__content`]}>
-        <p>{message}</p>
+    senderId === curUser.uid ? ( // TODO:: REFACTOR THIS LATER!!!
+      <div className={styles.SingleMessage__sent}>
+        <img src={logo} alt="Profile" height={20} />
+        <div className={styles.SingleMessage__sent__content}>{message}</div>
       </div>
-    </div>
+    ) : (
+      <div className={styles.SingleMessage}>
+        <img src={logo} alt="Profile" height={20} />
+        <div className={styles.SingleMessage__content}>{message}</div>
+      </div>
+    )
   );
 }
 

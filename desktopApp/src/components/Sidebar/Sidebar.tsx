@@ -18,7 +18,7 @@ interface ISidebarProps {
 
 function Sidebar({ curUser, activeUsers }: ISidebarProps) {
   const [isSideBarExpanded, setIsSideBarExpanded] = useState<boolean>(true);
-  const [isDiscoveryOpen, setIsDiscoveryOpen] = useState<boolean>(true);
+  const [isDiscoveryOpen, setIsDiscoveryOpen] = useState<boolean>(false);
 
   if (!isSideBarExpanded) {
     return (

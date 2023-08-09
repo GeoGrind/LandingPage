@@ -1,16 +1,17 @@
 import { User } from 'types/user.type';
 import Messages from '../Messages/Messages';
 import Input from '../Input/Input';
+import styles from './SingleChat.module.scss';
 
-interface IChatProps {
+interface ISingleChatProps {
   curUser: User;
   chatRoomId: string;
 }
 
-function Chat({ curUser, chatRoomId }: IChatProps) {
+function SingleChat({ curUser, chatRoomId }: ISingleChatProps) {
   return (
-    <div className="chat">
-      <div className="chatInfo">
+    <div className={styles.SingleChat}>
+      <div className={styles.SingleChat__username}>
         <span>{curUser.username}</span>
       </div>
       <Messages curUser={curUser} chatRoomId={chatRoomId} />
@@ -19,4 +20,4 @@ function Chat({ curUser, chatRoomId }: IChatProps) {
   );
 }
 
-export default Chat;
+export default SingleChat;

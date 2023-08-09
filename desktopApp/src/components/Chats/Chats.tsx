@@ -12,8 +12,8 @@ import {
 } from 'firebase/firestore';
 import { FIREBASE_DB } from 'firebase';
 import { User } from 'types/user.type';
-import { Message } from 'types/message.type';
-import Chat from './Chat/Chat';
+import { Chat } from 'types/chat.type';
+import SingleChat from './SingleChat/SingleChat';
 
 interface IChatsProps {
   curUser: User;
@@ -62,7 +62,7 @@ function Chats({ curUser }: IChatsProps) {
             </div>
           </button>
         ))}
-      <Chat curUser={curUser} chatRoomId={'idk'} />
+      <SingleChat curUser={curUser} chatRoomId={'idk'} />
 
       <Link className={styles.Header__container__inner__nav__item} to="/">
         Home

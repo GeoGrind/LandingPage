@@ -5,6 +5,7 @@ import { FIREBASE_DB } from 'firebase';
 import { v4 as uuid } from 'uuid';
 import { Message } from 'types/message.type';
 import { updateChatRoomLastChangeTime } from 'utils/db';
+import styles from './Input.module.scss';
 
 interface IInputProps {
   curUser: User;
@@ -34,18 +35,16 @@ function Input({ curUser, chatRoomId }: IInputProps) {
   };
 
   return (
-    <div className="input">
+    <div className={styles.Input}>
       <input
         type="text"
         placeholder="Type something..."
         onChange={(e) => setText(e.target.value)}
         value={text}
       />
-      <div className="send">
-        <button type="button" onClick={handleSend}>
-          Send
-        </button>
-      </div>
+      <button className={styles.Input__send} type="button" onClick={handleSend}>
+        Send
+      </button>
     </div>
   );
 }
