@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { User } from 'types/user.type';
-import { fetchActiveUsers, getCurrentUser } from 'utils/db';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { fetchActiveUsers } from 'utils/db';
+import { useAuthContext } from 'context/AuthContext';
 import styles from './Home.module.scss';
 import Map from './Map/Map';
 import Sidebar from './Sidebar/Sidebar';
@@ -11,11 +11,9 @@ import Header from './Header/Header';
 import CreateSession from './CreateSession/CreateSession';
 
 function Home() {
-  const auth = getAuth();
-  const [curUser, setCurUser] = useState(undefined);
   const [activeUsers, setActiveUsers] = useState<User[]>([]);
-  const [showLogin, setShowLogin] = useState<boolean>(!!curUser);
-  const [showSignUp, setShowSignUp] = useState<boolean>(!!curUser);
+  const [showLogin, setShowLogin] = useState<boolean>(false);
+  const [showSignUp, setShowSignUp] = useState<boolean>(false);
   const [showCreateSession, setShowCreateSession] = useState<boolean>(false);
 
   const fetchData = async () => {
@@ -24,25 +22,11 @@ function Home() {
   };
   useEffect(() => {
     fetchData();
-    onAuthStateChanged(auth, (user) => {
-      console.log('AUTH STATE CHANGED!!');
-      if (user) {
-        getCurrentUser(setCurUser);
-        // User is signed in, see docs for a list of available properties
-        // https://firebase.google.com/docs/reference/js/auth.user
-        // ...
-      } else {
-        setCurUser(undefined);
-        // User is signed out
-        // ...
-      }
-    });
   }, []);
 
   return (
     <div className={styles.Home}>
       <Header
-        curUser={curUser}
         setShowLogin={setShowLogin}
         setShowSignUp={setShowSignUp}
         setShowCreateSession={setShowCreateSession}
@@ -58,7 +42,7 @@ function Home() {
         <CreateSession setShowCreateSession={setShowCreateSession} />
       )}
       <Map activeUsers={activeUsers} />
-      <Sidebar curUser={curUser} activeUsers={activeUsers} />
+      <Sidebar activeUsers={activeUsers} />
     </div>
   );
 }

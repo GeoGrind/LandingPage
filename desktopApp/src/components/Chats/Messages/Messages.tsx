@@ -8,15 +8,13 @@ import {
 import { useEffect, useState } from 'react';
 import { FIREBASE_DB } from 'firebase';
 import { Message } from 'types/message.type';
-import { User } from 'types/user.type';
 import SingleMessage from './SingleMessage/SingleMessage';
 import styles from './Messages.module.scss';
 
 interface IMessagesProps {
-  curUser: User;
   chatRoomId: string;
 }
-function Messages({ curUser, chatRoomId }: IMessagesProps) {
+function Messages({ chatRoomId }: IMessagesProps) {
   const [messages, setMessages] = useState<Array<Message>>([]);
 
   useEffect(() => {
@@ -45,12 +43,7 @@ function Messages({ curUser, chatRoomId }: IMessagesProps) {
   return (
     <div className={styles.Messages}>
       {messages.map((m) => (
-        <SingleMessage
-          key={m.id}
-          curUser={curUser}
-          message={m.message}
-          senderId={m.senderId}
-        />
+        <SingleMessage key={m.id} message={m.message} senderId={m.senderId} />
       ))}
     </div>
   );

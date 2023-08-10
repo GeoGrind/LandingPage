@@ -5,6 +5,7 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import { useAuthContext } from 'context/AuthContext';
 import styles from './Sidebar.module.scss';
 import logo from '../../../assets/956fd6.png';
 import discoveryIcon from '../../../assets/discoveryIcon.svg';
@@ -12,14 +13,14 @@ import chatsIcon from '../../../assets/chatsIcon.svg';
 import profileIcon from '../../../assets/profileIcon.svg';
 
 interface ISidebarProps {
-  curUser: User | undefined;
   activeUsers: Array<User>;
 }
 
-function Sidebar({ curUser, activeUsers }: ISidebarProps) {
+function Sidebar({ activeUsers }: ISidebarProps) {
   const [isSideBarExpanded, setIsSideBarExpanded] = useState<boolean>(true);
   const [isDiscoveryOpen, setIsDiscoveryOpen] = useState<boolean>(false);
 
+  const { currentUser } = useAuthContext();
   if (!isSideBarExpanded) {
     return (
       <div className={styles.Sidebar__collapsed}>
@@ -67,7 +68,7 @@ function Sidebar({ curUser, activeUsers }: ISidebarProps) {
     );
   }
 
-  if (curUser === undefined) {
+  if (currentUser === null) {
     return (
       <div className={styles.Sidebar}>
         <Link to="/" className={styles.Sidebar__logo}>

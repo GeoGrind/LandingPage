@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { stopSessionOfCurrentUser } from 'utils/db';
 import { User } from 'types/user.type';
 import RefreshIcon from '@mui/icons-material/Refresh';
@@ -8,17 +8,16 @@ import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { signOut } from 'firebase/auth';
 import { FIREBASE_AUTH } from 'firebase';
+import { useAuthContext } from 'context/AuthContext';
 import styles from './Header.module.scss';
 
 interface IHeaderProps {
-  curUser: User | undefined;
   setShowLogin: React.Dispatch<React.SetStateAction<boolean>>;
   setShowSignUp: React.Dispatch<React.SetStateAction<boolean>>;
   setShowCreateSession: React.Dispatch<React.SetStateAction<boolean>>;
   fetchData: () => Promise<void>;
 }
 function Header({
-  curUser,
   setShowLogin,
   setShowSignUp,
   setShowCreateSession,
@@ -37,6 +36,7 @@ function Header({
         // An error happened.
       });
   };
+  const { currentUser } = useAuthContext();
 
   const authOptions = (
     <>
@@ -59,7 +59,7 @@ function Header({
         <RefreshIcon />
         refresh
       </button>
-      {curUser && (curUser as User).session ? (
+      {currentUser && (currentUser as User).session ? (
         <button
           className={styles.Header__container__inner__item}
           type="button"
@@ -100,7 +100,7 @@ function Header({
     <header className={styles.Header}>
       <div className={styles.Header__container}>
         <div className={styles.Header__container__inner}>
-          {curUser ? authOptions : unAuthOptions}
+          {currentUser ? authOptions : unAuthOptions}
         </div>
       </div>
     </header>

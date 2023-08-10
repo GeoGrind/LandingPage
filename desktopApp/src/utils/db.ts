@@ -74,6 +74,26 @@ export const getCurrentUser = async (setUser: any): Promise<void> => {
   }
 };
 
+// export const getUserObjectFromUserAuth = async (user: any): Promise<any> => {
+//   try {
+//     if (!user) {
+//       return null;
+//     }
+
+//     const usersCollection = collection(FIREBASE_DB, 'users');
+//     const querySnapshot = await getDocs(usersCollection);
+//     querySnapshot.forEach(async (docSnapshot) => {
+//       const userObject = docSnapshot.data() as User;
+//       if (userObject.uid === user.uid) {
+//         return user;
+//       }
+//     });
+//     return null;
+//   } catch (error) {
+//     console.log('Error getting user', error);
+//   }
+// };
+
 export async function updateChatRoomLastChangeTime(id: string): Promise<void> {
   const chatRoomRef = doc(collection(FIREBASE_DB, 'chatRooms'), id);
   try {

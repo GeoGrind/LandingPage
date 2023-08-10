@@ -1,21 +1,22 @@
 import { User } from 'types/user.type';
+import { useAuthContext } from 'context/AuthContext';
 import Messages from '../Messages/Messages';
 import Input from '../Input/Input';
 import styles from './SingleChat.module.scss';
 
 interface ISingleChatProps {
-  curUser: User;
   chatRoomId: string;
 }
 
-function SingleChat({ curUser, chatRoomId }: ISingleChatProps) {
+function SingleChat({ chatRoomId }: ISingleChatProps) {
+  const { currentUser } = useAuthContext();
   return (
     <div className={styles.SingleChat}>
       <div className={styles.SingleChat__username}>
-        <span>{curUser.username}</span>
+        <span>{currentUser?.username}</span>
       </div>
-      <Messages curUser={curUser} chatRoomId={chatRoomId} />
-      <Input curUser={curUser} chatRoomId={chatRoomId} />
+      <Messages chatRoomId={chatRoomId} />
+      <Input chatRoomId={chatRoomId} />
     </div>
   );
 }
