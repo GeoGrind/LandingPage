@@ -5,10 +5,9 @@ import { getUserById, handleUpload } from "../../utils/db";
 import { FIREBASE_AUTH } from "../../../FirebaseConfig";
 import { useNavigation, ParamListBase } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { fetchProfilePictureFromFirestore } from "../../utils/db";
 import { Button } from "react-native-paper";
 import { Avatar } from "react-native-elements";
-
+import { User } from "../../types";
 export default function UpdateProfilePicture() {
   const [image, setImage] = useState<string | null>(null);
   const { currentUser } = FIREBASE_AUTH;
@@ -16,10 +15,9 @@ export default function UpdateProfilePicture() {
 
   useEffect(() => {
     const fetchProfilePicture = async () => {
-      const profilePicture = await fetchProfilePictureFromFirestore();
-      const user = await getUserById(currentUser!.uid);
+      const user: User | null = await getUserById(currentUser!.uid);
       if (user?.profilePicture) {
-        setImage(user?.profilePicture);
+        setImage(user.profilePicture);
       }
     };
     fetchProfilePicture();

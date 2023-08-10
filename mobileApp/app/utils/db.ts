@@ -330,30 +330,3 @@ export async function handleUpload(uri: string) {
     }
   );
 }
-
-export const fetchProfilePictureFromFirestore = async () => {
-  const auth = getAuth(); // Get the Firebase Authentication instance
-  const user = auth.currentUser;
-  if (!user) {
-    console.log("Failed to fetch profile picture");
-    return null;
-  }
-
-  try {
-    const userDocRef = doc(FIREBASE_DB, "users", user.uid);
-    const userDocSnap = await getDoc(userDocRef);
-
-    if (userDocSnap.exists()) {
-      const userData = userDocSnap.data();
-      const profilePicture = userData.profilePicture;
-
-      return profilePicture;
-    } else {
-      console.log("User document does not exist");
-      return null;
-    }
-  } catch (error) {
-    console.log("Error fetching profile picture:", error);
-    return null;
-  }
-};
