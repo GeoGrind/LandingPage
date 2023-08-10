@@ -5,14 +5,15 @@ import { FIREBASE_DB } from 'firebase';
 import { v4 as uuid } from 'uuid';
 import { Message } from 'types/message.type';
 import { updateChatRoomLastChangeTime } from 'utils/db';
+import { useAuthContext } from 'context/AuthContext';
 import styles from './Input.module.scss';
 
 interface IInputProps {
-  curUser: User;
   chatRoomId: string;
 }
 
-function Input({ curUser, chatRoomId }: IInputProps) {
+function Input({ chatRoomId }: IInputProps) {
+  const { currentUser } = useAuthContext();
   const [text, setText] = useState('');
 
   const handleSend = async () => {
@@ -26,7 +27,7 @@ function Input({ curUser, chatRoomId }: IInputProps) {
       id: messageId,
       createdAt: Date.now(),
       message: text,
-      senderId: curUser.uid,
+      senderId: currentUser?.uid || '',
     };
     const messageRef = doc(msgCollectionRef!, messageId);
     await setDoc(messageRef, newMessage);

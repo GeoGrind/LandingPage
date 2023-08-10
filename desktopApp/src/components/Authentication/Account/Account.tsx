@@ -1,29 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { User } from 'types/user.type';
-import { Location } from 'types/location.type';
-import { getCurrentUser } from 'utils/db';
 import { signOut } from 'firebase/auth';
+import { useAuthContext } from 'context/AuthContext';
 import { FIREBASE_AUTH } from '../../../firebase';
 import styles from './Account.module.scss';
 import FormItem from '../Form/FormItem/FormItem';
 
-interface IAccountProps {
-  curUser: User | undefined;
-}
+// interface IAccountProps {
+// }
 
-function Account({ curUser }: IAccountProps) { // cur user is currently not working (not being passed in)
+// function Account({}: IAccountProps) {
+function Account() {
+  // cur user is currently not working (not being passed in)
+  const { currentUser } = useAuthContext();
   const navigate = useNavigate();
-  const [username, setUsername] = useState(curUser?.username);
+  const [username, setUsername] = useState(currentUser?.username);
   const [yearOfGraduation, setYearOfGraduation] = useState(
-    curUser?.yearOfGraduation
+    currentUser?.yearOfGraduation
   );
-  const [university, setUniversity] = useState(curUser?.university);
-  const [program, setProgram] = useState(curUser?.program);
-  const [termCourses, setTermCourses] = useState(curUser?.termCourses);
-  const [bio, setBio] = useState(curUser?.bio);
-
-  // const [email, setEmail] = useState(''); // shouldnt make this editable
+  const [university, setUniversity] = useState(currentUser?.university);
+  const [program, setProgram] = useState(currentUser?.program);
+  const [termCourses, setTermCourses] = useState(currentUser?.termCourses);
+  const [bio, setBio] = useState(currentUser?.bio);
 
   const handleLogout = () => {
     signOut(FIREBASE_AUTH)
@@ -39,30 +37,29 @@ function Account({ curUser }: IAccountProps) { // cur user is currently not work
       });
   };
 
-  const accountPage = curUser && (
+  const accountPage = currentUser && (
     <div>
       <FormItem
         label="Username"
-        placeholder={curUser.username}
+        placeholder={currentUser.username}
         onChange={setUsername}
       />
       <FormItem
         label="Program"
-        // placeholder={curUser.program}
-        placeholder="My Program"
+        placeholder={currentUser.program}
         onChange={setProgram}
       />
       <br />
-      Session: {curUser.session?.course}
+      Session: {currentUser.session?.course}
       <br />
-      course: {curUser.session?.course}
+      course: {currentUser.session?.course}
       <br />
-      startTime: {curUser.session?.startTime}
+      startTime: {currentUser.session?.startTime}
       <br />
       <br />
-      sessionStartLocationLong: {curUser.session?.location.longitude}
+      sessionStartLocationLong: {currentUser.session?.location.longitude}
       <br />
-      sessionStartLocationLat: {curUser.session?.location.latitude}
+      sessionStartLocationLat: {currentUser.session?.location.latitude}
       <br />
     </div>
   );
