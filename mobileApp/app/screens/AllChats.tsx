@@ -36,7 +36,7 @@ const AllChats = () => {
     bottomSheetRef.current?.expand();
   };
 
-  const fetchChatRoomsData = async () => {
+  const fetchChatRoomsData = async (initFetch: boolean) => {
     try {
       const ref = collection(FIREBASE_DB, "chatRooms");
       const snapshot = await getDocs(ref);
@@ -115,6 +115,11 @@ const AllChats = () => {
         ...updatedNames,
       }));
       setChatRooms(chatRoomsData);
+      if (chatRoomsData.length > 0 && initFetch == true) {
+        setSelectedChatOwner1Id(chatRoomsData[0].ownerIds[0]);
+        setSelectedChatOwner2Id(chatRoomsData[0].ownerIds[1]);
+        setSelectedChatRoomId(chatRoomsData[0].id);
+      }
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -122,11 +127,11 @@ const AllChats = () => {
 
   // callbacks
   const handleSheetChanges = useCallback((index: number) => {
-    fetchChatRoomsData();
+    fetchChatRoomsData(false);
   }, []);
 
   useEffect(() => {
-    fetchChatRoomsData();
+    fetchChatRoomsData(true);
   }, []);
 
   return (
