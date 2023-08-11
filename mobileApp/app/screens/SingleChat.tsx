@@ -216,9 +216,10 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 14,
     fontWeight: "bold",
-    marginLeft: 10,
     marginBottom: 5,
     color: "#555",
+    textAlign: "center", // Add this line
+    width: "100%", // Ensure it takes full width
   },
 });
 
