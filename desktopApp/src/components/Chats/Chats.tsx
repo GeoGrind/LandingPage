@@ -11,14 +11,13 @@ import { Chat } from 'types/chat.type';
 import { useAuthContext } from 'context/AuthContext';
 import styles from './Chats.module.scss';
 import SingleChat from './SingleChat/SingleChat';
+import { useChatContext } from 'context/ChatContext';
 
-// interface IChatsProps {}
-// function Chats({}: IChatsProps) {
 function Chats() {
   const { currentUser } = useAuthContext();
-
   const [chats, setChats] = useState<Array<Chat>>([]);
-  const [curChatRoomId, setCurChatRoomId] = useState<string>('');
+
+  const { currentChatId, setCurrentChatId } = useChatContext();
 
   useEffect(() => {
     if (!currentUser) return;
@@ -48,6 +47,8 @@ function Chats() {
     getChats();
   }, [currentUser]);
 
+  if (!currentUser) return null;
+
   return (
     <div className={styles.Chats}>
       {Object.entries(chats)
@@ -58,22 +59,17 @@ function Chats() {
             className={styles.Chats__user}
             key={chat[1].id}
             onClick={() => {
-              setCurChatRoomId(chat[1].id);
+              setCurrentChatId(chat[1].id);
             }}
-            // onClick={() => handleSelect(chat[1].userInfo)} // test
           >
-            <div className="userChatInfo">
-              {/* <span>{chat[1].ownerIds[0]}</span> */}
+            <div className={styles.Chats__user__info}>
+              <span>{chat[1].ownerIds[0]}</span>
               <span>{currentUser.username}</span>
-              {/* <p>{chat[1].lastMessage?.text}</p> */}
             </div>
           </button>
         ))}
-      <SingleChat chatRoomId={curChatRoomId} />
+      {currentChatId && <SingleChat chatRoomId={currentChatId} />}
 
-      <Link className={styles.Header__container__inner__nav__item} to="/">
-        Home
-      </Link>
     </div>
   );
 }

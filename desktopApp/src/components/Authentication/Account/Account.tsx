@@ -66,9 +66,6 @@ function Account() {
 
   return (
     <div className={styles.Account}>
-      <Link className={styles.Header__container__inner__nav__item} to="/">
-        Home
-      </Link>
       {accountPage}
       <button
         className={styles.Header__container__inner__utility}

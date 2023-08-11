@@ -9,12 +9,14 @@ import Login from './Authentication/Form/Login/Login';
 import SignUp from './Authentication/Form/SignUp/SignUp';
 import Header from './Header/Header';
 import CreateSession from './CreateSession/CreateSession';
+import { useAppContext } from 'context/AppContext';
 
 function Home() {
-  const [activeUsers, setActiveUsers] = useState<User[]>([]);
   const [showLogin, setShowLogin] = useState<boolean>(false);
   const [showSignUp, setShowSignUp] = useState<boolean>(false);
   const [showCreateSession, setShowCreateSession] = useState<boolean>(false);
+
+  const { activeUsers, setActiveUsers } = useAppContext();
 
   const fetchData = async () => {
     const users = await fetchActiveUsers();
@@ -41,8 +43,7 @@ function Home() {
       {showCreateSession && (
         <CreateSession setShowCreateSession={setShowCreateSession} />
       )}
-      <Map activeUsers={activeUsers} />
-      <Sidebar activeUsers={activeUsers} />
+      <Map />
     </div>
   );
 }

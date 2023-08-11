@@ -7,20 +7,20 @@ import { Message } from 'types/message.type';
 import { updateChatRoomLastChangeTime } from 'utils/db';
 import { useAuthContext } from 'context/AuthContext';
 import styles from './Input.module.scss';
+import { useChatContext } from 'context/ChatContext';
 
-interface IInputProps {
-  chatRoomId: string;
-}
-
-function Input({ chatRoomId }: IInputProps) {
+function Input() {
   const { currentUser } = useAuthContext();
+  const { currentChatId } = useChatContext();
   const [text, setText] = useState('');
+
+  if (!currentChatId) return;
 
   const handleSend = async () => {
     if (text.length === 0) return;
     const msgCollectionRef = collection(
       FIREBASE_DB,
-      `chatRooms/${chatRoomId}/messages`
+      `chatRooms/${currentChatId}/messages`
     );
     const messageId = uuid();
     const newMessage: Message = {
@@ -31,7 +31,7 @@ function Input({ chatRoomId }: IInputProps) {
     };
     const messageRef = doc(msgCollectionRef!, messageId);
     await setDoc(messageRef, newMessage);
-    await updateChatRoomLastChangeTime(chatRoomId);
+    await updateChatRoomLastChangeTime(currentChatId);
     setText('');
   };
 

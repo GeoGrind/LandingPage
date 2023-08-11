@@ -10,14 +10,12 @@ import { Icon } from 'leaflet';
 import { useEffect } from 'react';
 import MapPopup from './MapPopup/MapPopup';
 import markerIconPng from '../../../assets/956fd6.png';
-import { User } from '../../types/user.type';
 import styles from './Map.module.scss';
+import { useAppContext } from 'context/AppContext';
 
-interface IMapProps {
-  activeUsers: Array<User>;
-}
+function Map() {
+  const { activeUsers } = useAppContext();
 
-function Map({ activeUsers }: IMapProps) {
   const RecenterAutomatically = ({ lat, lng }) => {
     const map = useMap();
     useEffect(() => {
