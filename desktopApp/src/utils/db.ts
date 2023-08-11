@@ -11,8 +11,6 @@ import { Session } from 'types/session.type';
 import { v4 as uuidv4 } from 'uuid';
 import { FIREBASE_AUTH, FIREBASE_DB } from '../firebase';
 import { Chat } from 'types/chat.type';
-import { useChatContext } from 'context/ChatContext';
-
 
 
 export const createSession = async (session: Session) => {
