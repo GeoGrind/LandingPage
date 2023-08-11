@@ -6,12 +6,12 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import { useAuthContext } from 'context/AuthContext';
+import { useAppContext } from 'context/AppContext';
 import styles from './Sidebar.module.scss';
 import logo from '../../../assets/956fd6.png';
 import discoveryIcon from '../../../assets/discoveryIcon.svg';
 import chatsIcon from '../../../assets/chatsIcon.svg';
 import profileIcon from '../../../assets/profileIcon.svg';
-import { useAppContext } from 'context/AppContext';
 
 function Sidebar() {
   const { activeUsers, setActiveUsers } = useAppContext();
@@ -154,6 +154,23 @@ function Sidebar() {
           Profile
         </Link>
       </div>
+      <button
+        type="button"
+        className={styles.Sidebar__toggle}
+        onClick={() => {
+          if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((position) => {
+              alert(
+                `position is: ${position.coords.latitude}, ${position.coords.longitude}`
+              );
+            });
+          } else {
+            alert('unable to get position');
+          }
+        }}
+      >
+        get current location
+      </button>
 
       <button
         type="button"

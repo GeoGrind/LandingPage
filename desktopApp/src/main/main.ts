@@ -26,6 +26,8 @@ class AppUpdater {
   }
 }
 
+process.env.GOOGLE_API_KEY = 'AIzaSyD03mHChEH6Nr7SGhQhrJkJGiPDz7ryEnw'
+
 let mainWindow: BrowserWindow | null = null;
 
 ipcMain.on('ipc-example', async (event, arg) => {
@@ -81,6 +83,7 @@ const createWindow = async () => {
       preload: app.isPackaged
         ? path.join(__dirname, 'preload.js')
         : path.join(__dirname, '../../.erb/dll/preload.js'),
+      // geolocation: true, // wtf
     },
   });
 
