@@ -15,7 +15,6 @@ const AllChats = () => {
   const [chatRooms, setChatRooms] = useState<ChatRoom[]>([]);
   const { currentUser } = FIREBASE_AUTH;
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
-  const [idToEmoji, setIdToEmoji] = useState<{ [key: string]: string }>({});
   const [idToNames, setIdToNames] = useState<{ [key: string]: string }>({});
   const [idToProfilePictures, setIdToProfilePictures] = useState<{
     [key: string]: string;
@@ -73,11 +72,9 @@ const AllChats = () => {
         const userData = userSnapshot.data();
 
         if (userData) {
-          const emoji = userData.emoji || "";
           const name = userData.name || "";
           const profilePicture = userData.profilePicture || "";
           return {
-            emoji: { [userId]: emoji },
             name: { [userId]: name },
             profilePicture: { [userId]: profilePicture },
           };
@@ -93,12 +90,7 @@ const AllChats = () => {
         }
         return acc;
       }, {});
-      const updatedEmojis = results.reduce((acc, result) => {
-        if (result) {
-          return { ...acc, ...result.emoji };
-        }
-        return acc;
-      }, {});
+
       const updatedNames = results.reduce((acc, result) => {
         if (result) {
           return { ...acc, ...result.name };
@@ -109,7 +101,6 @@ const AllChats = () => {
         ...prevProfilePictures,
         ...updatedProfilePictures,
       }));
-      setIdToEmoji((prevEmojis) => ({ ...prevEmojis, ...updatedEmojis }));
       setIdToNames((prevNames) => ({
         ...prevNames,
         ...updatedNames,
@@ -148,7 +139,6 @@ const AllChats = () => {
       />
       <Stories
         chatRooms={chatRooms}
-        idToEmoji={idToEmoji}
         idToNames={idToNames}
         idToProfilePictures={idToProfilePictures}
         setSelectedChatOwner1Id={setSelectedChatOwner1Id}

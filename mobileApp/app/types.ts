@@ -40,6 +40,7 @@ export type Message = {
   createdAt: number;
   message: string;
   sender: string;
+  isHeader: boolean;
 };
 
 // Type for the documents in the "groups" collection

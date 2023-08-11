@@ -6,7 +6,6 @@ import { Avatar } from "react-native-elements";
 
 type Props = {
   chatRooms: ChatRoom[];
-  idToEmoji: { [key: string]: string };
   idToNames: { [key: string]: string };
   idToProfilePictures: { [key: string]: string };
   setSelectedChatOwner1Id: React.Dispatch<React.SetStateAction<string | null>>;
@@ -16,7 +15,6 @@ type Props = {
 };
 const Stories: React.FC<Props> = ({
   chatRooms,
-  idToEmoji,
   idToNames,
   idToProfilePictures,
   setSelectedChatOwner1Id,

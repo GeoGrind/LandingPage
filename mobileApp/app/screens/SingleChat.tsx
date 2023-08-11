@@ -18,7 +18,6 @@ import {
 } from "firebase/firestore";
 import { FIREBASE_DB, FIREBASE_AUTH } from "../../FirebaseConfig";
 import { Message } from "../types";
-import "react-native-get-random-values";
 import { v4 as uuidv4 } from "uuid";
 import { doc, setDoc } from "firebase/firestore";
 import { updateChatRoomLastChangeTime } from "../utils/db";
@@ -55,8 +54,20 @@ const SingleChat: React.FC<Props> = ({
           createdAt: data.createdAt || 0,
           message: data.message || "",
           sender: data.sender || "",
+          isHeader: data.isHeader,
         };
       });
+      let previousMessageTime: Date | null = null;
+      for (let i = 0; i < messages.length; i++) {
+        const currentMessageTime = new Date(messages[i].createdAt);
+        if (
+          !previousMessageTime ||
+          previousMessageTime.getMinutes() !== currentMessageTime.getMinutes()
+        ) {
+          messages[i].isHeader = true;
+        }
+        previousMessageTime = currentMessageTime;
+      }
       setMessages(messages);
     });
 
@@ -66,6 +77,7 @@ const SingleChat: React.FC<Props> = ({
   const sendMessage = async () => {
     try {
       const msg = message.trim();
+      setMessage("");
       if (msg.length === 0) return;
       const msgCollectionRef = collection(
         FIREBASE_DB,
@@ -77,6 +89,7 @@ const SingleChat: React.FC<Props> = ({
         message: msg,
         sender: currentUser!.uid,
         createdAt: Date.now(),
+        isHeader: false,
       };
       const messageRef = doc(msgCollectionRef!, documentId);
       await setDoc(messageRef, newMessage);
@@ -86,8 +99,6 @@ const SingleChat: React.FC<Props> = ({
       } else {
         await sendNotificationById(chatRoomOwner1Id);
       }
-
-      setMessage("");
     } catch (e) {
       console.log("messages failed to send", e);
     }
@@ -97,18 +108,23 @@ const SingleChat: React.FC<Props> = ({
     const myMessage = item.sender === currentUser!.uid;
 
     return (
-      <View
-        style={[
-          styles.messageContainer,
-          myMessage
-            ? styles.userMessageContainer
-            : styles.otherMessageContainer,
-        ]}
-      >
-        <Text style={styles.messageText}>{item.message}</Text>
-        <Text style={[styles.time, myMessage ? {} : { color: "black" }]}>
-          {formatTime(item.createdAt)}
-        </Text>
+      <View style={styles.singleMessageWrapper}>
+        {item.isHeader && (
+          <Text style={styles.headerText}>{formatTime(item.createdAt)}</Text>
+        )}
+        <View
+          style={[
+            styles.messageContainer,
+            myMessage
+              ? styles.userMessageContainer
+              : styles.otherMessageContainer,
+          ]}
+        >
+          <Text style={styles.messageText}>{item.message}</Text>
+          <Text style={[styles.time, myMessage ? {} : { color: "black" }]}>
+            {formatTime(item.createdAt)}
+          </Text>
+        </View>
       </View>
     );
   };
@@ -191,6 +207,18 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#777",
     alignSelf: "flex-end",
+  },
+
+  singleMessageWrapper: {
+    marginBottom: 10,
+  },
+
+  headerText: {
+    fontSize: 14,
+    fontWeight: "bold",
+    marginLeft: 10,
+    marginBottom: 5,
+    color: "#555",
   },
 });
 
