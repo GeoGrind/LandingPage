@@ -51,25 +51,31 @@ function Chats() {
 
   return (
     <div className={styles.Chats}>
-      {Object.entries(chats)
-        ?.sort((a, b) => b[1].lastChangeTime - a[1].lastChangeTime)
-        .map((chat) => (
-          <button
-            type="button"
-            className={styles.Chats__user}
-            key={chat[1].id}
-            onClick={() => {
-              setCurrentChatId(chat[1].id);
-            }}
-          >
-            <div className={styles.Chats__user__info}>
-              <span>{chat[1].ownerIds[0]}</span>
-              <span>{currentUser.username}</span>
-            </div>
-          </button>
-        ))}
-      {currentChatId && <SingleChat chatRoomId={currentChatId} />}
+      <div className={styles.Chats__left}>
+        <div className={styles.Chats__left__top}>Messages</div>
+        {Object.entries(chats)
+          ?.sort((a, b) => b[1].lastChangeTime - a[1].lastChangeTime)
+          .map((chat) => {
+            return (
+              <button
+                type="button"
+                className={styles.Chats__left__user}
+                key={chat[1].id}
+                onClick={() => {
+                  setCurrentChatId(chat[1].id);
+                }}
+              >
+                {chat[1].id}
+              </button>
+            );
+          })}
+      </div>
 
+      {currentChatId ? (
+        <SingleChat />
+      ) : (
+        <div className={styles.Chats__placeholder}>select a chat</div> // replace with empty chat or smth
+      )}
     </div>
   );
 }
