@@ -36,6 +36,8 @@ const UpdateBase = ({ route, navigation }: Props) => {
         return currentUser.program;
       case "yearOfGraduation":
         return currentUser.yearOfGraduation;
+      case "university":
+        return currentUser.university;
       default:
         return "";
     }
@@ -58,7 +60,7 @@ const UpdateBase = ({ route, navigation }: Props) => {
           style={styles.input}
           onChangeText={setBoxValue}
           value={boxValue}
-          placeholder={`Enter your new ${field}`}
+          placeholder={`Enter your ${field}`}
           autoFocus={true}
         />
         <Button title={`Update ${field}`} onPress={handleUpdate} />
