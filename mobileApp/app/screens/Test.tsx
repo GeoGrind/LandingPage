@@ -10,7 +10,9 @@ const Test = () => {
     <View style={styles.container}>
       <Button
         onPress={() => {
-          navigation.navigate("UpdateProfilePicture", {});
+          navigation.navigate("Profile", {
+            id: "Vi87FsO8cmMMHUNx3zsnGuGqErx2",
+          });
         }}
         title="Press me"
       />
