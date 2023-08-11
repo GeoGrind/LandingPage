@@ -1,3 +1,27 @@
 .Chats {
+  display: flex;
+  flex-direction: row;
+  &__user {
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: white;
+    cursor: pointer;
+    background-color: #2f2d52;
 
+    &:hover {
+      background-color: #956fd6;
+    }
+    &__info {
+      span {
+        font-size: 18px;
+        font-weight: 500;
+      }
+      p {
+        font-size: 14px;
+        color: lightgray;
+      }
+    }
+  }
 }

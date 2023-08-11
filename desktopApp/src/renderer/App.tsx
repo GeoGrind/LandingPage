@@ -23,8 +23,7 @@ import Sidebar from 'components/Sidebar/Sidebar';
 export default function App() {
   return (
     <Router>
-      {/* <Home /> */}
-      {/* <Sidebar /> */}
+      <Sidebar />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/account" element={<Account />} />

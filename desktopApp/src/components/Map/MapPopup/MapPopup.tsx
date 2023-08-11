@@ -3,13 +3,21 @@ import { Popup } from 'react-leaflet';
 import styles from './MapPopup.module.scss';
 import icon from '../../../../assets/956fd6.png';
 import messageIcon from '../../../../assets/messageIcon.png';
+import { createAndSetChatRoom } from 'utils/db';
+import { useAuthContext } from 'context/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import { useChatContext } from 'context/ChatContext';
 
 interface IMapPopupProps {
   user: User;
 }
 
 function MapPopup({ user }: IMapPopupProps) {
-  if (!user.session) {
+  const { currentUser } = useAuthContext();
+  const { setCurrentChatId } = useChatContext();
+  const navigate = useNavigate();
+
+  if (!user.session || !currentUser) {
     return null;
   }
   const profilePicture = user.session.isPrivate ? (
@@ -20,6 +28,11 @@ function MapPopup({ user }: IMapPopupProps) {
       future? (look up fire storage later)
     </div>
   );
+
+  const onMessageClick = () => {
+    createAndSetChatRoom(currentUser.uid, user.uid, setCurrentChatId);
+    navigate('/chats');
+  };
 
   return (
     <Popup className={styles.MapPopup}>
@@ -48,7 +61,9 @@ function MapPopup({ user }: IMapPopupProps) {
           <button
             className={styles.MapPopup__container__bottom__button}
             type="button"
-            onClick={() => alert('you hit message')}
+            onClick={() => {
+              onMessageClick();
+            }}
           >
             <img src={messageIcon} height={17} alt="message" />
           </button>
