@@ -11,12 +11,11 @@ import logo from '../../../assets/956fd6.png';
 import discoveryIcon from '../../../assets/discoveryIcon.svg';
 import chatsIcon from '../../../assets/chatsIcon.svg';
 import profileIcon from '../../../assets/profileIcon.svg';
+import { useAppContext } from 'context/AppContext';
 
-interface ISidebarProps {
-  activeUsers: Array<User>;
-}
+function Sidebar() {
+  const { activeUsers, setActiveUsers } = useAppContext();
 
-function Sidebar({ activeUsers }: ISidebarProps) {
   const [isSideBarExpanded, setIsSideBarExpanded] = useState<boolean>(true);
   const [isDiscoveryOpen, setIsDiscoveryOpen] = useState<boolean>(false);
 

@@ -10,17 +10,16 @@ import { FIREBASE_DB } from 'firebase';
 import { Message } from 'types/message.type';
 import SingleMessage from './SingleMessage/SingleMessage';
 import styles from './Messages.module.scss';
+import { useChatContext } from 'context/ChatContext';
 
-interface IMessagesProps {
-  chatRoomId: string;
-}
-function Messages({ chatRoomId }: IMessagesProps) {
+function Messages({}) {
+  const { currentChatId } = useChatContext();
   const [messages, setMessages] = useState<Array<Message>>([]);
 
   useEffect(() => {
     const messagesRef = collection(
       FIREBASE_DB,
-      `chatRooms/${chatRoomId}/messages`
+      `chatRooms/${currentChatId}/messages`
     );
     const q = query(messagesRef, orderBy('createdAt', 'asc'));
 
@@ -38,7 +37,7 @@ function Messages({ chatRoomId }: IMessagesProps) {
     });
 
     return unsubscribe;
-  }, [chatRoomId]);
+  }, [currentChatId]);
 
   return (
     <div className={styles.Messages}>
