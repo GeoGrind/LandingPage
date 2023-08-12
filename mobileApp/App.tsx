@@ -21,6 +21,7 @@ import UpdateEmoji from "./app/screens/userInfoEditScreens/UpdateEmoji";
 import UpdateBase from "./app/screens/userInfoEditScreens/UpdateBase";
 import Profile from "./app/screens/Profile";
 import UpdateProfilePicture from "./app/screens/userInfoEditScreens/UpdateProfilePicture";
+import UpdateTermCourses from "./app/screens/userInfoEditScreens/UpdateTermCourses";
 
 const Stack = createNativeStackNavigator();
 
@@ -44,6 +45,10 @@ function InsideLayout() {
       <InsideStack.Screen
         name="UpdateProfilePicture"
         component={UpdateProfilePicture}
+      />
+      <InsideStack.Screen
+        name="UpdateTermCourses"
+        component={UpdateTermCourses}
       />
     </InsideStack.Navigator>
   );

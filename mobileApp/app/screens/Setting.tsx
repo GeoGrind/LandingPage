@@ -78,7 +78,7 @@ export default function Setting() {
       />
       <CircleInfo
         title="Courses"
-        onPress={() => navigation.navigate("UpdateEmoji")}
+        onPress={() => navigation.navigate("UpdateTermCourses")}
         style={styles.circle5}
       />
       <CircleInfo

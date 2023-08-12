@@ -30,7 +30,13 @@ const Profile = ({ route }: Props) => {
       return () => {};
     }, [])
   );
-
+  const CourseItem = ({ course }: { course: string }) => {
+    return (
+      <View style={styles.courseItemContainer}>
+        <Text style={styles.courseItemText}>{course}</Text>
+      </View>
+    );
+  };
   return (
     <View style={styles.container}>
       <View style={styles.topPartition}></View>
@@ -45,40 +51,28 @@ const Profile = ({ route }: Props) => {
         />
         <View style={styles.profileInfoContainer}>
           <Text style={styles.nameText}>{targetUser?.name}</Text>
-          <View style={styles.buttonContainer}>
-            <Button
-              mode="contained"
-              onPress={() => {}}
-              style={{
-                marginVertical: wp("3%"),
-                width: wp("40%"),
-                marginRight: wp("5%"),
-              }} // Set fixed width here
-              labelStyle={{ marginHorizontal: 0 }}
-            >
-              CONNECT
-            </Button>
-            <Button
-              mode="contained"
-              onPress={() => {}}
-              style={{ marginVertical: wp("3%"), width: wp("40%") }} // Set fixed width here
-              labelStyle={{ marginHorizontal: 0 }}
-            >
-              MESSAGE
-            </Button>
-          </View>
+
           <View style={styles.cardContainer}>
             <View style={styles.infoCard}>
-              <Text style={styles.cardText}>{targetUser?.university}</Text>
-            </View>
-            <View style={styles.infoCard}>
               <Text style={styles.cardText}>
-                {targetUser?.yearOfGraduation}
+                {targetUser?.university || "Not Specified"}
               </Text>
             </View>
             <View style={styles.infoCard}>
-              <Text style={styles.cardText}>{targetUser?.program}</Text>
+              <Text style={styles.cardText}>
+                {targetUser?.yearOfGraduation || "Not Specified"}
+              </Text>
             </View>
+            <View style={styles.infoCard}>
+              <Text style={styles.cardText}>
+                {targetUser?.program || "Not Specified"}
+              </Text>
+            </View>
+          </View>
+          <View style={styles.courseContainer}>
+            {targetUser?.termCourses?.map((course, index) => (
+              <CourseItem key={index} course={course} />
+            ))}
           </View>
         </View>
       </View>
@@ -145,5 +139,26 @@ const styles = StyleSheet.create({
   },
   cardText: {
     fontSize: 16,
+  },
+  courseItemContainer: {
+    backgroundColor: "#f4f4f4", // choose a subtle background
+    width: wp("15%"), // This is a rough estimate for circle size, adjust as needed
+    height: wp("15%"),
+    borderRadius: wp("10%"), // Half of width or height to make it a perfect circle
+    justifyContent: "center",
+    alignItems: "center",
+    marginHorizontal: 5, // spacing between circles
+  },
+  courseItemText: {
+    fontSize: 14, // adjust as needed for text to fit in circle
+    textAlign: "center",
+  },
+  courseContainer: {
+    marginTop: hp("2%"),
+    flexDirection: "row", // to layout items horizontally
+    justifyContent: "center", // to center the items horizontally
+    flexWrap: "wrap", // if you want the items to wrap to the next line if they exceed screen width
+    width: wp("90%"),
+    alignSelf: "center",
   },
 });

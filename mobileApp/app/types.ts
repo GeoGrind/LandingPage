@@ -67,10 +67,12 @@ export type InsideRootStackParamList = {
   UpdateBase: {
     field: string;
   };
+  UpdateProfilePicture: {};
+
   Profile: {
     id: string;
   };
-  UpdateProfilePicture: {};
+  UpdateTermCourses: {};
 };
 
 export type OutsideRootStackParamList = {

@@ -1,4 +1,4 @@
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
 import { collection } from "firebase/firestore";
 import { FIREBASE_DB, FIREBASE_AUTH } from "../../FirebaseConfig";
@@ -11,11 +11,13 @@ import Stories from "../components/Stories";
 import SingleChat from "./SingleChat";
 import BottomSheet from "@gorhom/bottom-sheet";
 import { useRef } from "react";
+import { Text } from "react-native";
 const AllChats = () => {
   const [chatRooms, setChatRooms] = useState<ChatRoom[]>([]);
   const { currentUser } = FIREBASE_AUTH;
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   const [idToNames, setIdToNames] = useState<{ [key: string]: string }>({});
+  const [idToEmojis, setIdToEmojis] = useState<{ [key: string]: string }>({});
   const [idToProfilePictures, setIdToProfilePictures] = useState<{
     [key: string]: string;
   }>({});
@@ -74,9 +76,11 @@ const AllChats = () => {
         if (userData) {
           const name = userData.name || "";
           const profilePicture = userData.profilePicture || "";
+          const emoji = userData.emoji || "";
           return {
             name: { [userId]: name },
             profilePicture: { [userId]: profilePicture },
+            emoji: { [userId]: emoji },
           };
         }
         return null;
@@ -97,6 +101,12 @@ const AllChats = () => {
         }
         return acc;
       }, {});
+      const updatedEmojis = results.reduce((acc, result) => {
+        if (result) {
+          return { ...acc, ...result.emoji };
+        }
+        return acc;
+      }, {});
       setIdToProfilePictures((prevProfilePictures) => ({
         ...prevProfilePictures,
         ...updatedProfilePictures,
@@ -104,6 +114,10 @@ const AllChats = () => {
       setIdToNames((prevNames) => ({
         ...prevNames,
         ...updatedNames,
+      }));
+      setIdToEmojis((prevEmojis) => ({
+        ...prevEmojis,
+        ...updatedEmojis,
       }));
       setChatRooms(chatRoomsData);
       if (chatRoomsData.length > 0 && initFetch == true) {
@@ -151,9 +165,41 @@ const AllChats = () => {
         <BottomSheet
           ref={bottomSheetRef}
           index={1}
-          snapPoints={["75%", "90%"]}
+          snapPoints={["75%", "95%"]}
           onChange={handleSheetChanges}
         >
+          <TouchableOpacity
+            onPress={() => {
+              let targetId =
+                currentUser?.uid === selectedChatOwner1Id
+                  ? selectedChatOwner2Id
+                  : selectedChatOwner1Id;
+
+              navigation.navigate("Profile", {
+                id: targetId,
+              });
+            }}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "center", // Centers children horizontally in a row
+                alignItems: "center", // Centers children vertically in a row
+                padding: 10,
+              }}
+            >
+              <View style={{ flexDirection: "column" }}>
+                <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+                  {idToNames[selectedChatOwner2Id] ||
+                    idToNames[selectedChatOwner1Id]}
+                </Text>
+              </View>
+              <Text style={{ fontSize: 20, marginLeft: 10 }}>
+                {idToEmojis[selectedChatOwner2Id] ||
+                  idToEmojis[selectedChatOwner1Id]}
+              </Text>
+            </View>
+          </TouchableOpacity>
           <SingleChat
             chatRoomOwner1Id={selectedChatOwner1Id}
             chatRoomOwner2Id={selectedChatOwner2Id}
