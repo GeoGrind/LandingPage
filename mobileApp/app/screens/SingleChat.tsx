@@ -24,7 +24,7 @@ import { updateChatRoomLastChangeTime } from "../utils/db";
 import { formatTime } from "../utils/util";
 import { sendNotificationById } from "../utils/notifications";
 import { Dimensions } from "react-native";
-
+import { generateUUID } from "../utils/util";
 type Props = {
   id: string;
   chatRoomOwner1Id: string;
@@ -83,7 +83,9 @@ const SingleChat: React.FC<Props> = ({
         FIREBASE_DB,
         `chatRooms/${id}/messages`
       );
-      const documentId = uuidv4();
+      console.log("reach");
+      const documentId = generateUUID();
+
       const newMessage: Message = {
         id: documentId,
         message: msg,
@@ -91,9 +93,12 @@ const SingleChat: React.FC<Props> = ({
         createdAt: Date.now(),
         isHeader: false,
       };
+
       const messageRef = doc(msgCollectionRef!, documentId);
+
       await setDoc(messageRef, newMessage);
       await updateChatRoomLastChangeTime(id);
+
       if (chatRoomOwner1Id === currentUser?.uid) {
         await sendNotificationById(chatRoomOwner2Id);
       } else {
