@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { createUser } from 'utils/db';
+import { User } from 'types/user.type';
 import { FIREBASE_AUTH } from '../../../../firebase';
 import styles from './SignUp.module.scss';
 import FormItem from '../FormItem/FormItem';
 import FormButton from '../FormButton/FormButton';
 import icon from '../../../../../assets/956fd6.png';
-import { User } from 'types/user.type';
 
 function isUwaterlooEmail(email: string) {
   return email.endsWith('@uwaterloo.ca');

@@ -8,10 +8,10 @@ import {
 import 'leaflet/dist/leaflet.css';
 import { Icon } from 'leaflet';
 import { useEffect } from 'react';
+import { useAppContext } from 'context/AppContext';
 import MapPopup from './MapPopup/MapPopup';
 import markerIconPng from '../../../assets/956fd6.png';
 import styles from './Map.module.scss';
-import { useAppContext } from 'context/AppContext';
 
 function Map() {
   const { activeUsers } = useAppContext();
@@ -23,6 +23,7 @@ function Map() {
     }, [lat, lng]);
     return null;
   };
+
   return (
     <MapContainer
       className={styles.Map}
@@ -41,14 +42,14 @@ function Map() {
       <ZoomControl position="bottomright" />
       <RecenterAutomatically lat={43.472286} lng={-80.544861} />
 
-      {activeUsers.map(
-        (user) =>
+      {activeUsers.map((user) => {
+        return (
           user.session && (
             <Marker
               key={user.uid}
               position={[
-                user.session.location.longitude,
                 user.session.location.latitude,
+                user.session.location.longitude,
               ]}
               icon={
                 new Icon({
@@ -61,7 +62,8 @@ function Map() {
               <MapPopup user={user} />
             </Marker>
           )
-      )}
+        );
+      })}
     </MapContainer>
   );
 }

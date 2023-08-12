@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { stopSessionOfCurrentUser } from 'utils/db';
+import { getCurrentUser, stopSessionOfCurrentUser } from 'utils/db';
 import { User } from 'types/user.type';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import AddIcon from '@mui/icons-material/Add';
@@ -36,7 +36,7 @@ function Header({
         // An error happened.
       });
   };
-  const { currentUser } = useAuthContext();
+  const { currentUser, setCurrentUser } = useAuthContext();
 
   const authOptions = (
     <>
@@ -63,7 +63,10 @@ function Header({
         <button
           className={styles.Header__container__inner__item}
           type="button"
-          onClick={stopSessionOfCurrentUser}
+          onClick={() => {
+            stopSessionOfCurrentUser();
+            getCurrentUser(setCurrentUser); // TODO: rename/refactor this method later
+          }}
         >
           <RemoveIcon />
           Stop Session

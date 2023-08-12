@@ -6,10 +6,12 @@ import { getCurrentUser } from 'utils/db';
 
 interface IAuthContext {
   currentUser: User | null;
+  setCurrentUser: React.Dispatch<React.SetStateAction<User | null>>;
 }
 
 export const AuthContext = createContext<IAuthContext>({
   currentUser: null,
+  setCurrentUser: () => {},
 });
 
 function AuthContextProvider({ children }: any) {
@@ -32,8 +34,9 @@ function AuthContextProvider({ children }: any) {
   const returnValue = useMemo(
     () => ({
       currentUser,
+      setCurrentUser,
     }),
-    [currentUser]
+    [currentUser, setCurrentUser]
   );
 
   return (

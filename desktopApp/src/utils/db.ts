@@ -12,7 +12,6 @@ import { v4 as uuidv4 } from 'uuid';
 import { FIREBASE_AUTH, FIREBASE_DB } from '../firebase';
 import { Chat } from 'types/chat.type';
 
-
 export const createSession = async (session: Session) => {
   try {
     if (!FIREBASE_AUTH.currentUser) {
@@ -20,7 +19,6 @@ export const createSession = async (session: Session) => {
     }
     const userRef = doc(FIREBASE_DB, 'users', FIREBASE_AUTH.currentUser.uid);
     await updateDoc(userRef, { session });
-    await updateDoc(userRef, { location: session.location });
   } catch (error) {
     console.log("Error updating user's session:", error);
   }
