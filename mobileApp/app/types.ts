@@ -30,6 +30,9 @@ export type Session = {
   sessionStartLocation: Location | null;
   numberOfCheerers: number;
   cheerers: string[];
+
+  stopTime: number;
+  description: string;
 };
 
 // Two types below are for testing

@@ -110,6 +110,9 @@ const Map = () => {
       sessionStartLocation: { longitude: 0, latitude: 0 }, // Set initial location
       numberOfCheerers: 0,
       cheerers: [],
+
+      stopTime: -1,
+      description: "test",
     };
     const curLocation = await getUserLocation();
     newSession.sessionStartLocation = curLocation;
