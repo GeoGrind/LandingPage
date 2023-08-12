@@ -1,17 +1,14 @@
 import React, { useState } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
+import { useAppContext } from 'context/AppContext';
 import { FIREBASE_AUTH } from '../../../../firebase';
 import styles from './Login.module.scss';
 import FormItem from '../FormItem/FormItem';
 import icon from '../../../../../assets/956fd6.png';
 import FormButton from '../FormButton/FormButton';
 
-interface ILoginProps {
-  setShowLogin: React.Dispatch<React.SetStateAction<boolean>>;
-  setShowSignUp: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-function Login({ setShowLogin, setShowSignUp }: ILoginProps) {
+function Login() {
+  const { setShowLogin, setShowSignUp } = useAppContext();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 

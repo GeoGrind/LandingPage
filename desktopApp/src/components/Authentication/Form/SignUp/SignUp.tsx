@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { createUser } from 'utils/db';
 import { User } from 'types/user.type';
+import { useAppContext } from 'context/AppContext';
 import { FIREBASE_AUTH } from '../../../../firebase';
 import styles from './SignUp.module.scss';
 import FormItem from '../FormItem/FormItem';
@@ -13,12 +13,9 @@ function isUwaterlooEmail(email: string) {
   return email.endsWith('@uwaterloo.ca');
 }
 
-interface ISignUpProps {
-  setShowLogin: React.Dispatch<React.SetStateAction<boolean>>;
-  setShowSignUp: React.Dispatch<React.SetStateAction<boolean>>;
-}
+function SignUp() {
+  const { setShowLogin, setShowSignUp } = useAppContext();
 
-function SignUp({ setShowLogin, setShowSignUp }: ISignUpProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');

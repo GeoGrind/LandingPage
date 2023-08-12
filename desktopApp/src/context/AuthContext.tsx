@@ -1,5 +1,12 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { onAuthStateChanged } from 'firebase/auth';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { FIREBASE_AUTH } from 'firebase';
 import { User } from 'types/user.type';
 import { getCurrentUser } from 'utils/db';
@@ -7,11 +14,13 @@ import { getCurrentUser } from 'utils/db';
 interface IAuthContext {
   currentUser: User | null;
   setCurrentUser: React.Dispatch<React.SetStateAction<User | null>>;
+  logout: () => void;
 }
 
 export const AuthContext = createContext<IAuthContext>({
   currentUser: null,
   setCurrentUser: () => {},
+  logout: () => {},
 });
 
 function AuthContextProvider({ children }: any) {
@@ -31,12 +40,28 @@ function AuthContextProvider({ children }: any) {
     };
   }, []);
 
+  // const login = useCallback
+
+  const logout = useCallback(() => {
+    signOut(FIREBASE_AUTH)
+      .then(() => {
+        // Sign-out successful.
+        console.log('Signed out successfully');
+        return null;
+      })
+      .catch((error) => {
+        console.log('there is an error:', error);
+        // An error happened.
+      });
+  }, []);
+
   const returnValue = useMemo(
     () => ({
       currentUser,
       setCurrentUser,
+      logout,
     }),
-    [currentUser, setCurrentUser]
+    [currentUser, setCurrentUser, logout]
   );
 
   return (

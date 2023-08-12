@@ -26,7 +26,7 @@ class AppUpdater {
   }
 }
 
-process.env.GOOGLE_API_KEY = 'AIzaSyD03mHChEH6Nr7SGhQhrJkJGiPDz7ryEnw'
+process.env.GOOGLE_API_KEY = 'AIzaSyD03mHChEH6Nr7SGhQhrJkJGiPDz7ryEnw';
 
 let mainWindow: BrowserWindow | null = null;
 
