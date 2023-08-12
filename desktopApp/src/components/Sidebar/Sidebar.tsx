@@ -103,6 +103,26 @@ function Sidebar() {
       </div>
     );
   }
+  const discovery = (
+    <div className={styles.Sidebar__discovery}>
+      <input
+        className={styles.Sidebar__discovery__input}
+        placeholder="Search"
+      />
+      <div className={styles.Sidebar__discovery__activeUsersList}>
+        {activeUsers.map(
+          (user) =>
+            user.session?.location && (
+              <div className={styles.Sidebar__discovery__activeUsersList__item}>
+                {user.username}, {user.session.course}
+                <br />
+                {user.session.description}
+              </div>
+            )
+        )}
+      </div>
+    </div>
+  );
 
   return (
     <div className={styles.Sidebar}>
@@ -127,30 +147,7 @@ function Sidebar() {
           Discovery
           {isDiscoveryOpen ? <ExpandMoreIcon /> : <ExpandLessIcon />}
         </button>
-        {isDiscoveryOpen ? (
-          <div className={styles.Sidebar__discovery}>
-            <input
-              className={styles.Sidebar__discovery__input}
-              placeholder="Search"
-            />
-            <div className={styles.Sidebar__discovery__activeUsersList}>
-              {activeUsers.map(
-                (user) =>
-                  user.session?.location && (
-                    <div
-                      className={
-                        styles.Sidebar__discovery__activeUsersList__item
-                      }
-                    >
-                      {user.username}, {user.session.course}
-                      <br />
-                      {user.session.description}
-                    </div>
-                  )
-              )}
-            </div>
-          </div>
-        ) : null}
+        {isDiscoveryOpen ? discovery : null}
         <Link to="/chats" className={styles.Sidebar__item}>
           <img
             src={chatsIcon}
