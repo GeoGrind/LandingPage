@@ -68,20 +68,37 @@ export const getUserById = async (uid: string): Promise<User | null> => {
   try {
     const usersCollection = collection(FIREBASE_DB, 'users');
     const querySnapshot = await getDocs(usersCollection);
-    let retVal = null;
+    let returnValue = null;
     querySnapshot.forEach(async (docSnapshot) => {
       const user = docSnapshot.data() as User;
       if (user.uid === uid) {
-        console.log('FOUND A USER:::', user);
-        retVal = user;
+        returnValue = user;
       }
     });
-    return retVal;
+    return returnValue;
   } catch (error) {
+    console.log(error);
     return null;
   }
 };
 
+export const getChatById = async (id: string): Promise<Chat | null> => {
+  try {
+    const chatsCollection = collection(FIREBASE_DB, 'chatRooms');
+    const querySnapshot = await getDocs(chatsCollection);
+    let returnValue = null;
+    querySnapshot.forEach(async (docSnapshot) => {
+      const chat = docSnapshot.data() as Chat;
+      if (chat.id === id) {
+        returnValue = chat;
+      } // TODO: optimize this and getUserById, O(n) operation all the time
+    });
+    return returnValue;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};
 // export const getUserObjectFromUserAuth = async (user: any): Promise<any> => {
 //   try {
 //     if (!user) {

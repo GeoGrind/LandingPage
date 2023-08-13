@@ -1,0 +1,13 @@
+.ChatSelector {
+  display: flex;
+  flex-direction: column;
+
+  &__button {
+    cursor: pointer;
+    display: block;
+    height: 70px;
+    &:hover {
+      background-color: #956fd6;
+    }
+  }
+}

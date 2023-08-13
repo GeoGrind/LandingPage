@@ -1,5 +1,4 @@
-import { Link } from 'react-router-dom';
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   DocumentData,
   collection,
@@ -9,15 +8,15 @@ import {
 import { FIREBASE_DB } from 'firebase';
 import { Chat } from 'types/chat.type';
 import { useAuthContext } from 'context/AuthContext';
+import { useChatContext } from 'context/ChatContext';
 import styles from './Chats.module.scss';
 import SingleChat from './SingleChat/SingleChat';
-import { useChatContext } from 'context/ChatContext';
+import ChatSelector from './ChatSelector/ChatSelector';
 
 function Chats() {
   const { currentUser } = useAuthContext();
+  const { currentChatId } = useChatContext();
   const [chats, setChats] = useState<Array<Chat>>([]);
-
-  const { currentChatId, setCurrentChatId } = useChatContext();
 
   useEffect(() => {
     if (!currentUser) return;
@@ -56,18 +55,7 @@ function Chats() {
         {Object.entries(chats)
           ?.sort((a, b) => b[1].lastChangeTime - a[1].lastChangeTime)
           .map((chat) => {
-            return (
-              <button
-                type="button"
-                className={styles.Chats__left__user}
-                key={chat[1].id}
-                onClick={() => {
-                  setCurrentChatId(chat[1].id);
-                }}
-              >
-                {chat[1].id}
-              </button>
-            );
+            return <ChatSelector chat={chat[1]} />;
           })}
       </div>
 
