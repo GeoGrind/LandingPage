@@ -23,6 +23,7 @@ import Profile from "./app/screens/Profile";
 import UpdateProfilePicture from "./app/screens/userInfoEditScreens/UpdateProfilePicture";
 import UpdateTermCourses from "./app/screens/userInfoEditScreens/UpdateTermCourses";
 import ResetPassword from "./app/screens/ResetPassword";
+import SingleChat from "./app/screens/SingleChat";
 
 const Stack = createNativeStackNavigator();
 
@@ -40,6 +41,7 @@ function InsideLayout() {
       <InsideStack.Screen name="Setting" component={Setting} />
       <InsideStack.Screen name="Test" component={Test} />
       <InsideStack.Screen name="AllChats" component={AllChats} />
+      <InsideStack.Screen name="SingleChat" component={SingleChat} />
       <InsideStack.Screen name="UpdateEmoji" component={UpdateEmoji} />
       <InsideStack.Screen name="UpdateBase" component={UpdateBase} />
       <InsideStack.Screen name="Profile" component={Profile} />

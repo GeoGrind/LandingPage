@@ -27,17 +27,13 @@ import { generateUUID } from "../utils/util";
 import { FlatList } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Chat, MessageType } from "@flyerhq/react-native-chat-ui";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { InsideRootStackParamList } from "../types";
 
-type Props = {
-  id: string;
-  chatRoomOwner1Id: string;
-  chatRoomOwner2Id: string;
-};
-const SingleChat: React.FC<Props> = ({
-  id,
-  chatRoomOwner1Id,
-  chatRoomOwner2Id,
-}) => {
+type Props = NativeStackScreenProps<InsideRootStackParamList, "SingleChat">;
+
+const SingleChat = ({ route }: Props) => {
+  const { id, chatRoomOwner1Id, chatRoomOwner2Id } = route.params;
   const { currentUser } = FIREBASE_AUTH;
 
   useLayoutEffect(() => {

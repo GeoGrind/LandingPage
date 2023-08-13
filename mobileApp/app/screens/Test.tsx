@@ -1,42 +1,32 @@
-import { Chat, MessageType } from "@flyerhq/react-native-chat-ui";
 import React, { useState } from "react";
-import { SafeAreaProvider } from "react-native-safe-area-context";
-
-// For the testing purposes, you should probably use https://github.com/uuidjs/uuid
-const uuidv4 = () => {
-  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
-    const r = Math.floor(Math.random() * 16);
-    const v = c === "x" ? r : (r % 4) + 8;
-    return v.toString(16);
-  });
-};
-
+import { View, Button, Text, StyleSheet } from "react-native";
+import { useNavigation, ParamListBase } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 const Test = () => {
-  const [messages, setMessages] = useState<MessageType.Any[]>([]);
-  const user = { id: "06c33e8b-e835-4736-80f4-63f44b66666c" };
-
-  const addMessage = (message: MessageType.Any) => {
-    setMessages([message, ...messages]);
-  };
-
-  const handleSendPress = (message: MessageType.PartialText) => {
-    const textMessage: MessageType.Text = {
-      author: user,
-      createdAt: Date.now(),
-      id: uuidv4(),
-      text: message.text,
-      type: "text",
-    };
-    addMessage(textMessage);
+  // State to store button click count
+  const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
+  // Handle button click
+  const handleButtonClick = () => {
+    navigation.navigate("SingleChat", {
+      id: "1d65bd57-3e00-4e41-9330-d2a56082be13",
+      chatRoomOwner1Id: "ggPi3ozXwMUtwo2mHHDB2N8YnDk2",
+      chatRoomOwner2Id: "UarK0Fzs2HeD0usxeihjVkAqfKl1",
+    });
   };
 
   return (
-    // Remove this provider if already registered elsewhere
-    // or you have React Navigation set up
-    <SafeAreaProvider>
-      <Chat messages={messages} onSendPress={handleSendPress} user={user} />
-    </SafeAreaProvider>
+    <View style={styles.container}>
+      <Button title="Click me" onPress={handleButtonClick} />
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});
 
 export default Test;
