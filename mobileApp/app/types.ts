@@ -80,4 +80,5 @@ export type InsideRootStackParamList = {
 
 export type OutsideRootStackParamList = {
   Login: {};
+  ResetPassword: {};
 };

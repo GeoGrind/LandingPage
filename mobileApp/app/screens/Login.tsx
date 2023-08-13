@@ -67,6 +67,10 @@ const Login = () => {
               title="Create a free account"
               onPress={() => navigation.navigate("Signup")}
             />
+            <Button
+              title="Forgot my password"
+              onPress={() => navigation.navigate("ResetPassword")}
+            />
           </>
         )}
       </KeyboardAvoidingView>

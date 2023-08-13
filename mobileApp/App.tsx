@@ -22,6 +22,7 @@ import UpdateBase from "./app/screens/userInfoEditScreens/UpdateBase";
 import Profile from "./app/screens/Profile";
 import UpdateProfilePicture from "./app/screens/userInfoEditScreens/UpdateProfilePicture";
 import UpdateTermCourses from "./app/screens/userInfoEditScreens/UpdateTermCourses";
+import ResetPassword from "./app/screens/ResetPassword";
 
 const Stack = createNativeStackNavigator();
 
@@ -64,6 +65,11 @@ function OutsideLayout() {
       <Stack.Screen
         name="Signup"
         component={Signup}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ResetPassword"
+        component={ResetPassword}
         options={{ headerShown: false }}
       />
     </OutsideStack.Navigator>
