@@ -8,11 +8,11 @@ import {
 import { useEffect, useState } from 'react';
 import { FIREBASE_DB } from 'firebase';
 import { Message } from 'types/message.type';
+import { useChatContext } from 'context/ChatContext';
 import SingleMessage from './SingleMessage/SingleMessage';
 import styles from './Messages.module.scss';
-import { useChatContext } from 'context/ChatContext';
 
-function Messages({}) {
+function Messages() {
   const { currentChatId } = useChatContext();
   const [messages, setMessages] = useState<Array<Message>>([]);
 
