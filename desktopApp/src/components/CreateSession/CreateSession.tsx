@@ -5,16 +5,14 @@ import { createSession, fetchActiveUsers, getCurrentUser } from 'utils/db';
 import { Session } from 'types/session.type';
 import { Location } from 'types/location.type';
 import { useAuthContext } from 'context/AuthContext';
+import { useAppContext } from 'context/AppContext';
 import styles from './CreateSession.module.scss';
 import icon from '../../../assets/956fd6.png';
-import { useAppContext } from 'context/AppContext';
 
-interface ICreateSessionProps {
-  setShowCreateSession: React.Dispatch<React.SetStateAction<boolean>>;
-}
-function CreateSession({ setShowCreateSession }: ICreateSessionProps) {
+function CreateSession() {
   const { currentUser, setCurrentUser } = useAuthContext();
-  const { setActiveUsers } = useAppContext();
+  const { setActiveUsers, setShowCreateSession } = useAppContext();
+
   const [course, setCourse] = useState('');
   const [description, setDescription] = useState('');
   const [isPrivate, setIsPrivate] = useState(true);

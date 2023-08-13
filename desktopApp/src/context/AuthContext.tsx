@@ -1,20 +1,37 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { onAuthStateChanged } from 'firebase/auth';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
+import {
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  signOut,
+} from 'firebase/auth';
 import { FIREBASE_AUTH } from 'firebase';
 import { User } from 'types/user.type';
 import { getCurrentUser } from 'utils/db';
+import { useAppContext } from './AppContext';
 
 interface IAuthContext {
   currentUser: User | null;
   setCurrentUser: React.Dispatch<React.SetStateAction<User | null>>;
+  login: (email: string, password: string) => void;
+  logout: () => void;
 }
 
 export const AuthContext = createContext<IAuthContext>({
   currentUser: null,
   setCurrentUser: () => {},
+  login: () => {},
+  logout: () => {},
 });
 
 function AuthContextProvider({ children }: any) {
+  const { setShowLogin } = useAppContext();
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   useEffect(() => {
@@ -31,12 +48,42 @@ function AuthContextProvider({ children }: any) {
     };
   }, []);
 
+  const login = useCallback((email: string, password: string) => {
+    signInWithEmailAndPassword(FIREBASE_AUTH, email, password)
+      .then((userCredential) => {
+        // Signed in
+        const { user } = userCredential;
+        setShowLogin(false);
+        return null;
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorCode, errorMessage);
+      });
+  }, []);
+
+  const logout = useCallback(() => {
+    signOut(FIREBASE_AUTH)
+      .then(() => {
+        // Sign-out successful.
+        console.log('Signed out successfully');
+        return null;
+      })
+      .catch((error) => {
+        console.log('there is an error:', error);
+        // An error happened.
+      });
+  }, []);
+
   const returnValue = useMemo(
     () => ({
       currentUser,
       setCurrentUser,
+      login,
+      logout,
     }),
-    [currentUser, setCurrentUser]
+    [currentUser, setCurrentUser, login, logout]
   );
 
   return (

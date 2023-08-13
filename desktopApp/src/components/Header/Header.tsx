@@ -4,50 +4,22 @@ import { User } from 'types/user.type';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
-import LoginIcon from '@mui/icons-material/Login';
-import LogoutIcon from '@mui/icons-material/Logout';
+
 import { signOut } from 'firebase/auth';
 import { FIREBASE_AUTH } from 'firebase';
 import { useAuthContext } from 'context/AuthContext';
 import styles from './Header.module.scss';
+import { useAppContext } from 'context/AppContext';
 
 interface IHeaderProps {
-  setShowLogin: React.Dispatch<React.SetStateAction<boolean>>;
-  setShowSignUp: React.Dispatch<React.SetStateAction<boolean>>;
-  setShowCreateSession: React.Dispatch<React.SetStateAction<boolean>>;
   fetchData: () => Promise<void>;
 }
-function Header({
-  setShowLogin,
-  setShowSignUp,
-  setShowCreateSession,
-  fetchData,
-}: IHeaderProps) {
-  const handleLogout = () => {
-    // copied from account.tsx, refactor later
-    signOut(FIREBASE_AUTH)
-      .then(() => {
-        // Sign-out successful.
-        console.log('Signed out successfully');
-        return null;
-      })
-      .catch((error) => {
-        console.log('there is an error:', error);
-        // An error happened.
-      });
-  };
+function Header({ fetchData }: IHeaderProps) {
   const { currentUser, setCurrentUser } = useAuthContext();
+  const { setShowCreateSession } = useAppContext();
 
   const authOptions = (
     <>
-      <button
-        className={styles.Header__container__inner__item}
-        type="button"
-        onClick={handleLogout}
-      >
-        <LogoutIcon />
-        logout
-      </button>
       <button
         className={styles.Header__container__inner__item}
         onClick={() => {
@@ -86,24 +58,11 @@ function Header({
     </>
   );
 
-  const unAuthOptions = (
-    <button
-      className={styles.Header__container__inner__item}
-      onClick={() => {
-        setShowLogin(true);
-      }}
-      type="button"
-    >
-      <LoginIcon />
-      login / signup
-    </button>
-  );
-
   return (
     <header className={styles.Header}>
       <div className={styles.Header__container}>
         <div className={styles.Header__container__inner}>
-          {currentUser ? authOptions : unAuthOptions}
+          {currentUser && authOptions}
         </div>
       </div>
     </header>

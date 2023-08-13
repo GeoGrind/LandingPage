@@ -1,0 +1,56 @@
+.Discovery {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  padding: 8px 24px;
+  gap: 6px;
+
+  &__input {
+  }
+
+  &__bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  &__item {
+    background: white;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+    &__top {
+      display: flex;
+      flex-direction: row;
+      gap: 10px;
+      &__middle {
+        font-size: 14px;
+        display: flex;
+        flex-direction: column;
+      }
+    }
+    &__button {
+      width: 30px;
+      height: 30px;
+      background: #c3c7cac4;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border-radius: 50%;
+      border: none;
+      text-decoration: none;
+      transition: 300ms ease;
+
+      &:hover {
+        background-color: #956fd6;
+      }
+    }
+
+    // &__bottom {
+    // font-size: 12px;
+    //
+    // }
+  }
+}

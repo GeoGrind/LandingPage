@@ -12,11 +12,13 @@ import CreateSession from './CreateSession/CreateSession';
 import { useAppContext } from 'context/AppContext';
 
 function Home() {
-  const [showLogin, setShowLogin] = useState<boolean>(false);
-  const [showSignUp, setShowSignUp] = useState<boolean>(false);
-  const [showCreateSession, setShowCreateSession] = useState<boolean>(false);
-
-  const { activeUsers, setActiveUsers } = useAppContext();
+  const {
+    activeUsers,
+    setActiveUsers,
+    showLogin,
+    showSignUp,
+    showCreateSession,
+  } = useAppContext();
 
   const fetchData = async () => {
     const users = await fetchActiveUsers();
@@ -28,21 +30,10 @@ function Home() {
 
   return (
     <div className={styles.Home}>
-      <Header
-        setShowLogin={setShowLogin}
-        setShowSignUp={setShowSignUp}
-        setShowCreateSession={setShowCreateSession}
-        fetchData={fetchData}
-      />
-      {showLogin && (
-        <Login setShowLogin={setShowLogin} setShowSignUp={setShowSignUp} />
-      )}
-      {showSignUp && (
-        <SignUp setShowLogin={setShowLogin} setShowSignUp={setShowSignUp} />
-      )}
-      {showCreateSession && (
-        <CreateSession setShowCreateSession={setShowCreateSession} />
-      )}
+      <Header fetchData={fetchData} />
+      {showLogin && <Login />}
+      {showSignUp && <SignUp />}
+      {showCreateSession && <CreateSession />}
       <Map />
     </div>
   );

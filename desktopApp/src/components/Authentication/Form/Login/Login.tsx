@@ -1,36 +1,18 @@
 import React, { useState } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
+import { useAppContext } from 'context/AppContext';
+import { useAuthContext } from 'context/AuthContext';
 import { FIREBASE_AUTH } from '../../../../firebase';
 import styles from './Login.module.scss';
 import FormItem from '../FormItem/FormItem';
 import icon from '../../../../../assets/956fd6.png';
 import FormButton from '../FormButton/FormButton';
 
-interface ILoginProps {
-  setShowLogin: React.Dispatch<React.SetStateAction<boolean>>;
-  setShowSignUp: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-function Login({ setShowLogin, setShowSignUp }: ILoginProps) {
+function Login() {
+  const { setShowLogin, setShowSignUp } = useAppContext();
+  const { login } = useAuthContext();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
-  const onLogin = (e) => {
-    e.preventDefault();
-    signInWithEmailAndPassword(FIREBASE_AUTH, email, password)
-      .then((userCredential) => {
-        // Signed in
-        const { user } = userCredential;
-        setShowLogin(false);
-        console.log(user);
-        return null;
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorCode, errorMessage);
-      });
-  };
 
   return (
     <div className={styles.Login}>
@@ -70,7 +52,12 @@ function Login({ setShowLogin, setShowSignUp }: ILoginProps) {
         <div className={styles.Login__form}>
           <FormItem label="Email" onChange={setEmail} />
           <FormItem label="Password" onChange={setPassword} />
-          <FormButton label="Log in" onClick={onLogin} />
+          <FormButton
+            label="Log in"
+            onClick={() => {
+              login(email, password);
+            }}
+          />
         </div>
 
         <div className={styles.Login__right__bottom}>
