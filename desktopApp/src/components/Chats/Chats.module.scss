@@ -1,7 +1,7 @@
 .Chats {
+  position: fixed;
   display: flex;
   flex-direction: row;
-  width: 100vw; // TODO:: FIX THESE STYLES LATER
   height: 100vh;
   &__left {
     display: flex;
@@ -9,8 +9,6 @@
     color: white;
     background-color: #2f2d52;
     width: 300px;
-    margin-left: 210px;
-
     &__top {
       font-size: 24px;
       margin-bottom: 10px;

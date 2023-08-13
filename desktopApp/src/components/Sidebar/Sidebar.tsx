@@ -18,10 +18,13 @@ import Discovery from './Discovery/Discovery';
 
 function Sidebar() {
   const navigate = useNavigate();
-  const { activeUsers, setShowLogin } = useAppContext();
+  const {
+    activeUsers,
+    setShowLogin,
+    showExpandedSidebar,
+    setShowExpandedSidebar,
+  } = useAppContext();
   const { currentUser, logout } = useAuthContext();
-
-  const [isSideBarExpanded, setIsSideBarExpanded] = useState<boolean>(true);
   const [isDiscoveryOpen, setIsDiscoveryOpen] = useState<boolean>(false);
 
   if (currentUser === null) {
@@ -47,7 +50,7 @@ function Sidebar() {
     );
   }
 
-  if (!isSideBarExpanded) {
+  if (!showExpandedSidebar) {
     return (
       <div className={styles.Sidebar__collapsed}>
         <Link to="/" className={styles.Sidebar__logo}>
@@ -95,7 +98,7 @@ function Sidebar() {
             type="button"
             className={styles.Sidebar__toggle}
             onClick={() => {
-              setIsSideBarExpanded(true);
+              setShowExpandedSidebar(true);
             }}
           >
             <ChevronRightIcon className={styles.Sidebar__toggle__icon} />
@@ -185,7 +188,7 @@ function Sidebar() {
           type="button"
           className={styles.Sidebar__toggle}
           onClick={() => {
-            setIsSideBarExpanded(false);
+            setShowExpandedSidebar(false);
           }}
         >
           <ChevronLeftIcon className={styles.Sidebar__toggle__icon} />

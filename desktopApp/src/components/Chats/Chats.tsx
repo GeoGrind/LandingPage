@@ -9,11 +9,13 @@ import { FIREBASE_DB } from 'firebase';
 import { Chat } from 'types/chat.type';
 import { useAuthContext } from 'context/AuthContext';
 import { useChatContext } from 'context/ChatContext';
+import { useAppContext } from 'context/AppContext';
 import styles from './Chats.module.scss';
 import SingleChat from './SingleChat/SingleChat';
 import ChatSelector from './ChatSelector/ChatSelector';
 
 function Chats() {
+  const { contentStyles } = useAppContext();
   const { currentUser } = useAuthContext();
   const { currentChatId } = useChatContext();
   const [chats, setChats] = useState<Array<Chat>>([]);
@@ -49,7 +51,7 @@ function Chats() {
   if (!currentUser) return null;
 
   return (
-    <div className={styles.Chats}>
+    <div className={styles.Chats} style={contentStyles}>
       <div className={styles.Chats__left}>
         <div className={styles.Chats__left__top}>Messages</div>
         {Object.entries(chats)
