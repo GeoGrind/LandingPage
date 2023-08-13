@@ -14,6 +14,7 @@ import logo from '../../../assets/956fd6.png';
 import discoveryIcon from '../../../assets/discoveryIcon.svg';
 import chatsIcon from '../../../assets/chatsIcon.svg';
 import profileIcon from '../../../assets/profileIcon.svg';
+import Discovery from './Discovery/Discovery';
 
 function Sidebar() {
   const navigate = useNavigate();
@@ -147,7 +148,7 @@ function Sidebar() {
           Discovery
           {isDiscoveryOpen ? <ExpandMoreIcon /> : <ExpandLessIcon />}
         </button>
-        {isDiscoveryOpen ? discovery : null}
+        {isDiscoveryOpen ? <Discovery /> : null}
         <Link to="/chats" className={styles.Sidebar__item}>
           <img
             src={chatsIcon}

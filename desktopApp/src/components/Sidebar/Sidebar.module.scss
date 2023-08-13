@@ -49,6 +49,7 @@
     gap: 16px;
     border: 0;
     border-top: 1px solid #a99d9d;
+    cursor: pointer;
 
     font-family: 'Google Sans', sans-serif;
     font-size: 15px;
@@ -88,27 +89,6 @@
       position: absolute;
       right: 22px;
       top: 10px;
-    }
-  }
-
-  &__discovery {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    padding: 8px 24px;
-    gap: 6px;
-
-    &__input {
-    }
-
-    &__activeUsersList {
-      &__item {
-        font-size: 14px;
-        display: flex;
-        // border-bottom: 1px solid #a99d9d;
-        // padding
-        padding-bottom: 16px;
-      }
     }
   }
 }
