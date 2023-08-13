@@ -1,40 +1,41 @@
-import React, { useRef, useEffect } from "react";
-import SegmentedPicker from "react-native-segmented-picker";
+import { Chat, MessageType } from "@flyerhq/react-native-chat-ui";
+import React, { useState } from "react";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+
+// For the testing purposes, you should probably use https://github.com/uuidjs/uuid
+const uuidv4 = () => {
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+    const r = Math.floor(Math.random() * 16);
+    const v = c === "x" ? r : (r % 4) + 8;
+    return v.toString(16);
+  });
+};
 
 const Test = () => {
-  const segmentedPicker = useRef<SegmentedPicker | null>(null);
+  const [messages, setMessages] = useState<MessageType.Any[]>([]);
+  const user = { id: "06c33e8b-e835-4736-80f4-63f44b66666c" };
 
-  useEffect(() => {
-    // Equivalent of componentDidMount
+  const addMessage = (message: MessageType.Any) => {
+    setMessages([message, ...messages]);
+  };
 
-    if (segmentedPicker.current) {
-      segmentedPicker.current.show();
-    }
-  }, []);
-
-  const onConfirm = (selections: any) => {
-    console.info(selections);
-    // => { col_1: "option_1", col_2: "option_3" }
+  const handleSendPress = (message: MessageType.PartialText) => {
+    const textMessage: MessageType.Text = {
+      author: user,
+      createdAt: Date.now(),
+      id: uuidv4(),
+      text: message.text,
+      type: "text",
+    };
+    addMessage(textMessage);
   };
 
   return (
-    <SegmentedPicker
-      ref={segmentedPicker}
-      onConfirm={onConfirm}
-      options={[
-        {
-          key: "col_1",
-          items: [
-            { label: "Option 1", value: "option_1" },
-            { label: "Option 2", value: "option_2" },
-          ],
-        },
-        {
-          key: "col_2",
-          items: [{ label: "Option 3", value: "option_3" }],
-        },
-      ]}
-    />
+    // Remove this provider if already registered elsewhere
+    // or you have React Navigation set up
+    <SafeAreaProvider>
+      <Chat messages={messages} onSendPress={handleSendPress} user={user} />
+    </SafeAreaProvider>
   );
 };
 
