@@ -1,6 +1,5 @@
 import {
   View,
-  FlatList,
   StyleSheet,
   Button,
   TextInput,
@@ -25,6 +24,7 @@ import { formatTime } from "../utils/util";
 import { sendNotificationById } from "../utils/notifications";
 import { Dimensions } from "react-native";
 import { generateUUID } from "../utils/util";
+import { FlatList } from "react-native-gesture-handler";
 type Props = {
   id: string;
   chatRoomOwner1Id: string;
@@ -141,6 +141,7 @@ const SingleChat: React.FC<Props> = ({
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
+      enabled={false}
       keyboardVerticalOffset={keyboardVerticalOffset + 20}
     >
       <FlatList
