@@ -12,7 +12,7 @@ interface IAppContext {
   setShowCreateSession: React.Dispatch<React.SetStateAction<boolean>>;
   showExpandedSidebar: boolean;
   setShowExpandedSidebar: React.Dispatch<React.SetStateAction<boolean>>;
-  contentStyles: React.CSSProperties | null;
+  contentStyles: React.CSSProperties | undefined;
 }
 
 export const AppContext = createContext<IAppContext>({
@@ -26,7 +26,7 @@ export const AppContext = createContext<IAppContext>({
   setShowCreateSession: () => {},
   showExpandedSidebar: true,
   setShowExpandedSidebar: () => {},
-  contentStyles: null,
+  contentStyles: undefined,
 });
 
 function AppContextProvider({ children }: any) {
