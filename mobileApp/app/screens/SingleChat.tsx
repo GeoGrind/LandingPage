@@ -25,6 +25,9 @@ import { sendNotificationById } from "../utils/notifications";
 import { Dimensions } from "react-native";
 import { generateUUID } from "../utils/util";
 import { FlatList } from "react-native-gesture-handler";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { Chat, MessageType } from "@flyerhq/react-native-chat-ui";
+
 type Props = {
   id: string;
   chatRoomOwner1Id: string;
@@ -36,8 +39,6 @@ const SingleChat: React.FC<Props> = ({
   chatRoomOwner2Id,
 }) => {
   const { currentUser } = FIREBASE_AUTH;
-  const [messages, setMessages] = useState<DocumentData[]>([]);
-  const [message, setMessage] = useState<string>("");
 
   useLayoutEffect(() => {
     const msgCollectionRef = collection(
@@ -47,54 +48,33 @@ const SingleChat: React.FC<Props> = ({
     const q = query(msgCollectionRef, orderBy("createdAt", "asc"));
 
     const unsubscribe = onSnapshot(q, (firebaseDoc: DocumentData) => {
-      const messages: Message[] = firebaseDoc.docs.map((doc: any) => {
-        const data = doc.data();
-        return {
-          id: doc.id,
-          createdAt: data.createdAt || 0,
-          message: data.message || "",
-          sender: data.sender || "",
-          isHeader: data.isHeader,
-        };
-      });
-      let previousMessageTime: Date | null = null;
-      for (let i = 0; i < messages.length; i++) {
-        const currentMessageTime = new Date(messages[i].createdAt);
-        if (
-          !previousMessageTime ||
-          previousMessageTime.getMinutes() !== currentMessageTime.getMinutes()
-        ) {
-          messages[i].isHeader = true;
-        }
-        previousMessageTime = currentMessageTime;
-      }
+      const messages: MessageType.Text[] = firebaseDoc.docs
+        .map((doc: any) => {
+          const data = doc.data();
+          return {
+            author: data.author,
+            createdAt: data.createdAt,
+            id: data.id,
+            text: data.text,
+            type: data.type,
+          };
+        })
+        .reverse();
+
       setMessages(messages);
     });
 
     return unsubscribe;
   }, [id]);
 
-  const sendMessage = async () => {
+  const sendMessage = async (newMessage: MessageType.Text) => {
     try {
-      const msg = message.trim();
-      setMessage("");
-      if (msg.length === 0) return;
       const msgCollectionRef = collection(
         FIREBASE_DB,
         `chatRooms/${id}/messages`
       );
-      console.log("reach");
-      const documentId = generateUUID();
 
-      const newMessage: Message = {
-        id: documentId,
-        message: msg,
-        sender: currentUser!.uid,
-        createdAt: Date.now(),
-        isHeader: false,
-      };
-
-      const messageRef = doc(msgCollectionRef!, documentId);
+      const messageRef = doc(msgCollectionRef!, newMessage.id);
 
       await setDoc(messageRef, newMessage);
       await updateChatRoomLastChangeTime(id);
@@ -109,69 +89,30 @@ const SingleChat: React.FC<Props> = ({
     }
   };
 
-  const renderMessage = ({ item }: { item: DocumentData }) => {
-    const myMessage = item.sender === currentUser!.uid;
+  const [messages, setMessages] = useState<MessageType.Any[]>([]);
 
-    return (
-      <View style={styles.singleMessageWrapper}>
-        {item.isHeader && (
-          <Text style={styles.headerText}>{formatTime(item.createdAt)}</Text>
-        )}
-        <View
-          style={[
-            styles.messageContainer,
-            myMessage
-              ? styles.userMessageContainer
-              : styles.otherMessageContainer,
-          ]}
-        >
-          <Text style={styles.messageText}>{item.message}</Text>
-          <Text style={[styles.time, myMessage ? {} : { color: "black" }]}>
-            {formatTime(item.createdAt)}
-          </Text>
-        </View>
-      </View>
-    );
+  const addMessage = (message: MessageType.Any) => {
+    setMessages([message, ...messages]);
   };
-  const flatListRef = useRef<FlatList>(null);
-  const windowHeight = Dimensions.get("window").height;
-  const keyboardVerticalOffset =
-    Platform.OS === "ios" ? windowHeight * 0.08 : 0;
-
+  const handleSendPress = (message: MessageType.PartialText) => {
+    const textMessage: MessageType.Text = {
+      author: { id: currentUser!.uid },
+      createdAt: Date.now(),
+      id: generateUUID(),
+      text: message.text,
+      type: "text",
+    };
+    addMessage(textMessage);
+    sendMessage(textMessage);
+  };
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={keyboardVerticalOffset}
-    >
-      <FlatList
-        ref={flatListRef}
-        data={messages}
-        keyExtractor={(item) => item.id}
-        renderItem={renderMessage}
-        contentContainerStyle={{ flexGrow: 1 }}
-        onContentSizeChange={() => {
-          if (messages.length > 0) {
-            flatListRef.current!.scrollToEnd({ animated: true });
-          }
-        }}
-        onLayout={() => {
-          if (messages.length > 0) {
-            flatListRef.current!.scrollToEnd({ animated: true });
-          }
-        }}
+    <SafeAreaProvider>
+      <Chat
+        messages={messages}
+        onSendPress={handleSendPress}
+        user={{ id: currentUser!.uid }}
       />
-      <View style={styles.inputContainer}>
-        <TextInput
-          multiline
-          value={message}
-          onChangeText={(text) => setMessage(text)}
-          placeholder="Type a message"
-          style={styles.messageInput}
-        />
-        <Button disabled={message === ""} title="Send" onPress={sendMessage} />
-      </View>
-    </KeyboardAvoidingView>
+    </SafeAreaProvider>
   );
 };
 
