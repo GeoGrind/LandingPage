@@ -1,4 +1,4 @@
-import { View, StyleSheet, TouchableOpacity } from "react-native";
+import { View, StyleSheet, TouchableOpacity, Image } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
 import { collection } from "firebase/firestore";
 import { FIREBASE_DB, FIREBASE_AUTH } from "../../FirebaseConfig";
@@ -12,6 +12,7 @@ import SingleChat from "./SingleChat";
 import BottomSheet from "@gorhom/bottom-sheet";
 import { useRef } from "react";
 import { Text } from "react-native";
+import { FlatList } from "react-native-gesture-handler";
 const AllChats = () => {
   const [chatRooms, setChatRooms] = useState<ChatRoom[]>([]);
   const { currentUser } = FIREBASE_AUTH;
@@ -36,6 +37,8 @@ const AllChats = () => {
   const openBottomSheet = () => {
     bottomSheetRef.current?.expand();
   };
+
+  const test = ["1", "2", "3"];
 
   const fetchChatRoomsData = async (initFetch: boolean) => {
     try {
@@ -131,9 +134,6 @@ const AllChats = () => {
   };
 
   // callbacks
-  const handleSheetChanges = useCallback((index: number) => {
-    fetchChatRoomsData(false);
-  }, []);
 
   useEffect(() => {
     fetchChatRoomsData(true);
@@ -151,62 +151,41 @@ const AllChats = () => {
         }}
         centerComponent={{ text: "Chats", style: { color: "#fff" } }}
       />
-      <Stories
-        chatRooms={chatRooms}
-        idToNames={idToNames}
-        idToProfilePictures={idToProfilePictures}
-        setSelectedChatOwner1Id={setSelectedChatOwner1Id}
-        setSelectedChatOwner2Id={setSelectedChatOwner2Id}
-        setSelectedChatRoomId={setSelectedChatRoomId}
-        openBottomSheet={openBottomSheet}
-      />
-
-      {selectedChatOwner1Id && selectedChatOwner2Id && selectedChatRoomId && (
-        <BottomSheet
-          ref={bottomSheetRef}
-          index={1}
-          snapPoints={["75%", "95%"]}
-          onChange={handleSheetChanges}
-        >
+      <FlatList
+        data={chatRooms}
+        renderItem={({ item }) => (
           <TouchableOpacity
+            style={styles.chatRoomContainer}
             onPress={() => {
-              let targetId =
-                currentUser?.uid === selectedChatOwner1Id
-                  ? selectedChatOwner2Id
-                  : selectedChatOwner1Id;
-
-              navigation.navigate("Profile", {
-                id: targetId,
+              navigation.navigate("SingleChat", {
+                id: item.id,
+                chatRoomOwner1Id: item.ownerIds[0],
+                chatRoomOwner2Id: item.ownerIds[1],
               });
             }}
           >
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "center", // Centers children horizontally in a row
-                alignItems: "center", // Centers children vertically in a row
-                padding: 10,
+            <Image
+              style={styles.profilePic}
+              source={{
+                uri:
+                  item.ownerIds[0] == currentUser?.uid
+                    ? idToProfilePictures[item.ownerIds[1]]
+                    : idToProfilePictures[item.ownerIds[0]],
               }}
-            >
-              <View style={{ flexDirection: "column" }}>
-                <Text style={{ fontSize: 16, fontWeight: "bold" }}>
-                  {idToNames[selectedChatOwner2Id] ||
-                    idToNames[selectedChatOwner1Id]}
-                </Text>
-              </View>
-              <Text style={{ fontSize: 20, marginLeft: 10 }}>
-                {idToEmojis[selectedChatOwner2Id] ||
-                  idToEmojis[selectedChatOwner1Id]}
+            />
+            <View style={styles.chatDetails}>
+              <Text style={styles.chatUserName}>
+                {item.ownerIds[0] == currentUser?.uid
+                  ? idToNames[item.ownerIds[1]]
+                  : idToNames[item.ownerIds[0]]}
               </Text>
+              {/* Add a placeholder last message for now */}
+              <Text style={styles.lastMessage}>Last message...</Text>
             </View>
           </TouchableOpacity>
-          <SingleChat
-            chatRoomOwner1Id={selectedChatOwner1Id}
-            chatRoomOwner2Id={selectedChatOwner2Id}
-            id={selectedChatRoomId}
-          />
-        </BottomSheet>
-      )}
+        )}
+        keyExtractor={(item) => item.id}
+      />
     </View>
   );
 };
@@ -247,6 +226,31 @@ const styles = StyleSheet.create({
   scrollViewContent: {
     flexGrow: 1,
     paddingBottom: 20, // Add padding at the bottom to accommodate the refresh spinner
+  },
+  chatRoomContainer: {
+    flexDirection: "row",
+    padding: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: "#eee",
+  },
+  profilePic: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    marginRight: 15,
+  },
+  chatDetails: {
+    flex: 1,
+    justifyContent: "center",
+  },
+  chatUserName: {
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  lastMessage: {
+    fontSize: 14,
+    color: "gray",
+    marginTop: 5,
   },
 });
 
