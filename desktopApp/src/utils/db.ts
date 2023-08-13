@@ -9,8 +9,8 @@ import {
 import { User } from 'types/user.type';
 import { Session } from 'types/session.type';
 import { v4 as uuidv4 } from 'uuid';
-import { FIREBASE_AUTH, FIREBASE_DB } from '../firebase';
 import { Chat } from 'types/chat.type';
+import { FIREBASE_AUTH, FIREBASE_DB } from '../firebase';
 
 export const createSession = async (session: Session) => {
   try {
@@ -61,6 +61,24 @@ export const getCurrentUser = async (setUser: any): Promise<void> => {
     });
   } catch (error) {
     console.log('Error getting user', error);
+  }
+};
+
+export const getUserById = async (uid: string): Promise<User | null> => {
+  try {
+    const usersCollection = collection(FIREBASE_DB, 'users');
+    const querySnapshot = await getDocs(usersCollection);
+    let retVal = null;
+    querySnapshot.forEach(async (docSnapshot) => {
+      const user = docSnapshot.data() as User;
+      if (user.uid === uid) {
+        console.log('FOUND A USER:::', user);
+        retVal = user;
+      }
+    });
+    return retVal;
+  } catch (error) {
+    return null;
   }
 };
 
