@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
 import { useAuthContext } from 'context/AuthContext';
+import { useAppContext } from 'context/AppContext';
 import { FIREBASE_AUTH } from '../../../firebase';
 import styles from './Account.module.scss';
 import FormItem from '../Form/FormItem/FormItem';
@@ -11,7 +12,7 @@ import FormItem from '../Form/FormItem/FormItem';
 
 // function Account({}: IAccountProps) {
 function Account() {
-  // cur user is currently not working (not being passed in)
+  const { contentStyles } = useAppContext();
   const { currentUser } = useAuthContext();
   const navigate = useNavigate();
   const [username, setUsername] = useState(currentUser?.username);
@@ -65,7 +66,7 @@ function Account() {
   );
 
   return (
-    <div className={styles.Account}>
+    <div className={styles.Account} style={contentStyles}>
       {accountPage}
       <button
         className={styles.Header__container__inner__utility}

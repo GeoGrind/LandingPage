@@ -1,9 +1,11 @@
 .Discovery {
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
-  padding: 8px 24px;
+  padding: 8px 12px;
   gap: 6px;
+
+  flex: 1 1 0;
+  overflow-y: auto;
 
   &__input {
   }
@@ -47,10 +49,5 @@
         background-color: #956fd6;
       }
     }
-
-    // &__bottom {
-    // font-size: 12px;
-    //
-    // }
   }
 }

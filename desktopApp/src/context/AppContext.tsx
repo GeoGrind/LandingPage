@@ -10,6 +10,9 @@ interface IAppContext {
   setShowSignUp: React.Dispatch<React.SetStateAction<boolean>>;
   showCreateSession: boolean;
   setShowCreateSession: React.Dispatch<React.SetStateAction<boolean>>;
+  showExpandedSidebar: boolean;
+  setShowExpandedSidebar: React.Dispatch<React.SetStateAction<boolean>>;
+  contentStyles: React.CSSProperties | undefined;
 }
 
 export const AppContext = createContext<IAppContext>({
@@ -21,6 +24,9 @@ export const AppContext = createContext<IAppContext>({
   setShowSignUp: () => {},
   showCreateSession: false,
   setShowCreateSession: () => {},
+  showExpandedSidebar: true,
+  setShowExpandedSidebar: () => {},
+  contentStyles: undefined,
 });
 
 function AppContextProvider({ children }: any) {
@@ -28,6 +34,15 @@ function AppContextProvider({ children }: any) {
   const [showLogin, setShowLogin] = useState<boolean>(false);
   const [showSignUp, setShowSignUp] = useState<boolean>(false);
   const [showCreateSession, setShowCreateSession] = useState<boolean>(false);
+  const [showExpandedSidebar, setShowExpandedSidebar] = useState<boolean>(true);
+
+  const contentStyles = useMemo(
+    () =>
+      showExpandedSidebar
+        ? { width: 'calc(100vw - 210px)', left: '210px' }
+        : { width: 'calc(100vw - 78px)', left: '78px' },
+    [showExpandedSidebar]
+  );
 
   const returnValue = useMemo(
     () => ({
@@ -39,6 +54,9 @@ function AppContextProvider({ children }: any) {
       setShowSignUp,
       showCreateSession,
       setShowCreateSession,
+      showExpandedSidebar,
+      setShowExpandedSidebar,
+      contentStyles,
     }),
     [
       activeUsers,
@@ -49,6 +67,9 @@ function AppContextProvider({ children }: any) {
       setShowSignUp,
       showCreateSession,
       setShowCreateSession,
+      showExpandedSidebar,
+      setShowExpandedSidebar,
+      contentStyles,
     ]
   );
 

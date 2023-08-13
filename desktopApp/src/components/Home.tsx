@@ -13,11 +13,11 @@ import { useAppContext } from 'context/AppContext';
 
 function Home() {
   const {
-    activeUsers,
     setActiveUsers,
     showLogin,
     showSignUp,
     showCreateSession,
+    contentStyles,
   } = useAppContext();
 
   const fetchData = async () => {
@@ -29,7 +29,7 @@ function Home() {
   }, []);
 
   return (
-    <div className={styles.Home}>
+    <div className={styles.Home} style={contentStyles}>
       <Header fetchData={fetchData} />
       {showLogin && <Login />}
       {showSignUp && <SignUp />}

@@ -1,15 +1,18 @@
 .Chats {
+  position: fixed;
   display: flex;
   flex-direction: row;
-  width: 100vw; // TODO:: FIX THESE STYLES LATER
   height: 100vh;
+
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
   &__left {
     display: flex;
     flex-direction: column;
     color: white;
     background-color: #2f2d52;
     width: 300px;
-    margin-left: 210px;
+    overflow: auto;
 
     &__top {
       font-size: 24px;

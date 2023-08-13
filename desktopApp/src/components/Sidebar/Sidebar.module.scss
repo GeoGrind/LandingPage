@@ -9,6 +9,8 @@
   left: 0;
   background: #eee;
   z-index: 500;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
   &__logo {
     display: flex;
     padding: 0 20px;
@@ -29,6 +31,7 @@
     left: 0;
     background: #eee;
     z-index: 500;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   &__top {
