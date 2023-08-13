@@ -135,14 +135,14 @@ const SingleChat: React.FC<Props> = ({
   };
   const flatListRef = useRef<FlatList>(null);
   const windowHeight = Dimensions.get("window").height;
-  const keyboardVerticalOffset = Platform.OS === "ios" ? windowHeight * 0.1 : 0;
+  const keyboardVerticalOffset =
+    Platform.OS === "ios" ? windowHeight * 0.08 : 0;
 
   return (
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      enabled={false}
-      keyboardVerticalOffset={keyboardVerticalOffset + 20}
+      keyboardVerticalOffset={keyboardVerticalOffset}
     >
       <FlatList
         ref={flatListRef}
