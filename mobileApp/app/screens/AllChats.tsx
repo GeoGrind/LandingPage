@@ -23,24 +23,9 @@ const AllChats = () => {
     [key: string]: string;
   }>({});
 
-  const [selectedChatOwner1Id, setSelectedChatOwner1Id] = useState<
-    string | null
-  >(null);
-  const [selectedChatOwner2Id, setSelectedChatOwner2Id] = useState<
-    string | null
-  >(null);
-  const [selectedChatRoomId, setSelectedChatRoomId] = useState<string | null>(
-    null
-  );
-  const bottomSheetRef = useRef<BottomSheet>(null);
-
-  const openBottomSheet = () => {
-    bottomSheetRef.current?.expand();
-  };
-
   const test = ["1", "2", "3"];
 
-  const fetchChatRoomsData = async (initFetch: boolean) => {
+  const fetchChatRoomsData = async () => {
     try {
       const ref = collection(FIREBASE_DB, "chatRooms");
       const snapshot = await getDocs(ref);
@@ -123,11 +108,6 @@ const AllChats = () => {
         ...updatedEmojis,
       }));
       setChatRooms(chatRoomsData);
-      if (chatRoomsData.length > 0 && initFetch == true) {
-        setSelectedChatOwner1Id(chatRoomsData[0].ownerIds[0]);
-        setSelectedChatOwner2Id(chatRoomsData[0].ownerIds[1]);
-        setSelectedChatRoomId(chatRoomsData[0].id);
-      }
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -136,7 +116,7 @@ const AllChats = () => {
   // callbacks
 
   useEffect(() => {
-    fetchChatRoomsData(true);
+    fetchChatRoomsData();
   }, []);
 
   return (
