@@ -1,80 +1,90 @@
-import React, { useEffect, useState } from 'react';
-import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { signOut } from 'firebase/auth';
+/* eslint-disable react/jsx-props-no-spreading */
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from 'context/AuthContext';
 import { useAppContext } from 'context/AppContext';
-import { FIREBASE_AUTH } from '../../../firebase';
+import { useForm } from 'react-hook-form';
+
 import styles from './Account.module.scss';
-import FormItem from '../Form/FormItem/FormItem';
 
-// interface IAccountProps {
-// }
-
-// function Account({}: IAccountProps) {
 function Account() {
+  const { currentUser, logout, updateCurrentUser } = useAuthContext();
   const { contentStyles } = useAppContext();
-  const { currentUser } = useAuthContext();
-  const navigate = useNavigate();
-  const [username, setUsername] = useState(currentUser?.username);
-  const [yearOfGraduation, setYearOfGraduation] = useState(
-    currentUser?.yearOfGraduation
-  );
-  const [university, setUniversity] = useState(currentUser?.university);
-  const [program, setProgram] = useState(currentUser?.program);
-  const [termCourses, setTermCourses] = useState(currentUser?.termCourses);
-  const [bio, setBio] = useState(currentUser?.bio);
 
-  const handleLogout = () => {
-    signOut(FIREBASE_AUTH)
-      .then(() => {
-        // Sign-out successful.
-        navigate('/');
-        console.log('Signed out successfully');
-        return null;
-      })
-      .catch((error) => {
-        console.log('there is an error:', error);
-        // An error happened.
-      });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const onSubmit = (data: any) => {
+    updateCurrentUser(data);
+    console.log(data);
   };
 
-  const accountPage = currentUser && (
-    <div>
-      <FormItem
-        label="Username"
-        placeholder={currentUser.username}
-        onChange={setUsername}
-      />
-      <FormItem
-        label="Program"
-        placeholder={currentUser.program}
-        onChange={setProgram}
-      />
-      <br />
-      Session: {currentUser.session?.course}
-      <br />
-      course: {currentUser.session?.course}
-      <br />
-      startTime: {currentUser.session?.startTime}
-      <br />
-      <br />
-      sessionStartLocationLong: {currentUser.session?.location.longitude}
-      <br />
-      sessionStartLocationLat: {currentUser.session?.location.latitude}
-      <br />
-    </div>
-  );
-
+  if (!currentUser) {
+    return null;
+  }
   return (
     <div className={styles.Account} style={contentStyles}>
-      {accountPage}
-      <button
-        className={styles.Header__container__inner__utility}
-        type="button"
-        onClick={handleLogout}
-      >
-        Logout
-      </button>
+      <form className={styles.Account__form} onSubmit={handleSubmit(onSubmit)}>
+        <label>Username</label>
+        <input
+          className={styles.Account__form__input}
+          type="text"
+          defaultValue={currentUser.username}
+          placeholder="Username"
+          {...register('username')}
+        />
+        <label>Year of Graduation</label>
+
+        <input
+          className={styles.Account__form__input}
+          type="number"
+          defaultValue={currentUser.yearOfGraduation}
+          placeholder="Year of Graduation"
+          {...register('yearOfGraduation', { max: 3000, min: 2000 })}
+        />
+
+        <label>University</label>
+        <select
+          defaultValue={currentUser.university || ''}
+          {...register('university')}
+        >
+          <option value="University of Waterloo">University of Waterloo</option>
+        </select>
+        <label>Program</label>
+
+        <select defaultValue={currentUser.program} {...register('program')}>
+          <option value="Mathematics">Mathematics</option>
+        </select>
+        <label>Term Courses</label>
+        <input
+          className={styles.Account__form__input}
+          defaultValue={currentUser.termCourses}
+          type="text"
+          placeholder=""
+          {...register('termCourses')}
+        />
+
+        <label>Bio</label>
+        <input
+          className={styles.Account__form__input}
+          defaultValue={currentUser.bio}
+          type="text"
+          placeholder="bio"
+          {...register('bio')}
+        />
+
+        <div className={styles.Account__form__save}>
+          <button
+            className={styles['Account__form__save--button']}
+            type="submit"
+          >
+            Save
+          </button>
+        </div>
+      </form>
     </div>
   );
 }
