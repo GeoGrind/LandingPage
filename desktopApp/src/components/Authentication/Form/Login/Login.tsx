@@ -58,7 +58,7 @@ function Login() {
           <IconButton
             className={styles.closeButton}
             onClick={() => {
-              setShowSignUp(false);
+              setShowLogin(false);
             }}
           >
             <CloseIcon />
