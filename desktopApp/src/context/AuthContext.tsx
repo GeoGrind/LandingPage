@@ -20,7 +20,7 @@ import { collection, doc, updateDoc } from 'firebase/firestore';
 interface IAuthContext {
   currentUser: User | null;
   setCurrentUser: React.Dispatch<React.SetStateAction<User | null>>;
-  login: (email: string, password: string) => void;
+  login: (email: string, password: string) => any;
   logout: () => void;
   updateCurrentUser: (data: any) => void;
 }
@@ -59,12 +59,14 @@ function AuthContextProvider({ children }: any) {
         // Signed in
         const { user } = userCredential;
         setShowLogin(false);
-        return null;
+        return 'asdf';
       })
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
-        console.log(errorCode, errorMessage);
+        console.log(errorCode);
+        console.log(errorMessage);
+        return 'login error';
       });
   }, []);
 
