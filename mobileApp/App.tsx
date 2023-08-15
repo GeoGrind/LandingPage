@@ -3,7 +3,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Login from "./app/screens/Login";
 import Map from "./app/screens/Map";
 import Setting from "./app/screens/Setting";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { User, onAuthStateChanged } from "firebase/auth";
 import { FIREBASE_AUTH } from "./FirebaseConfig";
 import { Provider } from "react-redux";
@@ -24,6 +24,7 @@ import UpdateProfilePicture from "./app/screens/userInfoEditScreens/UpdateProfil
 import UpdateTermCourses from "./app/screens/userInfoEditScreens/UpdateTermCourses";
 import ResetPassword from "./app/screens/ResetPassword";
 import SingleChat from "./app/screens/SingleChat";
+import { initializeExpoToken } from "./app/utils/notifications";
 
 const Stack = createNativeStackNavigator();
 
@@ -89,22 +90,37 @@ Notifications.setNotificationHandler({
 export default function App() {
   // Set the notification listener
   const [user, setUser] = useState<User | null>(null);
-  useEffect(() => {
-    // This line can dismiss the notification when appState is at foreground
-    Notifications.setNotificationHandler(null);
-    const subscription1 = Notifications.addNotificationReceivedListener(
-      (notification) => {}
-    );
 
-    const subscription2 = Notifications.addNotificationResponseReceivedListener(
-      (response) => {}
-    );
+  const [expoPushToken, setExpoPushToken] = useState("");
+  const [notification, setNotification] =
+    useState<Notifications.Notification>();
+  const notificationListener = useRef<Notifications.Subscription>();
+  const responseListener = useRef<Notifications.Subscription>();
+
+  useEffect(() => {
+    initializeExpoToken().then((token: any) => setExpoPushToken(token));
+
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        setNotification(notification);
+      });
+
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log(response);
+      });
     onAuthStateChanged(FIREBASE_AUTH, (user) => {
       setUser(user);
     });
     return () => {
-      subscription1.remove();
-      subscription2.remove();
+      if (notificationListener.current) {
+        Notifications.removeNotificationSubscription(
+          notificationListener.current
+        );
+      }
+      if (responseListener.current) {
+        Notifications.removeNotificationSubscription(responseListener.current);
+      }
     };
   }, []);
   // End of notification stuff

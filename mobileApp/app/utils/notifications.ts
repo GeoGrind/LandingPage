@@ -1,35 +1,43 @@
 import * as Notifications from "expo-notifications";
 import { Keyboard, Alert, Platform } from "react-native";
 import { getUserById } from "./db";
+import * as Device from "expo-device";
 
 export const initializeExpoToken = async () => {
-  const { status } = await Notifications.getPermissionsAsync();
-  let finalStatus = status;
-
-  if (finalStatus !== "granted") {
-    const { status } = await Notifications.requestPermissionsAsync();
-    finalStatus = status;
-  }
-
-  if (finalStatus !== "granted") {
-    Alert.alert(
-      "Permission required",
-      "Push notifications need the appropriate permissions."
-    );
-    return;
-  }
-
-  const pushTokenData = await Notifications.getExpoPushTokenAsync({
-    projectId: "b8fc75f0-6051-4db3-a6d0-6f841221ca76",
-  });
+  let token;
 
   if (Platform.OS === "android") {
-    Notifications.setNotificationChannelAsync("default", {
+    await Notifications.setNotificationChannelAsync("default", {
       name: "default",
-      importance: Notifications.AndroidImportance.DEFAULT,
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: "#FF231F7C",
     });
   }
-  return pushTokenData.data;
+
+  if (Device.isDevice) {
+    const { status: existingStatus } =
+      await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== "granted") {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== "granted") {
+      alert("Failed to get push token for push notification!");
+      return;
+    }
+    token = (
+      await Notifications.getExpoPushTokenAsync({
+        projectId: "48115910-b9cc-4fae-a62a-0c6ad6000a86",
+      })
+    ).data;
+    console.log(token);
+  } else {
+    alert("Must use physical device for Push Notifications");
+  }
+
+  return token;
 };
 
 export function scheduleNotificationHandler() {
