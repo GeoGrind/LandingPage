@@ -13,7 +13,6 @@ import { IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { Button } from '@mui/material';
 
-
 function isValidEmail(email: string) {
   return (
     email.endsWith('@uwaterloo.ca') ||
@@ -67,7 +66,7 @@ function SignUp() {
     setpasswordErrors([]);
     setemailErrors([]);
     let validForm = true;
-    if (!isValidEmail(email))  {
+    if (!isValidEmail(email)) {
       setemailErrors((emailErrors) => [
         ...emailErrors,
         'Invalid university Email Address.',
@@ -89,7 +88,6 @@ function SignUp() {
     }
     if (validForm === false) {
       if (!usernameErrors.length) {
-        
       }
       return;
     }
@@ -111,6 +109,9 @@ function SignUp() {
         university: 'University of Waterloo',
         program: 'math',
         termCourses: [],
+
+        photoUrl:
+          'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Windows_10_Default_Profile_Picture.svg/2048px-Windows_10_Default_Profile_Picture.svg.png',
         bio: 'dummy bio',
         session: null,
       };
@@ -184,8 +185,8 @@ Already have an account?{' '}
             </div>
             <div className={styles.SignUp__form}>
               <FormItem
-                label='Username'
-                errors={!usernameErrors.length? false : true}
+                label="Username"
+                errors={!usernameErrors.length ? false : true}
                 placeholder={'Create Your Username'}
                 onChange={setUsername}
               />
@@ -194,8 +195,8 @@ Already have an account?{' '}
               </div>
 
               <FormItem
-                label='Email'
-                errors={!usernameErrors.length? false : true}
+                label="Email"
+                errors={!usernameErrors.length ? false : true}
                 placeholder={'Your Email Address'}
                 onChange={setEmail}
               />
@@ -204,8 +205,8 @@ Already have an account?{' '}
               </div>
 
               <FormPassword
-                label='Password'
-                errors={!usernameErrors.length? false : true}
+                label="Password"
+                errors={!usernameErrors.length ? false : true}
                 placeholder={'Create Your Password'}
                 onChange={setPassword}
               />

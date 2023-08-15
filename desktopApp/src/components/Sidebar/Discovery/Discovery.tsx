@@ -4,7 +4,6 @@ import { useAuthContext } from 'context/AuthContext';
 import { useChatContext } from 'context/ChatContext';
 import { useNavigate } from 'react-router-dom';
 import styles from './Discovery.module.scss';
-import icon from '../../../../assets/956fd6.png';
 import messageIcon from '../../../../assets/messageIcon.png';
 
 function Discovery() {
@@ -31,7 +30,12 @@ function Discovery() {
             user.session?.location && (
               <div className={styles.Discovery__item} key={user.uid}>
                 <div className={styles.Discovery__item__top}>
-                  <img src={icon} height={35} width={35} alt="Profile" />
+                  <img
+                    src={user.photoUrl}
+                    height={35}
+                    width={35}
+                    alt="Profile"
+                  />
                   <div className={styles.Discovery__item__top__middle}>
                     {user.username}
                     <span id="course">{user.session.course}</span>

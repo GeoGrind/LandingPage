@@ -1,12 +1,11 @@
 import { User } from 'types/user.type';
 import { Popup } from 'react-leaflet';
-import styles from './MapPopup.module.scss';
-import icon from '../../../../assets/956fd6.png';
-import messageIcon from '../../../../assets/messageIcon.png';
 import { createAndSetChatRoom } from 'utils/db';
 import { useAuthContext } from 'context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { useChatContext } from 'context/ChatContext';
+import styles from './MapPopup.module.scss';
+import messageIcon from '../../../../assets/messageIcon.png';
 
 interface IMapPopupProps {
   user: User;
@@ -20,14 +19,9 @@ function MapPopup({ user }: IMapPopupProps) {
   if (!user.session || !currentUser) {
     return null;
   }
-  const profilePicture = user.session.isPrivate ? (
-    <img src={icon} height={35} alt="Profile" /> // replace with some default pfp
-  ) : (
-    <div>
-      INSERT PROFILE PICTURE HERE SOMEHOW, add button to go to profile in
-      future? (look up fire storage later)
-    </div>
-  );
+  const profilePicture = (
+    <img src={user.photoUrl} height={35} alt="Profile" /> // replace with some default pfp
+  ); // TODO: private setting later?
 
   const onMessageClick = () => {
     createAndSetChatRoom(currentUser.uid, user.uid, setCurrentChatId);

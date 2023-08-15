@@ -1,28 +1,29 @@
-import {
-  MapContainer,
-  TileLayer,
-  Marker,
-  ZoomControl,
-  useMap,
-} from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, ZoomControl } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import { Icon } from 'leaflet';
-import { useEffect } from 'react';
+import L from 'leaflet';
+import { useCallback } from 'react';
 import { useAppContext } from 'context/AppContext';
 import MapPopup from './MapPopup/MapPopup';
-import markerIconPng from '../../../assets/956fd6.png';
 import styles from './Map.module.scss';
 
 function Map() {
   const { activeUsers } = useAppContext();
 
-  const RecenterAutomatically = ({ lat, lng }) => {
-    const map = useMap();
-    useEffect(() => {
-      map.setView([lat, lng]);
-    }, [lat, lng]);
-    return null;
-  };
+  // const RecenterAutomatically = ({ lat, lng }) => {
+  //   const map = useMap();
+  //   useEffect(() => {
+  //     map.setView([lat, lng]);
+  //   }, [lat, lng]);
+  //   return null;
+  // }; // TODO: move map to user on discovery click
+
+  const customIcon = useCallback((profilePicture: string) => {
+    return L.divIcon({
+      html: `<img src="${profilePicture}" width="30" height="30" />`, // Use img tag to display the image
+      iconSize: [30, 30],
+      iconAnchor: [15, 30],
+    });
+  }, []);
 
   return (
     <MapContainer
@@ -40,7 +41,7 @@ function Map() {
         attribution="Map data © OpenStreetMap contributors"
       />
       <ZoomControl position="bottomright" />
-      <RecenterAutomatically lat={43.472286} lng={-80.544861} />
+      {/* <RecenterAutomatically lat={43.472286} lng={-80.544861} /> */}
 
       {activeUsers.map((user) => {
         return (
@@ -51,13 +52,7 @@ function Map() {
                 user.session.location.latitude,
                 user.session.location.longitude,
               ]}
-              icon={
-                new Icon({
-                  iconUrl: markerIconPng,
-                  iconSize: [25, 41],
-                  iconAnchor: [12, 20],
-                })
-              }
+              icon={customIcon(user.photoUrl)}
             >
               <MapPopup user={user} />
             </Marker>
