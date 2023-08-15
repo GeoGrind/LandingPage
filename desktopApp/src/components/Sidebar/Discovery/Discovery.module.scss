@@ -1,8 +1,8 @@
 .Discovery {
   display: flex;
   flex-direction: column;
-  padding: 8px 12px;
-  gap: 6px;
+  padding: 14px 24px;
+  gap: 12px;
 
   flex: 1 1 0;
   overflow-y: auto;
@@ -13,7 +13,7 @@
   &__bottom {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
   }
 
   &__item {
@@ -21,7 +21,9 @@
     border-radius: 10px;
     display: flex;
     flex-direction: column;
-    padding: 5px;
+    padding: 12px;
+    // padding: 14px 24px;
+
     &__top {
       display: flex;
       flex-direction: row;

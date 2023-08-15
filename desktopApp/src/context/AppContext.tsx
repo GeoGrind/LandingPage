@@ -39,7 +39,7 @@ function AppContextProvider({ children }: any) {
   const contentStyles = useMemo(
     () =>
       showExpandedSidebar
-        ? { width: 'calc(100vw - 210px)', left: '210px' }
+        ? { width: 'calc(100vw - 280px)', left: '280px' }
         : { width: 'calc(100vw - 78px)', left: '78px' },
     [showExpandedSidebar]
   );

@@ -1,25 +1,38 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from 'context/AuthContext';
 import { useAppContext } from 'context/AppContext';
 import { useForm } from 'react-hook-form';
-
 import styles from './Account.module.scss';
 
 function Account() {
-  const { currentUser, logout, updateCurrentUser } = useAuthContext();
+  const { currentUser, updateCurrentUser, upload } = useAuthContext();
   const { contentStyles } = useAppContext();
-
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
+  const [photo, setPhoto] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [photoURL, setPhotoURL] = useState(
+    'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png'
+  ); // TODO: replace this later
+
+  useEffect(() => {
+    if (currentUser?.photoUrl) {
+      setPhotoURL(currentUser.photoUrl);
+    }
+  }, [currentUser]);
+
+  const handlePhotoChange = (e) => {
+    if (e.target.files[0]) {
+      setPhoto(e.target.files[0]);
+    }
+  };
 
   const onSubmit = (data: any) => {
     updateCurrentUser(data);
-    console.log(data);
   };
 
   if (!currentUser) {
@@ -27,6 +40,25 @@ function Account() {
   }
   return (
     <div className={styles.Account} style={contentStyles}>
+      <div className="fields">
+        <input type="file" onChange={handlePhotoChange} />
+        <button
+          type="button"
+          disabled={loading || !photo}
+          onClick={() => {
+            upload(photo, setLoading);
+          }}
+        >
+          Upload
+        </button>
+        <img
+          src={photoURL}
+          height={150}
+          width={150}
+          alt="Avatar"
+          className="avatar"
+        />
+      </div>
       <form className={styles.Account__form} onSubmit={handleSubmit(onSubmit)}>
         <label>Username</label>
         <input

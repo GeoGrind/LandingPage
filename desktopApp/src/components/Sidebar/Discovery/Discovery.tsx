@@ -29,7 +29,7 @@ function Discovery() {
         {activeUsers.map(
           (user) =>
             user.session?.location && (
-              <div className={styles.Discovery__item}>
+              <div className={styles.Discovery__item} key={user.uid}>
                 <div className={styles.Discovery__item__top}>
                   <img src={icon} height={35} width={35} alt="Profile" />
                   <div className={styles.Discovery__item__top__middle}>

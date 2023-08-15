@@ -1,4 +1,4 @@
-import {
+import React, {
   createContext,
   useCallback,
   useContext,
@@ -10,12 +10,14 @@ import {
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut,
+  updateProfile,
 } from 'firebase/auth';
-import { FIREBASE_AUTH, FIREBASE_DB } from 'firebase';
+import { FIREBASE_AUTH, FIREBASE_DB, FIREBASE_STORAGE } from 'firebase';
 import { User } from 'types/user.type';
 import { getCurrentUser } from 'utils/db';
-import { useAppContext } from './AppContext';
 import { collection, doc, updateDoc } from 'firebase/firestore';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { useAppContext } from './AppContext';
 
 interface IAuthContext {
   currentUser: User | null;
@@ -23,6 +25,10 @@ interface IAuthContext {
   login: (email: string, password: string) => any;
   logout: () => void;
   updateCurrentUser: (data: any) => void;
+  upload: (
+    file: any,
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>
+  ) => void;
 }
 
 export const AuthContext = createContext<IAuthContext>({
@@ -31,6 +37,7 @@ export const AuthContext = createContext<IAuthContext>({
   login: () => {},
   logout: () => {},
   updateCurrentUser: () => {},
+  upload: () => {},
 });
 
 function AuthContextProvider({ children }: any) {
@@ -100,6 +107,29 @@ function AuthContextProvider({ children }: any) {
     }
   }, []);
 
+  const upload = useCallback(
+    async (
+      file: any,
+      setLoading: React.Dispatch<React.SetStateAction<boolean>>
+    ) => {
+      if (!FIREBASE_AUTH.currentUser) {
+        return;
+      }
+      const fileRef = ref(
+        FIREBASE_STORAGE,
+        `${FIREBASE_AUTH.currentUser.uid}.png`
+      );
+      setLoading(true);
+      await uploadBytes(fileRef, file);
+      const photoURL = await getDownloadURL(fileRef);
+      updateCurrentUser({ photoUrl: photoURL }); // for firestore
+      updateProfile(FIREBASE_AUTH.currentUser, { photoURL }); // for auth
+      getCurrentUser(setCurrentUser); // updates the cur user, need to update logic
+      setLoading(false);
+    },
+    [updateCurrentUser]
+  );
+
   const returnValue = useMemo(
     () => ({
       currentUser,
@@ -107,8 +137,9 @@ function AuthContextProvider({ children }: any) {
       login,
       logout,
       updateCurrentUser,
+      upload,
     }),
-    [currentUser, setCurrentUser, login, logout, updateCurrentUser]
+    [currentUser, setCurrentUser, login, logout, updateCurrentUser, upload]
   );
 
   return (

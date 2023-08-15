@@ -9,6 +9,7 @@ export type User = {
   program: string;
   termCourses: string[];
 
+  photoUrl: string;
   bio: string;
   session: Session | null;
 };
