@@ -74,6 +74,14 @@ function Account() {
             className="avatar"
           />
         </div>
+        <label>Email</label>
+        <input
+          className={styles.Account__form__input}
+          type="text"
+          placeholder="Email"
+          value={currentUser.email}
+          disabled
+        />
         <label>Username</label>
         <input
           className={styles.Account__form__input}
@@ -135,7 +143,6 @@ function Account() {
         >
           Add course
         </button>
-
         <div className={styles.Account__form__save}>
           <button
             className={styles['Account__form__save--button']}
@@ -145,6 +152,7 @@ function Account() {
           </button>
         </div>
       </form>
+      SESSION
     </div>
   );
 }
