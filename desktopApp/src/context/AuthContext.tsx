@@ -44,8 +44,6 @@ function AuthContextProvider({ children }: any) {
   const { setShowLogin } = useAppContext();
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
-  console.log('IN AUTH CONTEXT, USER IS', currentUser);
-
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
       if (user) {
