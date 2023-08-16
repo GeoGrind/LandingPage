@@ -18,7 +18,8 @@ import {
 
 console.log(process.env.npm_config_name);
 let firebaseConfig;
-if (process.env.npm_config_name === "flight") {
+const isProduction = process.env.NODE_ENV === "production";
+if (process.env.npm_config_name === "flight" || isProduction) {
   firebaseConfig = {
     apiKey: FIREBASE_API_KEY_FLIGHT,
     authDomain: FIREBASE_AUTH_DOMAIN_FLIGHT,
