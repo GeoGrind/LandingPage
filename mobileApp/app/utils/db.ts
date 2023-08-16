@@ -23,7 +23,7 @@ import {
 import { getAuth } from "firebase/auth";
 import { User, Location, Session, ChatRoom } from "../types";
 import "react-native-get-random-values";
-import { v4 as uuidv4 } from "uuid";
+import { generateUUID } from "./util";
 
 export const getUserLocation = async (): Promise<Location | null> => {
   try {
@@ -151,7 +151,7 @@ export const createChatRoom = async (
 ): Promise<string> => {
   try {
     const chatRoomCollectionRef = collection(FIREBASE_DB, "chatRooms");
-    const documentId = uuidv4();
+    const documentId = generateUUID();
     const chatRoom: ChatRoom = {
       id: documentId,
       ownerIds: [userId1, userId2],
