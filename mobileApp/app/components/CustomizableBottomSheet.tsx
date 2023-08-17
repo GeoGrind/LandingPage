@@ -32,9 +32,17 @@ const handleChatPerson = async (
     const chatRoomId = await getChatRoomFromUserId(person1Id, person2Id);
     if (chatRoomId == null) {
       const newChatRoomId = await createChatRoom(person1Id, person2Id);
-      navigation.navigate("AllChats");
+      navigation.navigate("SingleChat", {
+        id: newChatRoomId,
+        chatRoomOwner1Id: person1Id,
+        chatRoomOwner2Id: person2Id,
+      });
     } else {
-      navigation.navigate("AllChats");
+      navigation.navigate("SingleChat", {
+        id: chatRoomId,
+        chatRoomOwner1Id: person1Id,
+        chatRoomOwner2Id: person2Id,
+      });
     }
   } catch (e) {
     console.log("handleChatPerson Error", e);

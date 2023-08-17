@@ -19,7 +19,7 @@ import { FIREBASE_DB, FIREBASE_AUTH } from "../../FirebaseConfig";
 import { Message } from "../types";
 import { v4 as uuidv4 } from "uuid";
 import { doc, setDoc } from "firebase/firestore";
-import { updateChatRoomLastChangeTime } from "../utils/db";
+import { updateChatRoomFieldById } from "../utils/db";
 import { formatTime } from "../utils/util";
 import { sendNotificationById } from "../utils/notifications";
 import { Dimensions } from "react-native";
@@ -73,7 +73,10 @@ const SingleChat = ({ route }: Props) => {
       const messageRef = doc(msgCollectionRef!, newMessage.id);
 
       await setDoc(messageRef, newMessage);
-      await updateChatRoomLastChangeTime(id);
+      await updateChatRoomFieldById(id, {
+        lastChangeTime: Date.now(),
+        lastMessage: newMessage,
+      });
 
       if (chatRoomOwner1Id === currentUser?.uid) {
         await sendNotificationById(chatRoomOwner2Id);

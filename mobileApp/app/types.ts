@@ -1,3 +1,5 @@
+import { MessageType } from "@flyerhq/react-native-chat-ui";
+
 export type User = {
   uid: string;
   expoToken: string | undefined; // If expoToken === "", it indicates that the user is not signed in
@@ -51,6 +53,7 @@ export type ChatRoom = {
   id: string;
   ownerIds: string[]; // Array of Users
   lastChangeTime: number;
+  lastMessage: MessageType.Text | null;
 };
 
 // The params need to be passed in when navigating between the screens

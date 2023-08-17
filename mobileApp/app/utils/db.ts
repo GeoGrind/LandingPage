@@ -156,6 +156,7 @@ export const createChatRoom = async (
       id: documentId,
       ownerIds: [userId1, userId2],
       lastChangeTime: Date.now(),
+      lastMessage: null,
     };
     const chatRoomRef = doc(chatRoomCollectionRef!, documentId);
     await setDoc(chatRoomRef, chatRoom);
@@ -215,17 +216,23 @@ export const updateUserSetting = async (
   }
 };
 
-export async function updateChatRoomLastChangeTime(id: string): Promise<void> {
-  const chatRoomRef = doc(collection(FIREBASE_DB, "chatRooms"), id);
+type ChatRoomFields = Partial<ChatRoom>;
+export const updateChatRoomFieldById = async (
+  id: string,
+  fields: ChatRoomFields
+): Promise<void> => {
   try {
-    await updateDoc(chatRoomRef, {
-      lastChangeTime: Date.now(),
-    });
-    console.log(`Document with ID ${id} updated successfully.`);
+    const chatRoomRef = doc(FIREBASE_DB, "chatRooms", id);
+    const chatRoomSnapshot = await getDoc(chatRoomRef);
+    if (chatRoomSnapshot.exists()) {
+      await updateDoc(chatRoomRef, fields);
+    } else {
+      console.log("ChatRoom not found in Firestore.");
+    }
   } catch (error) {
-    console.error("Error updating document: ", error);
+    console.error("Error updating ChatRoom fields:", error);
   }
-}
+};
 
 export const getUserById = async (uid: string) => {
   try {
