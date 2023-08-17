@@ -10,16 +10,16 @@ import styles from './Input.module.scss';
 
 function Input() {
   const { currentUser } = useAuthContext();
-  const { currentChatId } = useChatContext();
+  const { currentChatRoomId } = useChatContext();
   const [text, setText] = useState('');
 
-  if (!currentChatId) return;
+  if (!currentChatRoomId) return;
 
   const handleSend = async () => {
     if (text.length === 0) return;
     const msgCollectionRef = collection(
       FIREBASE_DB,
-      `chatRooms/${currentChatId}/messages`
+      `chatRooms/${currentChatRoomId}/messages`
     );
     const messageId = uuid();
     const newMessage: Message = {
@@ -31,7 +31,7 @@ function Input() {
     };
     const messageRef = doc(msgCollectionRef!, messageId);
     await setDoc(messageRef, newMessage);
-    await updateChatRoomLastChangeTime(currentChatId);
+    await updateChatRoomLastChangeTime(currentChatRoomId);
     setText('');
   };
 

@@ -1,24 +1,26 @@
-import { createContext, useContext, useMemo, useState } from 'react';
+import React, { createContext, useContext, useMemo, useState } from 'react';
 
 interface IChatContext {
-  currentChatId: string | null;
-  setCurrentChatId: React.Dispatch<React.SetStateAction<string | null>>;
+  currentChatRoomId: string | null;
+  setCurrentChatRoomId: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 export const ChatContext = createContext<IChatContext>({
-  currentChatId: null,
-  setCurrentChatId: () => {},
+  currentChatRoomId: null,
+  setCurrentChatRoomId: () => {},
 });
 
 function ChatContextProvider({ children }: any) {
-  const [currentChatId, setCurrentChatId] = useState<string | null>(null);
+  const [currentChatRoomId, setCurrentChatRoomId] = useState<string | null>(
+    null
+  );
 
   const returnValue = useMemo(
     () => ({
-      currentChatId,
-      setCurrentChatId,
+      currentChatRoomId,
+      setCurrentChatRoomId,
     }),
-    [currentChatId, setCurrentChatId]
+    [currentChatRoomId, setCurrentChatRoomId]
   );
 
   return (

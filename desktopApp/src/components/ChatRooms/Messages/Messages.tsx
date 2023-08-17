@@ -13,13 +13,13 @@ import SingleMessage from './SingleMessage/SingleMessage';
 import styles from './Messages.module.scss';
 
 function Messages() {
-  const { currentChatId } = useChatContext();
+  const { currentChatRoomId } = useChatContext();
   const [messages, setMessages] = useState<Array<Message>>([]);
 
   useEffect(() => {
     const messagesRef = collection(
       FIREBASE_DB,
-      `chatRooms/${currentChatId}/messages`
+      `chatRooms/${currentChatRoomId}/messages`
     );
     const q = query(messagesRef, orderBy('createdAt', 'asc'));
 
@@ -38,7 +38,7 @@ function Messages() {
     });
 
     return unsubscribe;
-  }, [currentChatId]);
+  }, [currentChatRoomId]);
 
   return (
     <div className={styles.Messages}>

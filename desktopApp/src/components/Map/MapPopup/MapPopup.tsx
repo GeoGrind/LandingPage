@@ -13,7 +13,7 @@ interface IMapPopupProps {
 
 function MapPopup({ user }: IMapPopupProps) {
   const { currentUser } = useAuthContext();
-  const { setCurrentChatId } = useChatContext();
+  const { setCurrentChatRoomId } = useChatContext();
   const navigate = useNavigate();
 
   if (!user.session || !currentUser) {
@@ -24,7 +24,7 @@ function MapPopup({ user }: IMapPopupProps) {
   ); // TODO: private setting later?
 
   const onMessageClick = () => {
-    createAndSetChatRoom(currentUser.uid, user.uid, setCurrentChatId);
+    createAndSetChatRoom(currentUser.uid, user.uid, setCurrentChatRoomId);
     navigate('/chats');
   };
 

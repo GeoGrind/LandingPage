@@ -12,7 +12,7 @@ interface IChatRoomSelectorProps {
 
 function ChatRoomSelector({ chatRoom }: IChatRoomSelectorProps) {
   const { currentUser } = useAuthContext();
-  const { setCurrentChatId } = useChatContext();
+  const { setCurrentChatRoomId } = useChatContext();
   const [userToSelect, setUserToSelect] = useState<User | null>(null);
 
   useEffect(() => {
@@ -41,7 +41,7 @@ function ChatRoomSelector({ chatRoom }: IChatRoomSelectorProps) {
         className={styles.ChatRoomSelector__button}
         key={userToSelect.uid}
         onClick={() => {
-          setCurrentChatId(chatRoom.id);
+          setCurrentChatRoomId(chatRoom.id);
         }}
       >
         {userToSelect.username}

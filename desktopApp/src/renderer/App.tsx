@@ -1,5 +1,5 @@
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
-import ChatRooms from 'components/Chats/ChatRooms';
+import ChatRooms from 'components/ChatRooms/ChatRooms';
 import Sidebar from 'components/Sidebar/Sidebar';
 import Home from '../components/Home';
 import './App.module.scss';

@@ -9,12 +9,12 @@ import styles from './SingleChatRoom.module.scss';
 
 function SingleChatRoom() {
   const { currentUser } = useAuthContext();
-  const { currentChatId } = useChatContext();
+  const { currentChatRoomId } = useChatContext();
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
   useEffect(() => {
     const getSelectedUser = async () => {
-      const chat = await getChatRoomById(currentChatId as string);
+      const chat = await getChatRoomById(currentChatRoomId as string);
       if (chat === null || currentUser === null) {
         return;
       }
@@ -27,14 +27,16 @@ function SingleChatRoom() {
     };
 
     getSelectedUser();
-  }, [currentChatId, currentUser]);
+  }, [currentChatRoomId, currentUser]);
 
   if (!selectedUser) {
     return null; // TODO: clean up later
   }
   return (
-    <div className={styles.SingleChat}>
-      <div className={styles.SingleChat__username}>{selectedUser.username}</div>
+    <div className={styles.SingleChatRoom}>
+      <div className={styles.SingleChatRoom__username}>
+        {selectedUser.username}
+      </div>
       <Messages />
       <Input />
     </div>

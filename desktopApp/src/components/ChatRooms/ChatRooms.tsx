@@ -11,23 +11,23 @@ import { useAuthContext } from 'context/AuthContext';
 import { useChatContext } from 'context/ChatContext';
 import { useAppContext } from 'context/AppContext';
 import styles from './ChatRooms.module.scss';
-import SingleChat from './SingleChatRoom/SingleChatRoom';
-import ChatSelector from './ChatRoomSelector/ChatRoomSelector';
+import SingleChatRoom from './SingleChatRoom/SingleChatRoom';
+import ChatRoomSelector from './ChatRoomSelector/ChatRoomSelector';
 
-function Chats() {
+function ChatRooms() {
   const { contentStyles } = useAppContext();
   const { currentUser } = useAuthContext();
-  const { currentChatId } = useChatContext();
-  const [chats, setChats] = useState<Array<ChatRoom>>([]);
+  const { currentChatRoomId } = useChatContext();
+  const [chatRooms, setChatRooms] = useState<Array<ChatRoom>>([]);
 
   useEffect(() => {
     if (!currentUser) return;
-    const getChats = () => {
+    const getChatRooms = () => {
       const chatRoomsRef = collection(FIREBASE_DB, `chatRooms`);
       const q = query(chatRoomsRef); // TODO: order by what?
 
       const unsubscribe = onSnapshot(q, (firebaseDoc: DocumentData) => {
-        const newChats: Array<ChatRoom> = firebaseDoc.docs
+        const newChatRooms: Array<ChatRoom> = firebaseDoc.docs
           .map((doc: any) => {
             const data = doc.data();
             return {
@@ -39,35 +39,35 @@ function Chats() {
           .filter((chatRoom: ChatRoom) => {
             return chatRoom.ownerIds.includes(currentUser.uid);
           });
-        setChats(newChats);
+        setChatRooms(newChatRooms);
       });
       return () => {
         unsubscribe();
       };
     };
-    getChats();
+    getChatRooms();
   }, [currentUser]);
 
   if (!currentUser) return null;
 
   return (
-    <div className={styles.Chats} style={contentStyles}>
-      <div className={styles.Chats__left}>
-        <div className={styles.Chats__left__top}>Messages</div>
-        {Object.entries(chats)
+    <div className={styles.ChatRooms} style={contentStyles}>
+      <div className={styles.ChatRooms__left}>
+        <div className={styles.ChatRooms__left__top}>Messages</div>
+        {Object.entries(chatRooms)
           ?.sort((a, b) => b[1].lastChangeTime - a[1].lastChangeTime)
           .map((chatRoom) => {
-            return <ChatSelector chatRoom={chatRoom[1]} />;
+            return <ChatRoomSelector chatRoom={chatRoom[1]} />;
           })}
       </div>
 
-      {currentChatId ? (
-        <SingleChat />
+      {currentChatRoomId ? (
+        <SingleChatRoom />
       ) : (
-        <div className={styles.Chats__placeholder}>select a chat</div> // replace with empty chat or smth
+        <div className={styles.ChatRooms__placeholder}>select a chat</div> // replace with empty chat or smth
       )}
     </div>
   );
 }
 
-export default Chats;
+export default ChatRooms;

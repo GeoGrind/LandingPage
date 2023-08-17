@@ -8,7 +8,7 @@ import messageIcon from '../../../../assets/messageIcon.png';
 
 function Discovery() {
   const { activeUsers } = useAppContext();
-  const { setCurrentChatId } = useChatContext();
+  const { setCurrentChatRoomId } = useChatContext();
   const { currentUser } = useAuthContext();
   const navigate = useNavigate();
 
@@ -16,7 +16,7 @@ function Discovery() {
     if (!currentUser) {
       return null;
     }
-    createAndSetChatRoom(currentUser.uid, uid, setCurrentChatId);
+    createAndSetChatRoom(currentUser.uid, uid, setCurrentChatRoomId);
     navigate('/chats');
     return null;
   };
