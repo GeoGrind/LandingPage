@@ -19,6 +19,7 @@ import {
   LocationObject,
   requestForegroundPermissionsAsync,
   getCurrentPositionAsync,
+  LocationAccuracy,
 } from "expo-location";
 import { getAuth } from "firebase/auth";
 import { User, Location, Session, ChatRoom } from "../types";
@@ -55,7 +56,10 @@ export const getUserLocation = async (): Promise<Location | null> => {
     }
 
     // Get the current location
-    const currentLocation: LocationObject = await getCurrentPositionAsync({});
+
+    const currentLocation: LocationObject = await getCurrentPositionAsync({
+      accuracy: LocationAccuracy.Balanced,
+    });
     const { longitude, latitude } = currentLocation.coords;
 
     const location = {
