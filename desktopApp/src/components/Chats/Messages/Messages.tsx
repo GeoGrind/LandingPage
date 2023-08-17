@@ -27,10 +27,11 @@ function Messages() {
       const newMessages: Message[] = firebaseDoc.docs.map((doc: any) => {
         const data = doc.data();
         return {
-          id: doc.id,
+          author: data.author,
           createdAt: data.createdAt || 0,
-          message: data.message || '',
-          senderId: data.senderId || '',
+          id: doc.id,
+          text: data.text || '',
+          type: data.type,
         };
       });
       setMessages(newMessages);
@@ -42,7 +43,7 @@ function Messages() {
   return (
     <div className={styles.Messages}>
       {messages.map((m) => (
-        <SingleMessage key={m.id} message={m.message} senderId={m.senderId} />
+        <SingleMessage key={m.id} text={m.text} author={m.author} />
       ))}
     </div>
   );

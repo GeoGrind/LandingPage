@@ -1,20 +1,20 @@
 import { useAuthContext } from 'context/AuthContext';
-import { getChatById, getUserById } from 'utils/db';
+import { getChatRoomById, getUserById } from 'utils/db';
 import { useChatContext } from 'context/ChatContext';
 import { useEffect, useState } from 'react';
 import { User } from 'types/user.type';
 import Messages from '../Messages/Messages';
 import Input from '../Input/Input';
-import styles from './SingleChat.module.scss';
+import styles from './SingleChatRoom.module.scss';
 
-function SingleChat() {
+function SingleChatRoom() {
   const { currentUser } = useAuthContext();
   const { currentChatId } = useChatContext();
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
   useEffect(() => {
     const getSelectedUser = async () => {
-      const chat = await getChatById(currentChatId as string);
+      const chat = await getChatRoomById(currentChatId as string);
       if (chat === null || currentUser === null) {
         return;
       }
@@ -41,4 +41,4 @@ function SingleChat() {
   );
 }
 
-export default SingleChat;
+export default SingleChatRoom;

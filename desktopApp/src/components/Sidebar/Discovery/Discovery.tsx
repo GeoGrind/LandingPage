@@ -31,7 +31,7 @@ function Discovery() {
               <div className={styles.Discovery__item} key={user.uid}>
                 <div className={styles.Discovery__item__top}>
                   <img
-                    src={user.photoUrl}
+                    src={user.profilePicture}
                     height={35}
                     width={35}
                     alt="Profile"

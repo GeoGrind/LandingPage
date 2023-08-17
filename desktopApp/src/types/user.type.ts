@@ -2,14 +2,14 @@ import { Session } from './session.type';
 
 export type User = {
   uid: string;
+  expoToken: string | undefined; // If expoToken === "", it indicates that the user is not signed in
   email: string;
   username: string;
-  yearOfGraduation: number;
-  university: string | null;
-  program: string;
+  emoji: string;
   termCourses: string[];
-
-  photoUrl: string;
-  bio: string;
   session: Session | null;
+  program: string | null;
+  yearOfGraduation: number | null;
+  university: string;
+  profilePicture: string;
 };

@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react';
-import { Chat } from 'types/chat.type';
+import { ChatRoom } from 'types/chatroom.type';
 import { useAuthContext } from 'context/AuthContext';
 import { getUserById } from 'utils/db';
 import { User } from 'types/user.type';
 import { useChatContext } from 'context/ChatContext';
-import styles from './ChatSelector.module.scss';
+import styles from './ChatRoomSelector.module.scss';
 
-interface IChatSelectorProps {
-  chat: Chat;
+interface IChatRoomSelectorProps {
+  chatRoom: ChatRoom;
 }
 
-function ChatSelector({ chat }: IChatSelectorProps) {
+function ChatRoomSelector({ chatRoom }: IChatRoomSelectorProps) {
   const { currentUser } = useAuthContext();
   const { setCurrentChatId } = useChatContext();
   const [userToSelect, setUserToSelect] = useState<User | null>(null);
@@ -20,28 +20,28 @@ function ChatSelector({ chat }: IChatSelectorProps) {
       if (currentUser === null) {
         return;
       }
-      if (chat.ownerIds[0] === currentUser.uid) {
-        setUserToSelect(await getUserById(chat.ownerIds[1]));
+      if (chatRoom.ownerIds[0] === currentUser.uid) {
+        setUserToSelect(await getUserById(chatRoom.ownerIds[1]));
       } else {
-        setUserToSelect(await getUserById(chat.ownerIds[0]));
+        setUserToSelect(await getUserById(chatRoom.ownerIds[0]));
       }
     };
 
     getSelectedUser();
-  }, [chat.ownerIds, currentUser]);
+  }, [chatRoom.ownerIds, currentUser]);
 
   if (!userToSelect) {
     return null;
   }
 
   return (
-    <div className={styles.ChatSelector}>
+    <div className={styles.ChatRoomSelector}>
       <button
         type="button"
-        className={styles.ChatSelector__button}
+        className={styles.ChatRoomSelector__button}
         key={userToSelect.uid}
         onClick={() => {
-          setCurrentChatId(chat.id);
+          setCurrentChatId(chatRoom.id);
         }}
       >
         {userToSelect.username}
@@ -50,4 +50,4 @@ function ChatSelector({ chat }: IChatSelectorProps) {
   );
 }
 
-export default ChatSelector;
+export default ChatRoomSelector;

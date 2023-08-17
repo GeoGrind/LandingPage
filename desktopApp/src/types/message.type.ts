@@ -1,6 +1,7 @@
 export type Message = {
-  id: string;
+  author: any; // object only contains id which is senderId
   createdAt: number;
-  message: string;
-  senderId: string;
+  id: string;
+  text: string;
+  type: string; // text
 };

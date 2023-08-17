@@ -6,19 +6,19 @@ import {
   query,
 } from 'firebase/firestore';
 import { FIREBASE_DB } from 'firebase';
-import { Chat } from 'types/chat.type';
+import { ChatRoom } from 'types/chatroom.type';
 import { useAuthContext } from 'context/AuthContext';
 import { useChatContext } from 'context/ChatContext';
 import { useAppContext } from 'context/AppContext';
-import styles from './Chats.module.scss';
-import SingleChat from './SingleChat/SingleChat';
-import ChatSelector from './ChatSelector/ChatSelector';
+import styles from './ChatRooms.module.scss';
+import SingleChat from './SingleChatRoom/SingleChatRoom';
+import ChatSelector from './ChatRoomSelector/ChatRoomSelector';
 
 function Chats() {
   const { contentStyles } = useAppContext();
   const { currentUser } = useAuthContext();
   const { currentChatId } = useChatContext();
-  const [chats, setChats] = useState<Array<Chat>>([]);
+  const [chats, setChats] = useState<Array<ChatRoom>>([]);
 
   useEffect(() => {
     if (!currentUser) return;
@@ -27,7 +27,7 @@ function Chats() {
       const q = query(chatRoomsRef); // TODO: order by what?
 
       const unsubscribe = onSnapshot(q, (firebaseDoc: DocumentData) => {
-        const newChats: Array<Chat> = firebaseDoc.docs
+        const newChats: Array<ChatRoom> = firebaseDoc.docs
           .map((doc: any) => {
             const data = doc.data();
             return {
@@ -36,7 +36,7 @@ function Chats() {
               lastChangeTime: data.lastChangeTime,
             };
           })
-          .filter((chatRoom: Chat) => {
+          .filter((chatRoom: ChatRoom) => {
             return chatRoom.ownerIds.includes(currentUser.uid);
           });
         setChats(newChats);
@@ -56,8 +56,8 @@ function Chats() {
         <div className={styles.Chats__left__top}>Messages</div>
         {Object.entries(chats)
           ?.sort((a, b) => b[1].lastChangeTime - a[1].lastChangeTime)
-          .map((chat) => {
-            return <ChatSelector chat={chat[1]} />;
+          .map((chatRoom) => {
+            return <ChatSelector chatRoom={chatRoom[1]} />;
           })}
       </div>
 

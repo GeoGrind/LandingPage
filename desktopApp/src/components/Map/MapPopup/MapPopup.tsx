@@ -20,7 +20,7 @@ function MapPopup({ user }: IMapPopupProps) {
     return null;
   }
   const profilePicture = (
-    <img src={user.photoUrl} height={35} alt="Profile" /> // replace with some default pfp
+    <img src={user.profilePicture} height={35} alt="Profile" /> // replace with some default pfp
   ); // TODO: private setting later?
 
   const onMessageClick = () => {
