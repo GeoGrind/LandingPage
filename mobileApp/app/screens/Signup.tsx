@@ -43,18 +43,14 @@ const Signup = () => {
       const user: User = {
         uid: response.user.uid,
         expoToken: expoToken,
-        email: response.user.email,
-        name: null,
-        emoji: "🙂",
+        email: response.user.email!,
+        username: null,
+        emoji: "",
         termCourses: [],
-        location: null,
-        isInSession: false,
-        onGoingSession: null,
+        session: null,
         program: null,
         yearOfGraduation: null,
-        region: null,
-        gender: null,
-        university: null,
+        university: "University of Waterloo",
         profilePicture:
           "https://www.tenforums.com/geek/gars/images/2/types/thumb_15951118880user.png",
       };

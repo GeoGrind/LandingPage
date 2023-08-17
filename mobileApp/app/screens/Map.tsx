@@ -35,7 +35,7 @@ import { Modal, Portal, PaperProvider } from "react-native-paper";
 import DropDownPicker from "react-native-dropdown-picker";
 import SessionModal from "../components/SessionModal";
 import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
-
+import { Image } from "react-native";
 const Map = () => {
   const [inSessionUsers, setInSessionUsers] = useState<User[]>([]);
   const [showForm, setShowForm] = useState(false);
@@ -124,35 +124,31 @@ const Map = () => {
     const newSession: Session = {
       course: courseValue,
       startTime: Date.now(),
-      isVisible: true,
-      sessionStartLocation: { longitude: 0, latitude: 0 }, // Set initial location
-      numberOfCheerers: 0,
-      cheerers: [],
+      isPrivate: false,
+      location: { longitude: 0, latitude: 0 }, // Set initial location
+      numberOfLikers: 0,
+      likers: [],
       stopTime: Date.now() + timeValue,
       description: descriptionValue,
     };
     const curLocation = await getUserLocation();
-    newSession.sessionStartLocation = curLocation;
+    if (curLocation) {
+      newSession.location = curLocation;
+    }
     dispatch(
       updateCurrentUser({
-        location: curLocation,
-        isInSession: true,
-        onGoingSession: newSession,
+        session: newSession,
       })
     );
     updateUserFields({
-      isInSession: true,
-      onGoingSession: newSession,
-      location: curLocation,
+      session: newSession,
     });
   };
 
   const handleSignOffClick = async () => {
     try {
       updateUserFields({
-        location: null,
-        onGoingSession: null,
-        isInSession: false,
+        session: null,
       });
       await updateUserFields({
         expoToken: "",
@@ -166,15 +162,11 @@ const Map = () => {
     // TODO: Needs the UI update immediately after the button is clicked
     try {
       updateUserFields({
-        location: null,
-        onGoingSession: null,
-        isInSession: false,
+        session: null,
       });
       dispatch(
         updateCurrentUser({
-          location: null,
-          isInSession: false,
-          onGoingSession: null,
+          session: null,
         })
       );
     } catch (error) {
@@ -192,8 +184,7 @@ const Map = () => {
 
     // Filter users based on the prefix match in "onGoingSession.course"
     return inSessionUsers.filter(
-      (user) =>
-        user.onGoingSession && user.onGoingSession.course.startsWith(input)
+      (user) => user.session && user.session.course.startsWith(input)
     );
   };
 
@@ -215,39 +206,66 @@ const Map = () => {
               <Marker
                 key={index}
                 coordinate={{
-                  latitude: user.location!.latitude,
-                  longitude: user.location!.longitude,
+                  latitude: user.session?.location.latitude!,
+                  longitude: user.session?.location.longitude!,
                 }}
                 onPress={() => {
                   handleOpenPress(user);
                 }}
               >
-                <Text>{user.emoji}</Text>
+                <View
+                  style={{
+                    backgroundColor: "red",
+                    padding: 2,
+                    borderRadius: 2,
+                  }}
+                >
+                  <Image
+                    style={{ width: 20, height: 20 }}
+                    source={{
+                      uri: `${user.profilePicture}`,
+                    }}
+                  />
+                </View>
               </Marker>
             );
           })}
-          {currentUserRedux?.isInSession && (
+
+          {currentUserRedux?.session && (
             <Marker
               key={10000000}
               coordinate={{
-                latitude: currentUserRedux?.location.latitude,
-                longitude: currentUserRedux?.location.longitude,
+                latitude: currentUserRedux?.session.location.latitude,
+                longitude: currentUserRedux?.session.location.longitude,
               }}
               onPress={() => {
                 handleOpenPress(currentUserRedux);
               }}
             >
-              <Text>{currentUserRedux?.emoji}</Text>
+              <View
+                style={{
+                  backgroundColor: "red",
+                  padding: 2,
+                  borderRadius: 2,
+                }}
+              >
+                <Image
+                  style={{ width: 20, height: 20 }}
+                  source={{
+                    uri: `${currentUserRedux?.profilePicture}`,
+                  }}
+                />
+              </View>
             </Marker>
           )}
         </MapView>
         <View style={styles.searchContainer}>
-          {currentUserRedux?.isInSession && (
+          {currentUserRedux?.session && (
             <CountdownCircleTimer
               isPlaying
               duration={
-                (currentUserRedux.onGoingSession.stopTime -
-                  currentUserRedux.onGoingSession.startTime) /
+                (currentUserRedux.session.stopTime -
+                  currentUserRedux.session.startTime) /
                 1000
               }
               colors={["#004777", "#F7B801", "#A30000", "#A30000"]}
@@ -272,14 +290,13 @@ const Map = () => {
             value={input}
             onChangeText={(s) => {
               setInput(s);
-              console.log(s);
             }}
           />
           <TouchableOpacity onPress={fetchData}>
             <FontAwesome5 name="sync" size={30} color="black" />
           </TouchableOpacity>
         </View>
-        {!currentUserRedux?.isInSession && (
+        {!currentUserRedux?.session && (
           <View style={styles.roundButton}>
             <FontAwesome5
               name="play"
