@@ -19,6 +19,8 @@ Current team members:
 - Chris
 - Gloria
 - Kevin
+- Edward
+- Jack
 
 
 Jay is handling CI/CD for mobile auto deploy to appstore
