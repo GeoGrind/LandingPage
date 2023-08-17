@@ -119,9 +119,9 @@ function AuthContextProvider({ children }: any) {
       );
       setLoading(true);
       await uploadBytes(fileRef, file);
-      const photoURL = await getDownloadURL(fileRef);
-      updateCurrentUser({ photoUrl: photoURL }); // for firestore
-      updateProfile(FIREBASE_AUTH.currentUser, { photoURL }); // for auth
+      const profilePicture = await getDownloadURL(fileRef);
+      updateCurrentUser({ profilePicture }); // for firestore
+      updateProfile(FIREBASE_AUTH.currentUser, { photoURL: profilePicture }); // for auth
       getCurrentUser(setCurrentUser); // updates the cur user, need to update logic
       setLoading(false);
     },
