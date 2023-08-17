@@ -16,11 +16,12 @@ function Account() {
   } = useForm({
     defaultValues: {
       username: currentUser?.username,
+      emoji: currentUser?.emoji,
+      termCourses: currentUser?.termCourses,
+      program: currentUser?.program,
       yearOfGraduation: currentUser?.yearOfGraduation,
       university: currentUser?.university,
-      program: currentUser?.program,
-      bio: currentUser?.bio,
-      termCourses: currentUser?.termCourses,
+      // add session later
     },
   });
   const { fields, append, remove } = useFieldArray({
@@ -29,13 +30,13 @@ function Account() {
   });
   const [photo, setPhoto] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [photoURL, setPhotoURL] = useState(
+  const [profilePicture, setProfilePicture] = useState(
     'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png'
   ); // TODO: replace this later
 
   useEffect(() => {
-    if (currentUser?.photoUrl) {
-      setPhotoURL(currentUser.photoUrl);
+    if (currentUser?.profilePicture) {
+      setProfilePicture(currentUser.profilePicture);
     }
   }, [currentUser]);
 
@@ -67,7 +68,7 @@ function Account() {
             Upload
           </button>
           <img
-            src={photoURL}
+            src={profilePicture}
             height={150}
             width={150}
             alt="Avatar"
@@ -108,14 +109,6 @@ function Account() {
         <select {...register('program')}>
           <option value="Mathematics">Mathematics</option>
         </select>
-        <label>Bio</label>
-        <input
-          className={styles.Account__form__input}
-          defaultValue={currentUser.bio}
-          type="text"
-          placeholder="bio"
-          {...register('bio')}
-        />
 
         <ul>
           <label>Term Courses</label>

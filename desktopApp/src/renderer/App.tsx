@@ -1,10 +1,9 @@
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
-import Chats from 'components/Chats/Chats';
+import ChatRooms from 'components/ChatRooms/ChatRooms';
+import Sidebar from 'components/Sidebar/Sidebar';
 import Home from '../components/Home';
 import './App.module.scss';
-
 import Account from '../components/Authentication/Account/Account';
-import Sidebar from 'components/Sidebar/Sidebar';
 
 export default function App() {
   return (
@@ -13,7 +12,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/account" element={<Account />} />
-        <Route path="/chats" element={<Chats />} />
+        <Route path="/chats" element={<ChatRooms />} />
       </Routes>
     </Router>
     // </AuthContextProvider>

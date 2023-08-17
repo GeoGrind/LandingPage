@@ -13,18 +13,18 @@ interface IMapPopupProps {
 
 function MapPopup({ user }: IMapPopupProps) {
   const { currentUser } = useAuthContext();
-  const { setCurrentChatId } = useChatContext();
+  const { setCurrentChatRoomId } = useChatContext();
   const navigate = useNavigate();
 
   if (!user.session || !currentUser) {
     return null;
   }
   const profilePicture = (
-    <img src={user.photoUrl} height={35} alt="Profile" /> // replace with some default pfp
+    <img src={user.profilePicture} height={35} alt="Profile" /> // replace with some default pfp
   ); // TODO: private setting later?
 
   const onMessageClick = () => {
-    createAndSetChatRoom(currentUser.uid, user.uid, setCurrentChatId);
+    createAndSetChatRoom(currentUser.uid, user.uid, setCurrentChatRoomId);
     navigate('/chats');
   };
 

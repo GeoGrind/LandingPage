@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   collection,
   doc,
@@ -9,7 +10,7 @@ import {
 import { User } from 'types/user.type';
 import { Session } from 'types/session.type';
 import { v4 as uuidv4 } from 'uuid';
-import { Chat } from 'types/chat.type';
+import { ChatRoom } from 'types/chatroom.type';
 import { FIREBASE_AUTH, FIREBASE_DB } from '../firebase';
 
 export const createSession = async (session: Session) => {
@@ -82,15 +83,15 @@ export const getUserById = async (uid: string): Promise<User | null> => {
   }
 };
 
-export const getChatById = async (id: string): Promise<Chat | null> => {
+export const getChatRoomById = async (id: string): Promise<ChatRoom | null> => {
   try {
-    const chatsCollection = collection(FIREBASE_DB, 'chatRooms');
-    const querySnapshot = await getDocs(chatsCollection);
+    const chatRoomsCollection = collection(FIREBASE_DB, 'chatRooms');
+    const querySnapshot = await getDocs(chatRoomsCollection);
     let returnValue = null;
     querySnapshot.forEach(async (docSnapshot) => {
-      const chat = docSnapshot.data() as Chat;
-      if (chat.id === id) {
-        returnValue = chat;
+      const chatRoom = docSnapshot.data() as ChatRoom;
+      if (chatRoom.id === id) {
+        returnValue = chatRoom;
       } // TODO: optimize this and getUserById, O(n) operation all the time
     });
     return returnValue;
@@ -122,7 +123,7 @@ export const getChatById = async (id: string): Promise<Chat | null> => {
 export const createAndSetChatRoom = async (
   uid1: string,
   uid2: string,
-  setCurrentChatId: React.Dispatch<React.SetStateAction<string | null>>
+  setCurrentChatRoomId: React.Dispatch<React.SetStateAction<string | null>>
 ): Promise<void> => {
   try {
     const chatRoomCollectionRef = collection(FIREBASE_DB, 'chatRooms');
@@ -135,15 +136,16 @@ export const createAndSetChatRoom = async (
 
     if (matchingChatRooms.length === 0) {
       const documentId = uuidv4();
-      const chatRoom: Chat = {
+      const chatRoom: ChatRoom = {
         id: documentId,
         ownerIds: [uid1, uid2],
         lastChangeTime: Date.now(),
+        lastMessage: '', // TODO: ADD LOGIC LATER
       };
       await setDoc(doc(chatRoomCollectionRef, documentId), chatRoom);
-      setCurrentChatId(documentId);
+      setCurrentChatRoomId(documentId);
     } else {
-      setCurrentChatId(matchingChatRooms[0].data().id);
+      setCurrentChatRoomId(matchingChatRooms[0].data().id);
     }
   } catch (error) {
     console.log('Error checking creating:', error);

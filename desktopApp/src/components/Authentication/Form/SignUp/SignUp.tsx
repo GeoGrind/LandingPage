@@ -103,17 +103,17 @@ function SignUp() {
       );
       const user: User = {
         uid: response.user.uid,
+        expoToken: undefined, // todo: sync with justin to do this logic
         email: response.user.email || '',
         username,
+        emoji: '',
+        termCourses: [],
+        session: null,
+        program: 'mathematics',
         yearOfGraduation: 2026,
         university: 'University of Waterloo',
-        program: 'math',
-        termCourses: [],
-
-        photoUrl:
+        profilePicture:
           'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Windows_10_Default_Profile_Picture.svg/2048px-Windows_10_Default_Profile_Picture.svg.png',
-        bio: 'dummy bio',
-        session: null,
       };
 
       await createUser(user);

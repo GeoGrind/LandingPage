@@ -15,14 +15,12 @@ function CreateSession() {
 
   const [course, setCourse] = useState('');
   const [description, setDescription] = useState('');
-  const [isPrivate, setIsPrivate] = useState(true);
   const [location, setLocation] = useState<Location | null>(null);
 
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
         setLocation({
-          label: 'test 1234',
           longitude: position.coords.longitude,
           latitude: position.coords.latitude,
         });
@@ -34,10 +32,6 @@ function CreateSession() {
 
   const onCreate = async (e) => {
     e.preventDefault();
-
-    alert(
-      `location: ${location?.label} ${location?.longitude}  ${location?.latitude}`
-    );
     const sessionLocation = location || {
       label: 'dummy label 123',
       latitude: 48.8566,
@@ -46,8 +40,11 @@ function CreateSession() {
     const session: Session = {
       course,
       startTime: Date.now(),
-      isPrivate,
+      isPrivate: false,
       location: sessionLocation,
+      numberOfLikers: 0,
+      likers: [],
+      stopTime: 0, // TODO: implement this later
       description,
     };
 
