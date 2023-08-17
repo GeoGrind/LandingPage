@@ -1,6 +1,5 @@
 import {
   View,
-  FlatList,
   StyleSheet,
   Button,
   TextInput,
@@ -8,35 +7,34 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-import React, { useLayoutEffect, useState } from "react";
+import React, { useLayoutEffect, useRef, useState } from "react";
 import {
   DocumentData,
-  addDoc,
   collection,
   onSnapshot,
   orderBy,
   query,
 } from "firebase/firestore";
 import { FIREBASE_DB, FIREBASE_AUTH } from "../../FirebaseConfig";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Message } from "../types";
-import "react-native-get-random-values";
 import { v4 as uuidv4 } from "uuid";
 import { doc, setDoc } from "firebase/firestore";
 import { updateChatRoomLastChangeTime } from "../utils/db";
 import { formatTime } from "../utils/util";
-import { ScrollView } from "react-native";
-import { getMessaging, getToken } from "firebase/messaging";
-import { InsideRootStackParamList } from "../types";
 import { sendNotificationById } from "../utils/notifications";
+import { Dimensions } from "react-native";
+import { generateUUID } from "../utils/util";
+import { FlatList } from "react-native-gesture-handler";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { Chat, MessageType } from "@flyerhq/react-native-chat-ui";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { InsideRootStackParamList } from "../types";
+
 type Props = NativeStackScreenProps<InsideRootStackParamList, "SingleChat">;
 
-const SingleChat = ({ route, navigation }: Props) => {
+const SingleChat = ({ route }: Props) => {
   const { id, chatRoomOwner1Id, chatRoomOwner2Id } = route.params;
-
   const { currentUser } = FIREBASE_AUTH;
-  const [messages, setMessages] = useState<DocumentData[]>([]);
-  const [message, setMessage] = useState<string>("");
 
   useLayoutEffect(() => {
     const msgCollectionRef = collection(
@@ -46,96 +44,71 @@ const SingleChat = ({ route, navigation }: Props) => {
     const q = query(msgCollectionRef, orderBy("createdAt", "asc"));
 
     const unsubscribe = onSnapshot(q, (firebaseDoc: DocumentData) => {
-      const messages: Message[] = firebaseDoc.docs.map((doc: any) => {
-        const data = doc.data();
-        return {
-          id: doc.id,
-          createdAt: data.createdAt || 0,
-          message: data.message || "",
-          sender: data.sender || "",
-        };
-      });
+      const messages: MessageType.Text[] = firebaseDoc.docs
+        .map((doc: any) => {
+          const data = doc.data();
+          return {
+            author: data.author,
+            createdAt: data.createdAt,
+            id: data.id,
+            text: data.text,
+            type: data.type,
+          };
+        })
+        .reverse();
+
       setMessages(messages);
     });
 
     return unsubscribe;
-  }, []);
+  }, [id]);
 
-  const sendMessage = async () => {
+  const sendMessage = async (newMessage: MessageType.Text) => {
     try {
-      const msg = message.trim();
-      if (msg.length === 0) return;
       const msgCollectionRef = collection(
         FIREBASE_DB,
         `chatRooms/${id}/messages`
       );
-      const documentId = uuidv4();
-      const newMessage: Message = {
-        id: documentId,
-        message: msg,
-        sender: currentUser!.uid,
-        createdAt: Date.now(),
-      };
-      const messageRef = doc(msgCollectionRef!, documentId);
+
+      const messageRef = doc(msgCollectionRef!, newMessage.id);
+
       await setDoc(messageRef, newMessage);
       await updateChatRoomLastChangeTime(id);
+
       if (chatRoomOwner1Id === currentUser?.uid) {
         await sendNotificationById(chatRoomOwner2Id);
       } else {
         await sendNotificationById(chatRoomOwner1Id);
       }
-
-      setMessage("");
     } catch (e) {
       console.log("messages failed to send", e);
     }
   };
 
-  const renderMessage = ({ item }: { item: DocumentData }) => {
-    const myMessage = item.sender === currentUser!.uid;
+  const [messages, setMessages] = useState<MessageType.Any[]>([]);
 
-    return (
-      <View
-        style={[
-          styles.messageContainer,
-          myMessage
-            ? styles.userMessageContainer
-            : styles.otherMessageContainer,
-        ]}
-      >
-        <Text style={styles.messageText}>{item.message}</Text>
-        <Text style={styles.time}>{formatTime(item.createdAt)}</Text>
-      </View>
-    );
+  const addMessage = (message: MessageType.Any) => {
+    setMessages([message, ...messages]);
   };
-
+  const handleSendPress = (message: MessageType.PartialText) => {
+    const textMessage: MessageType.Text = {
+      author: { id: currentUser!.uid },
+      createdAt: Date.now(),
+      id: generateUUID(),
+      text: message.text,
+      type: "text",
+    };
+    addMessage(textMessage);
+    sendMessage(textMessage);
+  };
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
-      <ScrollView
-        contentContainerStyle={{ flexGrow: 1, justifyContent: "flex-end" }}
-      >
-        {messages.map((item) => (
-          <View key={item.id}>{renderMessage({ item })}</View>
-        ))}
-      </ScrollView>
-      <View style={styles.inputContainer}>
-        <TextInput
-          multiline
-          value={message}
-          onChangeText={(text) => setMessage(text)}
-          placeholder="Type a message"
-          style={styles.messageInput}
-        />
-        <Button disabled={message === ""} title="Send" onPress={sendMessage} />
-        <Button
-          title="Go to the Map"
-          onPress={() => navigation.navigate("Map", {})}
-        />
-      </View>
-    </KeyboardAvoidingView>
+    <SafeAreaProvider>
+      <Chat
+        messages={messages}
+        onSendPress={handleSendPress}
+        user={{ id: currentUser!.uid }}
+      />
+    </SafeAreaProvider>
   );
 };
 
@@ -168,7 +141,7 @@ const styles = StyleSheet.create({
     alignSelf: "flex-end",
   },
   otherMessageContainer: {
-    backgroundColor: "#fff",
+    backgroundColor: "grey",
   },
   messageText: {
     fontSize: 16,
@@ -177,6 +150,19 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#777",
     alignSelf: "flex-end",
+  },
+
+  singleMessageWrapper: {
+    marginBottom: 10,
+  },
+
+  headerText: {
+    fontSize: 14,
+    fontWeight: "bold",
+    marginBottom: 5,
+    color: "#555",
+    textAlign: "center", // Add this line
+    width: "100%", // Ensure it takes full width
   },
 });
 

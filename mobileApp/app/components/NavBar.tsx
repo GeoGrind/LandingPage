@@ -8,7 +8,7 @@ type Props = {
   onTestClick: () => void;
   onListViewClick: () => void;
   onChatClick: () => void;
-  onProfileClick: () => void;
+  onSettingClick: () => void;
 };
 
 const Navbar: React.FC<Props> = ({
@@ -17,7 +17,7 @@ const Navbar: React.FC<Props> = ({
   onTestClick,
   onListViewClick,
   onChatClick,
-  onProfileClick,
+  onSettingClick,
 }) => {
   return (
     <View style={styles.container}>
@@ -46,7 +46,7 @@ const Navbar: React.FC<Props> = ({
         name="user"
         size={30}
         color="black"
-        onPress={onProfileClick}
+        onPress={onSettingClick}
       />
     </View>
   );

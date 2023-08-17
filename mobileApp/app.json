@@ -11,11 +11,13 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.study.buddyyyyy",
-      "buildNumber": "26"
+      "buildNumber": "32"
     },
     "android": {
       "adaptiveIcon": {
@@ -55,7 +57,7 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "f29924bc-c60c-4993-b528-eaf70eb53b0c"
+        "projectId": "48115910-b9cc-4fae-a62a-0c6ad6000a86"
       }
     }
   }

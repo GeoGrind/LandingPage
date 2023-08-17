@@ -1,12 +1,5 @@
 import * as React from "react";
-import {
-  Formik,
-  FormikHelpers,
-  FormikProps,
-  Form,
-  Field,
-  FieldProps,
-} from "formik";
+import { Formik, Form, Field } from "formik";
 import { Button } from "react-native";
 
 interface MyFormValues {

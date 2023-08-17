@@ -13,6 +13,9 @@ export type User = {
   region: string | null;
   gender: string | null;
   university: string | null;
+  profilePicture:
+    | string
+    | "https://www.tenforums.com/geek/gars/images/2/types/thumb_15951118880user.png";
 };
 
 export type Location = {
@@ -27,6 +30,9 @@ export type Session = {
   sessionStartLocation: Location | null;
   numberOfCheerers: number;
   cheerers: string[];
+
+  stopTime: number;
+  description: string;
 };
 
 // Two types below are for testing
@@ -37,6 +43,7 @@ export type Message = {
   createdAt: number;
   message: string;
   sender: string;
+  isHeader: boolean;
 };
 
 // Type for the documents in the "groups" collection
@@ -49,7 +56,7 @@ export type ChatRoom = {
 // The params need to be passed in when navigating between the screens
 export type InsideRootStackParamList = {
   Map: {};
-  Profile: {};
+  Setting: {};
   Test: {};
   ListView: {};
   AllChats: {};
@@ -63,8 +70,15 @@ export type InsideRootStackParamList = {
   UpdateBase: {
     field: string;
   };
+  UpdateProfilePicture: {};
+
+  Profile: {
+    id: string;
+  };
+  UpdateTermCourses: {};
 };
 
 export type OutsideRootStackParamList = {
   Login: {};
+  ResetPassword: {};
 };

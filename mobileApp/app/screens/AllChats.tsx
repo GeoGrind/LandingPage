@@ -1,14 +1,5 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  Pressable,
-  ScrollView,
-  TouchableOpacity,
-  RefreshControl,
-} from "react-native";
-import React, { useState } from "react";
-import { Ionicons } from "@expo/vector-icons";
+import { View, StyleSheet, TouchableOpacity, Image } from "react-native";
+import React, { useCallback, useEffect, useState } from "react";
 import { collection } from "firebase/firestore";
 import { FIREBASE_DB, FIREBASE_AUTH } from "../../FirebaseConfig";
 import { ChatRoom } from "../types";
@@ -16,15 +7,23 @@ import { useNavigation, ParamListBase } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Header } from "react-native-elements";
 import { doc, getDoc, getDocs } from "firebase/firestore";
-import { useFocusEffect } from "@react-navigation/native";
-import { formatTime } from "../utils/util";
-
+import Stories from "../components/Stories";
+import SingleChat from "./SingleChat";
+import BottomSheet from "@gorhom/bottom-sheet";
+import { useRef } from "react";
+import { Text } from "react-native";
+import { FlatList } from "react-native-gesture-handler";
 const AllChats = () => {
   const [chatRooms, setChatRooms] = useState<ChatRoom[]>([]);
   const { currentUser } = FIREBASE_AUTH;
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
-  const [idToEmoji, setIdToEmoji] = useState<{ [key: string]: string }>({});
-  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [idToNames, setIdToNames] = useState<{ [key: string]: string }>({});
+  const [idToEmojis, setIdToEmojis] = useState<{ [key: string]: string }>({});
+  const [idToProfilePictures, setIdToProfilePictures] = useState<{
+    [key: string]: string;
+  }>({});
+
+  const test = ["1", "2", "3"];
 
   const fetchChatRoomsData = async () => {
     try {
@@ -36,11 +35,11 @@ const AllChats = () => {
           const chatRoom: ChatRoom = {
             id: doc.id,
             ownerIds: data.ownerIds || [],
-
             lastChangeTime: data.lastChangeTime,
           };
           return chatRoom;
         })
+        .sort((a, b) => b.lastChangeTime - a.lastChangeTime)
         .filter((chatRoom: ChatRoom) => {
           return (
             chatRoom.ownerIds[0] === currentUser?.uid ||
@@ -62,40 +61,64 @@ const AllChats = () => {
         const userSnapshot = await getDoc(userRef);
         const userData = userSnapshot.data();
 
-        if (userData && userData.emoji) {
-          return { [userId]: userData.emoji };
+        if (userData) {
+          const name = userData.name || "";
+          const profilePicture = userData.profilePicture || "";
+          const emoji = userData.emoji || "";
+          return {
+            name: { [userId]: name },
+            profilePicture: { [userId]: profilePicture },
+            emoji: { [userId]: emoji },
+          };
         }
         return null;
       });
 
       const results = await Promise.all(promises);
-      const updatedEmojis = results.reduce((acc, result) => {
+      //profilePicture
+      const updatedProfilePictures = results.reduce((acc, result) => {
         if (result) {
-          return { ...acc, ...result };
+          return { ...acc, ...result.profilePicture };
         }
         return acc;
       }, {});
 
-      setIdToEmoji((prevEmojis) => ({ ...prevEmojis, ...updatedEmojis }));
-      console.log(idToEmoji);
+      const updatedNames = results.reduce((acc, result) => {
+        if (result) {
+          return { ...acc, ...result.name };
+        }
+        return acc;
+      }, {});
+      const updatedEmojis = results.reduce((acc, result) => {
+        if (result) {
+          return { ...acc, ...result.emoji };
+        }
+        return acc;
+      }, {});
+      setIdToProfilePictures((prevProfilePictures) => ({
+        ...prevProfilePictures,
+        ...updatedProfilePictures,
+      }));
+      setIdToNames((prevNames) => ({
+        ...prevNames,
+        ...updatedNames,
+      }));
+      setIdToEmojis((prevEmojis) => ({
+        ...prevEmojis,
+        ...updatedEmojis,
+      }));
       setChatRooms(chatRoomsData);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
-  // Fetch data when naviagation happens
-  useFocusEffect(
-    React.useCallback(() => {
-      fetchChatRoomsData();
-      return () => {};
-    }, [])
-  );
 
-  const handleRefresh = async () => {
-    setIsRefreshing(true);
-    await fetchChatRoomsData();
-    setIsRefreshing(false);
-  };
+  // callbacks
+
+  useEffect(() => {
+    fetchChatRoomsData();
+  }, []);
+
   return (
     <View style={styles.container}>
       <Header
@@ -108,36 +131,41 @@ const AllChats = () => {
         }}
         centerComponent={{ text: "Chats", style: { color: "#fff" } }}
       />
-      <ScrollView
-        contentContainerStyle={styles.scrollViewContent}
-        refreshControl={
-          <RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />
-        }
-      >
-        {chatRooms
-          .sort((a, b) => b.lastChangeTime - a.lastChangeTime) // Sort in descending order
-          .map((chatRoom: ChatRoom) => (
-            <TouchableOpacity
-              key={chatRoom.id}
-              style={styles.groupCard}
-              onPress={() => {
-                navigation.navigate("SingleChat", {
-                  id: chatRoom.id,
-                  chatRoomOwner1Id: chatRoom.ownerIds[0],
-                  chatRoomOwner2Id: chatRoom.ownerIds[1],
-                });
+      <FlatList
+        data={chatRooms}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            style={styles.chatRoomContainer}
+            onPress={() => {
+              navigation.navigate("SingleChat", {
+                id: item.id,
+                chatRoomOwner1Id: item.ownerIds[0],
+                chatRoomOwner2Id: item.ownerIds[1],
+              });
+            }}
+          >
+            <Image
+              style={styles.profilePic}
+              source={{
+                uri:
+                  item.ownerIds[0] == currentUser?.uid
+                    ? idToProfilePictures[item.ownerIds[1]]
+                    : idToProfilePictures[item.ownerIds[0]],
               }}
-            >
-              {chatRoom.ownerIds[0] != currentUser?.uid && (
-                <Text>{idToEmoji[chatRoom.ownerIds[0]]}</Text>
-              )}
-              {chatRoom.ownerIds[1] != currentUser?.uid && (
-                <Text>{idToEmoji[chatRoom.ownerIds[1]]}</Text>
-              )}
-              <Text>{formatTime(chatRoom.lastChangeTime)}</Text>
-            </TouchableOpacity>
-          ))}
-      </ScrollView>
+            />
+            <View style={styles.chatDetails}>
+              <Text style={styles.chatUserName}>
+                {item.ownerIds[0] == currentUser?.uid
+                  ? idToNames[item.ownerIds[1]]
+                  : idToNames[item.ownerIds[0]]}
+              </Text>
+              {/* Add a placeholder last message for now */}
+              <Text style={styles.lastMessage}>Last message...</Text>
+            </View>
+          </TouchableOpacity>
+        )}
+        keyExtractor={(item) => item.id}
+      />
     </View>
   );
 };
@@ -178,6 +206,31 @@ const styles = StyleSheet.create({
   scrollViewContent: {
     flexGrow: 1,
     paddingBottom: 20, // Add padding at the bottom to accommodate the refresh spinner
+  },
+  chatRoomContainer: {
+    flexDirection: "row",
+    padding: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: "#eee",
+  },
+  profilePic: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    marginRight: 15,
+  },
+  chatDetails: {
+    flex: 1,
+    justifyContent: "center",
+  },
+  chatUserName: {
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  lastMessage: {
+    fontSize: 14,
+    color: "gray",
+    marginTop: 5,
   },
 });
 

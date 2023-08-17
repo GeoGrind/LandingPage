@@ -2,17 +2,14 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Login from "./app/screens/Login";
 import Map from "./app/screens/Map";
-import Profile from "./app/screens/Profile";
-import { useEffect, useState } from "react";
+import Setting from "./app/screens/Setting";
+import { useEffect, useRef, useState } from "react";
 import { User, onAuthStateChanged } from "firebase/auth";
 import { FIREBASE_AUTH } from "./FirebaseConfig";
 import { Provider } from "react-redux";
 import { store } from "./app/store/store";
 import Test from "./app/screens/Test";
-import { Keyboard, Alert, Platform } from "react-native";
-import ListView from "./app/screens/ListView";
 import AllChats from "./app/screens/AllChats";
-import SingleChat from "./app/screens/SingleChat";
 import { createStackNavigator } from "@react-navigation/stack";
 import * as Notifications from "expo-notifications";
 import {
@@ -22,6 +19,13 @@ import {
 import Signup from "./app/screens/Signup";
 import UpdateEmoji from "./app/screens/userInfoEditScreens/UpdateEmoji";
 import UpdateBase from "./app/screens/userInfoEditScreens/UpdateBase";
+import Profile from "./app/screens/Profile";
+import UpdateProfilePicture from "./app/screens/userInfoEditScreens/UpdateProfilePicture";
+import UpdateTermCourses from "./app/screens/userInfoEditScreens/UpdateTermCourses";
+import ResetPassword from "./app/screens/ResetPassword";
+import SingleChat from "./app/screens/SingleChat";
+import { initializeExpoToken } from "./app/utils/notifications";
+
 const Stack = createNativeStackNavigator();
 
 const InsideStack = createStackNavigator<InsideRootStackParamList>();
@@ -35,16 +39,20 @@ function InsideLayout() {
       }}
     >
       <InsideStack.Screen name="Map" component={Map} />
-      <InsideStack.Screen name="Profile" component={Profile} />
+      <InsideStack.Screen name="Setting" component={Setting} />
       <InsideStack.Screen name="Test" component={Test} />
-      <InsideStack.Screen name="ListView" component={ListView} />
       <InsideStack.Screen name="AllChats" component={AllChats} />
+      <InsideStack.Screen name="SingleChat" component={SingleChat} />
       <InsideStack.Screen name="UpdateEmoji" component={UpdateEmoji} />
       <InsideStack.Screen name="UpdateBase" component={UpdateBase} />
+      <InsideStack.Screen name="Profile" component={Profile} />
       <InsideStack.Screen
-        name="SingleChat"
-        component={SingleChat}
-        initialParams={{ id: "temp" }}
+        name="UpdateProfilePicture"
+        component={UpdateProfilePicture}
+      />
+      <InsideStack.Screen
+        name="UpdateTermCourses"
+        component={UpdateTermCourses}
       />
     </InsideStack.Navigator>
   );
@@ -62,6 +70,11 @@ function OutsideLayout() {
         component={Signup}
         options={{ headerShown: false }}
       />
+      <Stack.Screen
+        name="ResetPassword"
+        component={ResetPassword}
+        options={{ headerShown: false }}
+      />
     </OutsideStack.Navigator>
   );
 }
@@ -77,22 +90,37 @@ Notifications.setNotificationHandler({
 export default function App() {
   // Set the notification listener
   const [user, setUser] = useState<User | null>(null);
-  useEffect(() => {
-    // This line can dismiss the notification when appState is at foreground
-    Notifications.setNotificationHandler(null);
-    const subscription1 = Notifications.addNotificationReceivedListener(
-      (notification) => {}
-    );
 
-    const subscription2 = Notifications.addNotificationResponseReceivedListener(
-      (response) => {}
-    );
+  const [expoPushToken, setExpoPushToken] = useState("");
+  const [notification, setNotification] =
+    useState<Notifications.Notification>();
+  const notificationListener = useRef<Notifications.Subscription>();
+  const responseListener = useRef<Notifications.Subscription>();
+
+  useEffect(() => {
+    initializeExpoToken().then((token: any) => setExpoPushToken(token));
+
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        setNotification(notification);
+      });
+
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log(response);
+      });
     onAuthStateChanged(FIREBASE_AUTH, (user) => {
       setUser(user);
     });
     return () => {
-      subscription1.remove();
-      subscription2.remove();
+      if (notificationListener.current) {
+        Notifications.removeNotificationSubscription(
+          notificationListener.current
+        );
+      }
+      if (responseListener.current) {
+        Notifications.removeNotificationSubscription(responseListener.current);
+      }
     };
   }, []);
   // End of notification stuff

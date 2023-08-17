@@ -5,22 +5,13 @@ import {
   ActivityIndicator,
   Button,
   KeyboardAvoidingView,
-  Keyboard,
 } from "react-native";
 import React from "react";
-import { FIREBASE_AUTH, FIREBASE_DB } from "../../FirebaseConfig";
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  sendEmailVerification,
-  signOut,
-} from "firebase/auth";
-import { setDoc, doc } from "firebase/firestore";
-import { User } from "../types";
+import { FIREBASE_AUTH } from "../../FirebaseConfig";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { endsWithCanadianUniversitySuffix } from "../utils/emailVerification";
 import { initializeExpoToken } from "../utils/notifications";
-import { updateUserExpoToken } from "../utils/db";
-import * as Notifications from "expo-notifications";
+import { updateUserFields } from "../utils/db";
 import { useNavigation, ParamListBase } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 const Login = () => {
@@ -38,7 +29,9 @@ const Login = () => {
         console.log("issue with expo token");
         return;
       }
-      await updateUserExpoToken(expoToken);
+      await updateUserFields({
+        expoToken: expoToken,
+      });
     } catch (e: any) {
       console.log(e);
       alert("Sign in failed" + e.message);
@@ -73,6 +66,10 @@ const Login = () => {
             <Button
               title="Create a free account"
               onPress={() => navigation.navigate("Signup")}
+            />
+            <Button
+              title="Forgot my password"
+              onPress={() => navigation.navigate("ResetPassword")}
             />
           </>
         )}
