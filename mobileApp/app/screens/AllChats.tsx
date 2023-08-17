@@ -13,6 +13,7 @@ import BottomSheet from "@gorhom/bottom-sheet";
 import { useRef } from "react";
 import { Text } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
+import { formatTime } from "../utils/util";
 const AllChats = () => {
   const [chatRooms, setChatRooms] = useState<ChatRoom[]>([]);
   const { currentUser } = FIREBASE_AUTH;
@@ -36,6 +37,7 @@ const AllChats = () => {
             id: doc.id,
             ownerIds: data.ownerIds || [],
             lastChangeTime: data.lastChangeTime,
+            lastMessage: data.lastMessage,
           };
           return chatRoom;
         })
@@ -159,8 +161,14 @@ const AllChats = () => {
                   ? idToNames[item.ownerIds[1]]
                   : idToNames[item.ownerIds[0]]}
               </Text>
-              {/* Add a placeholder last message for now */}
-              <Text style={styles.lastMessage}>Last message...</Text>
+
+              {item.lastMessage?.text ? (
+                <Text style={styles.lastMessage}>{item.lastMessage.text}</Text>
+              ) : null}
+
+              <Text style={styles.lastMessageTime}>
+                {formatTime(item.lastChangeTime)}
+              </Text>
             </View>
           </TouchableOpacity>
         )}
@@ -229,6 +237,11 @@ const styles = StyleSheet.create({
   },
   lastMessage: {
     fontSize: 14,
+    color: "gray",
+    marginTop: 5,
+  },
+  lastMessageTime: {
+    fontSize: 12,
     color: "gray",
     marginTop: 5,
   },
