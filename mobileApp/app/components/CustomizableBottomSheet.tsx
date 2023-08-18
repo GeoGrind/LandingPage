@@ -59,8 +59,8 @@ export const CustomizableBottomSheet: React.FC<Props> = ({
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
 
   useEffect(() => {
-    if (userMarker.onGoingSession) {
-      setCheerers(userMarker.onGoingSession.numberOfCheerers || 0);
+    if (userMarker.session) {
+      setCheerers(userMarker.session.numberOfLikers || 0);
     }
   }, [userMarker]);
 
@@ -96,7 +96,7 @@ export const CustomizableBottomSheet: React.FC<Props> = ({
         <Text>{userMarker.emoji}</Text>
       </View>
 
-      <Text style={styles.text}>{userMarker.onGoingSession?.course}</Text>
+      <Text style={styles.text}>{userMarker.session?.course}</Text>
       <Text style={styles.randomText}>
         This is a random paragraph. Lorem ipsum dolor sit amet, consectetur
         adipiscing elit.
@@ -107,8 +107,7 @@ export const CustomizableBottomSheet: React.FC<Props> = ({
         buttonStyle={styles.button}
         onPress={handleButtonPress}
         disabled={
-          isButtonDisabled ||
-          userMarker.onGoingSession?.cheerers?.includes(user.uid)
+          isButtonDisabled || userMarker.session?.likers?.includes(user.uid)
         }
       />
 
