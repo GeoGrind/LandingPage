@@ -27,6 +27,9 @@ function ChatRooms() {
       const q = query(chatRoomsRef); // TODO: order by what?
 
       const unsubscribe = onSnapshot(q, (firebaseDoc: DocumentData) => {
+        if (!firebaseDoc.docs) {
+          return;
+        }
         const newChatRooms: Array<ChatRoom> = firebaseDoc.docs
           .map((doc: any) => {
             const data = doc.data();

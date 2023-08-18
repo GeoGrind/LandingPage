@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
+import { getFirestore, initializeFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 
 const firebaseConfig = {
@@ -12,7 +12,11 @@ const firebaseConfig = {
   appId: '1:476983559491:web:0df4413f71f3f320691bf6',
   measurementId: 'G-5ZE6YMNP79',
 };
+
 export const FIREBASE_APP = initializeApp(firebaseConfig);
+initializeFirestore(FIREBASE_APP, {
+  ignoreUndefinedProperties: true,
+});
 export const FIREBASE_AUTH = getAuth(FIREBASE_APP);
 export const FIREBASE_DB = getFirestore(FIREBASE_APP);
 export const FIREBASE_STORAGE = getStorage(FIREBASE_APP);

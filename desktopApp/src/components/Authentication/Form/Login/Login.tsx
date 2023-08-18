@@ -2,25 +2,21 @@ import React, { useState, useCallback } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useAppContext } from 'context/AppContext';
 import { useAuthContext } from 'context/AuthContext';
+import { IconButton } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import { FIREBASE_AUTH } from '../../../../firebase';
 import styles from './Login.module.scss';
 import FormItem from '../FormItem/FormItem';
 import icon from '../../../../../assets/956fd6.png';
 import FormButton from '../FormButton/FormButton';
-import CloseIcon from '@mui/icons-material/Close';
-import { IconButton } from '@mui/material';
 import FormPassword from '../FormItem/FormPassword/FormPassword';
 
 function Login() {
   const { setShowLogin, setShowSignUp } = useAppContext();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
-  const [error, seterror] = useState('');
-  // auth/user-not-found
-  // auth/invalid-email
-  // auth/missing-password
-  // auth/wrong-password
   const manageErrors = () => {
     switch (error) {
       case 'auth/wrong-password':
@@ -32,24 +28,27 @@ function Login() {
     }
   };
 
-  const onLogin = useCallback((email: string, password: string) => {
-    seterror('');
-    signInWithEmailAndPassword(FIREBASE_AUTH, email, password)
-      .then((userCredential) => {
-        // Signed in
-        const { user } = userCredential;
-        setShowLogin(false);
-        return '';
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log('code: ' + errorCode);
-        console.log(errorMessage);
-        seterror(errorCode);
-        return '';
-      });
-  }, []);
+  const onLogin = useCallback(
+    (e) => {
+      e.preventDefault();
+      signInWithEmailAndPassword(FIREBASE_AUTH, email, password)
+        .then((userCredential) => {
+          // Signed in
+          const { user } = userCredential;
+          setShowLogin(false);
+          return '';
+        })
+        .catch((err) => {
+          const errorCode = err.code;
+          const errorMessage = err.message;
+          console.log(errorMessage);
+          setError(errorCode);
+          return '';
+        });
+      setError('');
+    },
+    [email, password, setShowLogin]
+  );
 
   return (
     <div className={styles.Login}>
@@ -93,25 +92,22 @@ function Login() {
 
           <div className={styles.Login__form}>
             <FormItem
-              errors={!error.length? false : true}
+              errors={!!error.length}
               label="Email"
               placeholder="Enter your email"
               onChange={setEmail}
             />
 
             <FormPassword
-              errors={!error.length? false : true}
+              errors={!!error.length}
               label="Password"
               placeholder="Enter your password"
               onChange={setPassword}
             />
-            {(error.length > 0) && <div className={styles.Login__error}>{manageErrors()}</div>}
-            <FormButton
-              label="Log in"
-              onClick={() => {
-                onLogin(email, password);
-              }}
-            />
+            {error.length > 0 && (
+              <div className={styles.Login__error}>{manageErrors()}</div>
+            )}
+            <FormButton label="Log in" onClick={onLogin} />
           </div>
         </div>
       </div>
