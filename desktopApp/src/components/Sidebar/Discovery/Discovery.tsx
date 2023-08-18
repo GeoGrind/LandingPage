@@ -3,19 +3,21 @@ import { createAndSetChatRoom } from 'utils/db';
 import { useAuthContext } from 'context/AuthContext';
 import { useChatContext } from 'context/ChatContext';
 import { useNavigate } from 'react-router-dom';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import styles from './Discovery.module.scss';
 import messageIcon from '../../../../assets/messageIcon.png';
 
 function Discovery() {
   const { activeUsers } = useAppContext();
-  const { setCurrentChatRoomId } = useChatContext();
+  const { setCurrentChatRoomId, likeSession } = useChatContext();
   const { currentUser } = useAuthContext();
   const navigate = useNavigate();
 
+  if (!currentUser) {
+    return null;
+  }
+
   const onMessageClick = (uid: string) => {
-    if (!currentUser) {
-      return null;
-    }
     createAndSetChatRoom(currentUser.uid, uid, setCurrentChatRoomId);
     navigate('/chats');
     return null;
@@ -42,15 +44,28 @@ function Discovery() {
                   </div>
                 </div>
                 {user.session.description}
-                <button
-                  className={styles.Discovery__item__button}
-                  type="button"
-                  onClick={() => {
-                    onMessageClick(user.uid);
-                  }}
-                >
-                  <img src={messageIcon} height={17} alt="message" />
-                </button>
+
+                <div className={styles.Discovery__buttons}>
+                  <button
+                    className={styles.Discovery__item__button}
+                    type="button"
+                    onClick={() => {
+                      onMessageClick(user.uid);
+                    }}
+                  >
+                    <img src={messageIcon} height={17} alt="message" />
+                  </button>
+                  <button
+                    className={styles.Discovery__item__button}
+                    type="button"
+                    onClick={() => {
+                      likeSession(currentUser, user);
+                    }}
+                  >
+                    <ThumbUpIcon height={17} />
+                  </button>
+                </div>
+                <div>numbers of likes: {user.session.numberOfLikers}</div>
               </div>
             )
         )}

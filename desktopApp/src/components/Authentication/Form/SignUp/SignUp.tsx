@@ -103,7 +103,7 @@ function SignUp() {
       );
       const user: User = {
         uid: response.user.uid,
-        expoToken: undefined, // todo: sync with justin to do this logic
+        expoToken: null, // todo: sync with justin to do this logic
         email: response.user.email || '',
         username,
         emoji: '',
@@ -115,6 +115,7 @@ function SignUp() {
         profilePicture:
           'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Windows_10_Default_Profile_Picture.svg/2048px-Windows_10_Default_Profile_Picture.svg.png',
       };
+      console.log('creating user');
 
       await createUser(user);
       setShowSignUp(false);

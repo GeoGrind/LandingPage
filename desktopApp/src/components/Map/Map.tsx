@@ -52,7 +52,7 @@ function Map() {
                 user.session.location.latitude,
                 user.session.location.longitude,
               ]}
-              icon={customIcon(user.photoUrl)}
+              icon={customIcon(user.profilePicture)}
             >
               <MapPopup user={user} />
             </Marker>

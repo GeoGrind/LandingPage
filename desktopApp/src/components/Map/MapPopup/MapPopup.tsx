@@ -4,16 +4,16 @@ import { createAndSetChatRoom } from 'utils/db';
 import { useAuthContext } from 'context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { useChatContext } from 'context/ChatContext';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import styles from './MapPopup.module.scss';
 import messageIcon from '../../../../assets/messageIcon.png';
-
 interface IMapPopupProps {
   user: User;
 }
 
 function MapPopup({ user }: IMapPopupProps) {
   const { currentUser } = useAuthContext();
-  const { setCurrentChatRoomId } = useChatContext();
+  const { setCurrentChatRoomId, likeSession } = useChatContext();
   const navigate = useNavigate();
 
   if (!user.session || !currentUser) {
@@ -26,6 +26,10 @@ function MapPopup({ user }: IMapPopupProps) {
   const onMessageClick = () => {
     createAndSetChatRoom(currentUser.uid, user.uid, setCurrentChatRoomId);
     navigate('/chats');
+  };
+
+  const onLikeClick = () => {
+    likeSession(currentUser, user);
   };
 
   return (
@@ -52,14 +56,25 @@ function MapPopup({ user }: IMapPopupProps) {
           </div>
         </div>
         <div className={styles.MapPopup__container__bottom}>
+          number of likes: {user.session.numberOfLikers}
           <button
             className={styles.MapPopup__container__bottom__button}
             type="button"
             onClick={() => {
               onMessageClick();
-            }}
+            }} // todo: look to refactor these buttons lateR?
           >
             <img src={messageIcon} height={17} alt="message" />
+          </button>
+          <button
+            className={styles.MapPopup__container__bottom__button}
+            type="button"
+            disabled={user.session.likers.includes(currentUser.uid)} // todo: fix later
+            onClick={() => {
+              onLikeClick();
+            }}
+          >
+            <ThumbUpIcon height={17} />
           </button>
         </div>
       </div>

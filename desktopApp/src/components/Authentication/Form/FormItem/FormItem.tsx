@@ -9,7 +9,6 @@ interface IFormItemProps {
 }
 
 function FormItem({ errors, label, placeholder, onChange }: IFormItemProps) {
-
   return (
     <div className={styles.FormItem}>
       <label className={styles.FormItem__label} htmlFor={label}>
@@ -17,10 +16,12 @@ function FormItem({ errors, label, placeholder, onChange }: IFormItemProps) {
       </label>
       {/* add icon */}
       <input
-        className={!errors? styles.FormItem__input: styles.FormItem__errorInput}
+        className={
+          !errors ? styles.FormItem__input : styles.FormItem__errorInput
+        }
         onChange={(e) => onChange(e.target.value)}
         id={label}
-        type={'text'}
+        type="text"
         placeholder={placeholder}
       />
     </div>
