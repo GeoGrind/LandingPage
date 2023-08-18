@@ -127,19 +127,33 @@ const SingleChat = ({ route }: Props) => {
           },
         }}
         rightComponent={
-          <Avatar
-            source={{
-              uri: `${otherImg}`,
-            }}
-            onPress={() => {
-              navigation.navigate("Profile", {
-                id: otherId,
-              });
-            }}
-          />
+          otherImg ? (
+            <Avatar
+              source={{
+                uri: `${otherImg}`,
+              }}
+              onPress={() => {
+                navigation.navigate("Profile", {
+                  id: otherId,
+                });
+              }}
+            />
+          ) : (
+            <Avatar
+              source={{
+                uri: `https://www.tenforums.com/geek/gars/images/2/types/thumb_15951118880user.png`,
+              }}
+              onPress={() => {
+                navigation.navigate("Profile", {
+                  id: otherId,
+                });
+              }}
+            />
+          )
         }
         centerComponent={{ text: `${otherName}`, style: { color: "#fff" } }}
       />
+
       <Chat
         messages={messages}
         onSendPress={handleSendPress}

@@ -25,6 +25,7 @@ import UpdateTermCourses from "./app/screens/userInfoEditScreens/UpdateTermCours
 import ResetPassword from "./app/screens/ResetPassword";
 import SingleChat from "./app/screens/SingleChat";
 import { initializeExpoToken } from "./app/utils/notifications";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 const Stack = createNativeStackNavigator();
 
@@ -38,10 +39,11 @@ function InsideLayout() {
         headerShown: false,
       }}
     >
-      <InsideStack.Screen name="Map" component={Map} />
-      <InsideStack.Screen name="Setting" component={Setting} />
-      <InsideStack.Screen name="Test" component={Test} />
-      <InsideStack.Screen name="AllChats" component={AllChats} />
+      <InsideStack.Screen
+        name="BottomTabs"
+        component={BottomTabNavigator}
+        options={{ headerShown: false }}
+      />
       <InsideStack.Screen name="SingleChat" component={SingleChat} />
       <InsideStack.Screen name="UpdateEmoji" component={UpdateEmoji} />
       <InsideStack.Screen name="UpdateBase" component={UpdateBase} />
@@ -87,6 +89,19 @@ Notifications.setNotificationHandler({
     };
   },
 });
+
+const BottomTab = createBottomTabNavigator();
+
+function BottomTabNavigator() {
+  return (
+    <BottomTab.Navigator>
+      <BottomTab.Screen name="Map" component={Map} />
+      <BottomTab.Screen name="Setting" component={Setting} />
+      <BottomTab.Screen name="AllChats" component={AllChats} />
+      <BottomTab.Screen name="Test" component={Test} />
+    </BottomTab.Navigator>
+  );
+}
 export default function App() {
   // Set the notification listener
   const [user, setUser] = useState<User | null>(null);
