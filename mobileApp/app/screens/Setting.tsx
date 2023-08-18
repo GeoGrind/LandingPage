@@ -1,9 +1,14 @@
 import React from "react";
-import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { View, StyleSheet, Text, ScrollView } from "react-native";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import { useNavigation, ParamListBase } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useSelector } from "react-redux";
+import { Avatar, ListItem } from "react-native-elements";
+import { Button } from "react-native-elements";
+import { updateUserFields } from "../utils/db";
+import { signOut } from "firebase/auth";
+import { FIREBASE_AUTH } from "../../FirebaseConfig";
 
 function getIconByTitle(title: string) {
   switch (title) {
@@ -37,140 +42,143 @@ function getIconByTitle(title: string) {
     }
   }
 }
-
-function CircleInfo({ title, onPress, style }: any) {
-  return (
-    <TouchableOpacity style={[styles.circleContainer, style]} onPress={onPress}>
-      <Text style={styles.circleTitle}>{title}</Text>
-      {getIconByTitle(title)}
-      <FontAwesome5 name="arrow-right" size={24} color="black" />
-    </TouchableOpacity>
-  );
-}
-
+const handleSignOffClick = async () => {
+  try {
+    updateUserFields({
+      session: null,
+    });
+    await updateUserFields({
+      expoToken: "",
+    });
+    await signOut(FIREBASE_AUTH);
+  } catch (error) {
+    console.log("Error signing off:", error);
+  }
+};
 export default function Setting() {
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
+  const currentUserRedux = useSelector(
+    (state: any) => state.currentUser.currentUser
+  );
+  const navigateToUpdateBase = (field: string) => {
+    navigation.navigate("UpdateBase", { field });
+  };
+  const settingsOptions = [
+    { title: "Username", onPress: () => navigateToUpdateBase("username") },
+    { title: "Program", onPress: () => navigateToUpdateBase("program") },
+    { title: "Year", onPress: () => navigateToUpdateBase("yearOfGraduation") },
+    { title: "Status", onPress: () => navigation.navigate("UpdateEmoji") },
+    {
+      title: "Courses",
+      onPress: () => navigation.navigate("UpdateTermCourses"),
+    },
+    {
+      title: "Profile Picture",
+      onPress: () => navigation.navigate("UpdateProfilePicture"),
+    },
+    { title: "University", onPress: () => navigateToUpdateBase("university") },
+  ];
+
+  const getFieldText = (field: string) => {
+    switch (field) {
+      case "Username":
+        return currentUserRedux?.username;
+
+      case "Program":
+        return currentUserRedux?.program;
+
+      case "Year":
+        return currentUserRedux?.yearOfGraduation;
+
+      case "Status":
+        return currentUserRedux?.emoji;
+
+      case "Courses":
+        return currentUserRedux?.termCourses.join(", ");
+
+      case "Profile Picture":
+        return null;
+
+      case "University":
+        return currentUserRedux?.university;
+
+      default:
+        return;
+    }
+  };
 
   return (
-    <View style={styles.container}>
-      <CircleInfo
-        title="Username"
-        onPress={() => navigation.navigate("UpdateBase", { field: "username" })}
-        style={styles.circle1}
+    <ScrollView style={styles.container}>
+      {settingsOptions.map((option, index) => (
+        <ListItem
+          key={index}
+          onPress={option.onPress}
+          containerStyle={styles.listItem}
+        >
+          <ListItem.Content style={styles.iconContainer}>
+            {getIconByTitle(option.title)}
+          </ListItem.Content>
+          <ListItem.Content style={styles.textContainer}>
+            <ListItem.Title style={styles.listItemText}>
+              {option.title}
+            </ListItem.Title>
+            <ListItem.Subtitle style={styles.detailText}>
+              {getFieldText(option.title)}
+            </ListItem.Subtitle>
+          </ListItem.Content>
+          <ListItem.Chevron color="#b5b5b5" />
+        </ListItem>
+      ))}
+      <Button
+        title="Log Out"
+        onPress={handleSignOffClick}
+        buttonStyle={styles.logoutButton}
+        titleStyle={styles.logoutButtonText}
       />
-
-      <CircleInfo
-        title="Program"
-        onPress={() => navigation.navigate("UpdateBase", { field: "program" })}
-        style={styles.circle2}
-      />
-      <CircleInfo
-        title="Year"
-        onPress={() =>
-          navigation.navigate("UpdateBase", { field: "yearOfGraduation" })
-        }
-        style={styles.circle3}
-      />
-      <CircleInfo
-        title="Status"
-        onPress={() => navigation.navigate("UpdateEmoji")}
-        style={styles.circle4}
-      />
-      <CircleInfo
-        title="Courses"
-        onPress={() => navigation.navigate("UpdateTermCourses")}
-        style={styles.circle5}
-      />
-      <CircleInfo
-        title="Profile Picture"
-        onPress={() => navigation.navigate("UpdateProfilePicture")}
-        style={styles.circle6}
-      />
-      <CircleInfo
-        title="University"
-        onPress={() =>
-          navigation.navigate("UpdateBase", { field: "university" })
-        }
-        style={styles.circle7}
-      />
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    position: "relative", // Important for absolute positioning
+    backgroundColor: "#f8f8f8",
+    padding: 10, // Added padding around the list
   },
-  circleContainer: {
+  listItem: {
+    borderRadius: 10, // Added border radius
+    marginBottom: 12, // Increased spacing between items
+    elevation: 1, // For Android shadow
+    shadowOpacity: 0.3, // For iOS shadow
+    shadowRadius: 3, // For iOS shadow
+    shadowOffset: { width: 1, height: 1 }, // For iOS shadow
+  },
+  iconContainer: {
+    flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#e0e0e0",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-    position: "absolute", // Absolute position
   },
-  circleTitle: {
-    fontSize: 16,
+  textContainer: {
+    flex: 4,
+  },
+  listItemText: {
+    fontSize: 18,
     fontWeight: "bold",
+    color: "#333", // Made text darker
   },
-  circleInfo: {
+  detailText: {
     fontSize: 14,
-    textAlign: "center",
-    marginBottom: 8,
+    color: "#888", // Changed gray tone
   },
-  circle1: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    top: 30, // Predefined Y position
-    left: 40, // Predefined X position
+  logoutButton: {
+    marginTop: 20,
+    backgroundColor: "#e74c3c", // Choose a color that signifies 'caution' or 'action'.
+    borderRadius: 10,
+    paddingVertical: 12,
+    marginBottom: 20,
   },
-
-  circle2: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    top: 350,
-    right: 30,
-  },
-  circle3: {
-    width: 90,
-    height: 90,
-    borderRadius: 45,
-    top: 100,
-    right: 50,
-  },
-  circle4: {
-    width: 110,
-    height: 110,
-    borderRadius: 55,
-    bottom: 80,
-    left: 200,
-  },
-  circle5: {
-    width: 110,
-    height: 110,
-    borderRadius: 65,
-    bottom: 400,
-    left: 20,
-  },
-  circle6: {
-    width: 130,
-    height: 130,
-    borderRadius: 65,
-    bottom: 200,
-    left: 20,
-  },
-  circle7: {
-    width: 90,
-    height: 90,
-    borderRadius: 45,
-    bottom: 20,
-    left: 20,
+  logoutButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
   },
 });

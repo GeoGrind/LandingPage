@@ -159,7 +159,6 @@ const Map = () => {
     }
   };
   const handleStopSessionClick = async () => {
-    // TODO: Needs the UI update immediately after the button is clicked
     try {
       updateUserFields({
         session: null,
