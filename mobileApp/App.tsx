@@ -95,10 +95,58 @@ const BottomTab = createBottomTabNavigator();
 function BottomTabNavigator() {
   return (
     <BottomTab.Navigator>
-      <BottomTab.Screen name="Map" component={Map} />
-      <BottomTab.Screen name="Setting" component={Setting} />
-      <BottomTab.Screen name="AllChats" component={AllChats} />
-      <BottomTab.Screen name="Test" component={Test} />
+      <BottomTab.Screen
+        name="Map"
+        component={Map}
+        options={{
+          title: "Discovery",
+          headerStyle: {
+            backgroundColor: "#f4511e",
+          },
+          headerTintColor: "#fff",
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+        }}
+      />
+      <BottomTab.Screen
+        name="Setting"
+        component={Setting}
+        options={{
+          title: "Me",
+          headerStyle: {
+            backgroundColor: "#f4511e",
+          },
+          headerTintColor: "#fff",
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+        }}
+      />
+      <BottomTab.Screen
+        name="Chats"
+        component={AllChats}
+        options={{
+          title: "Discovery",
+          headerStyle: {
+            backgroundColor: "#f4511e",
+          },
+          headerTintColor: "#fff",
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+        }}
+      />
+      {/* <BottomTab.Screen name="Test" component={Test} options={{
+          title: 'Discovery',
+          headerStyle: {
+            backgroundColor: '#f4511e',
+          },
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+        }}/> */}
     </BottomTab.Navigator>
   );
 }
