@@ -15,6 +15,5 @@ export default function App() {
         <Route path="/chats" element={<ChatRooms />} />
       </Routes>
     </Router>
-    // </AuthContextProvider>
   );
 }

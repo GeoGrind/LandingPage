@@ -62,14 +62,14 @@ function MapPopup({ user }: IMapPopupProps) {
             type="button"
             onClick={() => {
               onMessageClick();
-            }}
+            }} // todo: look to refactor these buttons lateR?
           >
             <img src={messageIcon} height={17} alt="message" />
           </button>
           <button
             className={styles.MapPopup__container__bottom__button}
             type="button"
-            disabled={user.session.likers.includes(currentUser.uid)}
+            disabled={user.session.likers.includes(currentUser.uid)} // todo: fix later
             onClick={() => {
               onLikeClick();
             }}
