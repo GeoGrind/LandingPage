@@ -1,13 +1,5 @@
-import {
-  View,
-  StyleSheet,
-  Button,
-  TextInput,
-  Text,
-  KeyboardAvoidingView,
-  Platform,
-} from "react-native";
-import React, { useLayoutEffect, useRef, useState } from "react";
+import { StyleSheet } from "react-native";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import {
   DocumentData,
   collection,
@@ -16,25 +8,45 @@ import {
   query,
 } from "firebase/firestore";
 import { FIREBASE_DB, FIREBASE_AUTH } from "../../FirebaseConfig";
-import { Message } from "../types";
-import { v4 as uuidv4 } from "uuid";
 import { doc, setDoc } from "firebase/firestore";
-import { updateChatRoomFieldById } from "../utils/db";
-import { formatTime } from "../utils/util";
+import { getUserById, updateChatRoomFieldById } from "../utils/db";
 import { sendNotificationById } from "../utils/notifications";
-import { Dimensions } from "react-native";
 import { generateUUID } from "../utils/util";
-import { FlatList } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Chat, MessageType } from "@flyerhq/react-native-chat-ui";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { InsideRootStackParamList } from "../types";
-
+import { InsideRootStackParamList, User } from "../types";
+import { Avatar, Header } from "react-native-elements";
+import { useNavigation, ParamListBase } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 type Props = NativeStackScreenProps<InsideRootStackParamList, "SingleChat">;
 
 const SingleChat = ({ route }: Props) => {
   const { id, chatRoomOwner1Id, chatRoomOwner2Id } = route.params;
   const { currentUser } = FIREBASE_AUTH;
+  const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
+  const [otherName, setOtherName] = useState<string>();
+  const [otherImg, setOtherImg] = useState<string>();
+  const [otherId, setOtherId] = useState<string>();
+
+  useEffect(() => {
+    const getOtherName = async () => {
+      const user1 = await getUserById(chatRoomOwner1Id);
+      const user2 = await getUserById(chatRoomOwner2Id);
+
+      if (currentUser?.uid === user1?.uid) {
+        setOtherName(user2!.username);
+        setOtherImg(user2?.profilePicture);
+        setOtherId(user2?.uid);
+      } else {
+        setOtherName(user1!.username);
+        setOtherImg(user1?.profilePicture);
+        setOtherId(user1?.uid);
+      }
+    };
+
+    getOtherName();
+  });
 
   useLayoutEffect(() => {
     const msgCollectionRef = collection(
@@ -106,6 +118,28 @@ const SingleChat = ({ route }: Props) => {
   };
   return (
     <SafeAreaProvider>
+      <Header
+        leftComponent={{
+          icon: "map",
+          color: "#fff",
+          onPress: () => {
+            navigation.navigate("AllChats");
+          },
+        }}
+        rightComponent={
+          <Avatar
+            source={{
+              uri: `${otherImg}`,
+            }}
+            onPress={() => {
+              navigation.navigate("Profile", {
+                id: otherId,
+              });
+            }}
+          />
+        }
+        centerComponent={{ text: `${otherName}`, style: { color: "#fff" } }}
+      />
       <Chat
         messages={messages}
         onSendPress={handleSendPress}

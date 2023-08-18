@@ -44,7 +44,7 @@ const Signup = () => {
         uid: response.user.uid,
         expoToken: expoToken,
         email: response.user.email!,
-        username: null,
+        username: "",
         emoji: "",
         termCourses: [],
         session: null,

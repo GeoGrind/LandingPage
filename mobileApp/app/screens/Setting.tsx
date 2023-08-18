@@ -10,7 +10,7 @@ function getIconByTitle(title: string) {
     case "Email": {
       return <FontAwesome5 name="inbox" size={24} color="black" />;
     }
-    case "Name": {
+    case "Username": {
       return <FontAwesome5 name="user" size={24} color="black" />;
     }
     case "Year": {
@@ -54,8 +54,8 @@ export default function Setting() {
   return (
     <View style={styles.container}>
       <CircleInfo
-        title="Name"
-        onPress={() => navigation.navigate("UpdateBase", { field: "name" })}
+        title="Username"
+        onPress={() => navigation.navigate("UpdateBase", { field: "username" })}
         style={styles.circle1}
       />
 
