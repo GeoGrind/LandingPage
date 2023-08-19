@@ -25,6 +25,7 @@ import { getAuth } from "firebase/auth";
 import { User, Location, Session, ChatRoom } from "../types";
 import "react-native-get-random-values";
 import { generateUUID } from "./util";
+import * as ExpoLocation from "expo-location";
 
 export const getUserLocation = async (): Promise<Location | null> => {
   try {
@@ -47,19 +48,20 @@ export const getUserLocation = async (): Promise<Location | null> => {
     if (!userData) {
       return null;
     }
-
     // Check location permissions
     const { status } = await requestForegroundPermissionsAsync();
     if (status !== "granted") {
       console.log("Please grant location permissions");
       return null;
     }
-
     // Get the current location
 
-    const currentLocation: LocationObject = await getCurrentPositionAsync({
-      accuracy: LocationAccuracy.Balanced,
-    });
+    const currentLocation = await ExpoLocation.getLastKnownPositionAsync({});
+
+    console.log("Finish");
+    if (!currentLocation) {
+      return null;
+    }
     const { longitude, latitude } = currentLocation.coords;
 
     const location = {

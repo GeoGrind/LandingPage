@@ -134,7 +134,9 @@ const Map = () => {
       alert("Fill out all fields");
       return;
     }
+
     setShowForm(false);
+
     const newSession: Session = {
       course: courseValue,
       startTime: Date.now(),
@@ -147,10 +149,12 @@ const Map = () => {
     };
     setDuration(timeValue / 1000);
     setRemainingTime(timeValue / 1000);
+
     const curLocation = await getUserLocation();
     if (curLocation) {
       newSession.location = curLocation;
     }
+
     dispatch(
       updateCurrentUser({
         session: newSession,
