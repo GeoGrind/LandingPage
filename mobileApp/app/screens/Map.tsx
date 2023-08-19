@@ -7,6 +7,8 @@ import {
   TouchableOpacity,
   Text,
   AppState,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import "firebase/firestore";
 import {
@@ -408,7 +410,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     padding: 20,
     width: "80%", // 80% of the screen width
-    height: "70%", // 50% of the screen height
+    height: 500, // 50% of the screen height
     alignSelf: "center",
     borderRadius: 5,
   },

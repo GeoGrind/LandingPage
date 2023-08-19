@@ -1,4 +1,4 @@
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, KeyboardAvoidingView, Platform } from "react-native";
 import React, { useRef, useState } from "react";
 import { Button, TextInput as PaperTextInput } from "react-native-paper";
 import SegmentedPicker from "react-native-segmented-picker";
