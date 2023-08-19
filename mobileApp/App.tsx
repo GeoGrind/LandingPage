@@ -26,6 +26,7 @@ import ResetPassword from "./app/screens/ResetPassword";
 import SingleChat from "./app/screens/SingleChat";
 import { initializeExpoToken } from "./app/utils/notifications";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 
 const Stack = createNativeStackNavigator();
 
@@ -94,19 +95,44 @@ const BottomTab = createBottomTabNavigator();
 
 function BottomTabNavigator() {
   return (
-    <BottomTab.Navigator>
+    <BottomTab.Navigator
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: "#70AE97",
+          shadowColor: "transparent",
+        },
+      }}
+    >
       <BottomTab.Screen
         name="Map"
         component={Map}
         options={{
           title: "Discovery",
-          headerStyle: {
-            backgroundColor: "#f4511e",
-          },
+
           headerTintColor: "#fff",
           headerTitleStyle: {
             fontWeight: "bold",
           },
+          tabBarStyle: {
+            borderTopWidth: 0,
+          },
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesome5 name="map" size={size} color={color} />
+          ),
+        }}
+      />
+      <BottomTab.Screen
+        name="AllChats"
+        component={AllChats}
+        options={{
+          title: "Chats",
+          headerTintColor: "#fff",
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesome5 name="comments" size={size} color={color} />
+          ),
         }}
       />
       <BottomTab.Screen
@@ -114,29 +140,16 @@ function BottomTabNavigator() {
         component={Setting}
         options={{
           title: "Me",
-          headerStyle: {
-            backgroundColor: "#f4511e",
-          },
           headerTintColor: "#fff",
           headerTitleStyle: {
             fontWeight: "bold",
           },
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesome5 name="user" size={size} color={color} />
+          ),
         }}
       />
-      <BottomTab.Screen
-        name="Chats"
-        component={AllChats}
-        options={{
-          title: "Chats",
-          headerStyle: {
-            backgroundColor: "#f4511e",
-          },
-          headerTintColor: "#fff",
-          headerTitleStyle: {
-            fontWeight: "bold",
-          },
-        }}
-      />
+
       {/* <BottomTab.Screen name="Test" component={Test} options={{
           title: 'Discovery',
           headerStyle: {

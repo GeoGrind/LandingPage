@@ -1,14 +1,6 @@
-import { StyleSheet, Text, View } from "react-native";
-import React, { useEffect, useRef, useState } from "react";
-import {
-  Modal,
-  Portal,
-  Button,
-  TextInput as PaperTextInput,
-  PaperProvider,
-} from "react-native-paper";
-import DropDownPicker from "react-native-dropdown-picker";
-import BottomSheet from "@gorhom/bottom-sheet";
+import { StyleSheet, View } from "react-native";
+import React, { useRef, useState } from "react";
+import { Button, TextInput as PaperTextInput } from "react-native-paper";
 import SegmentedPicker from "react-native-segmented-picker";
 
 interface SessionModalProps {
@@ -23,60 +15,74 @@ interface SessionModalProps {
 
 const SessionModal: React.FC<SessionModalProps> = ({
   courseValue,
-  timeValue,
-  descriptionValue,
   setCourseValue,
   setTimeValue,
   setDescriptionValue,
   handleFormSubmit,
 }) => {
-  const [openSelector, setOpenSelector] = useState(false);
-  const courseList = [
-    "CS 240",
-    "CS 241",
-    "CS 341",
-    "MATH 239",
-    "CO 250",
-    "STAT 230",
-    "STAT 231",
-  ];
-  const temp = courseList.map((course) => ({ label: course, value: course }));
-  const [items, setItems] = useState(temp);
-
   // Time selector:
-  const segmentedPicker = useRef<SegmentedPicker | null>(null);
+  const segmentedPickerTime = useRef<SegmentedPicker | null>(null);
+  const segmentedPickerCourse = useRef<SegmentedPicker | null>(null);
 
   // End of time selector
-  const onConfirm = (selections: any) => {
+  const onConfirmTime = (selections: any) => {
     const hr = Number(selections["hour"]);
     const minute = Number(selections["minute"]);
     setTimeValue((60 * hr + minute) * 60000);
+
+    const timeString = `${hr > 0 ? hr + " hour" + (hr > 1 ? "s" : "") : ""}${
+      minute > 0 ? " " + minute + " mins" : ""
+    }`.trim();
+    setSelectedTime(timeString);
   };
+  const [selectedTime, setSelectedTime] = useState<string>("");
+
+  // Course selector:
+  const onConfirmCourse = (selections: any) => {
+    const course = selections["course"];
+    setSelectedCourse(course);
+    setCourseValue(course);
+  };
+  const [seletedCourse, setSelectedCourse] = useState<string>("");
 
   return (
     <View style={styles.formContainer}>
-      <View style={{ zIndex: 100 }}>
-        <DropDownPicker
-          open={openSelector}
-          value={courseValue}
-          items={items}
-          setOpen={setOpenSelector}
-          setValue={setCourseValue}
-          setItems={setItems}
-        />
-      </View>
       <Button
         onPress={() => {
-          if (segmentedPicker.current) {
-            segmentedPicker.current.show();
+          if (segmentedPickerCourse.current) {
+            segmentedPickerCourse.current.show();
           }
         }}
       >
-        Select session time
+        {seletedCourse || "Choose the course"}
+      </Button>
+
+      <SegmentedPicker
+        ref={segmentedPickerCourse}
+        onConfirm={onConfirmCourse}
+        options={[
+          {
+            key: "course",
+            items: [
+              { label: "CS 135", value: "CS 135" },
+              { label: "CS 240", value: "CS 240" },
+            ],
+          },
+        ]}
+      />
+
+      <Button
+        onPress={() => {
+          if (segmentedPickerTime.current) {
+            segmentedPickerTime.current.show();
+          }
+        }}
+      >
+        {selectedTime || "Select session time"}
       </Button>
       <SegmentedPicker
-        ref={segmentedPicker}
-        onConfirm={onConfirm}
+        ref={segmentedPickerTime}
+        onConfirm={onConfirmTime}
         options={[
           {
             key: "hour",
@@ -125,15 +131,21 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#f4f4f4", // You can choose a light background color
+    borderRadius: 20, // Rounded corners for the container
+    padding: 20, // Inner padding for the container
   },
   submitButton: {
     backgroundColor: "blue",
     padding: 10,
-    borderRadius: 5,
+    borderRadius: 20, // Rounded corners for the button
     marginTop: 10,
+    width: "80%", // This makes the button width consistent with the input width
+    alignItems: "center", // To center the text inside the button
   },
   inputBox: {
     width: "80%",
     marginTop: 10,
+    borderRadius: 10, // Rounded corners for the text input
   },
 });
