@@ -25,6 +25,7 @@ import UpdateTermCourses from "./app/screens/userInfoEditScreens/UpdateTermCours
 import ResetPassword from "./app/screens/ResetPassword";
 import SingleChat from "./app/screens/SingleChat";
 import { initializeExpoToken } from "./app/utils/notifications";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 const Stack = createNativeStackNavigator();
 
@@ -38,10 +39,11 @@ function InsideLayout() {
         headerShown: false,
       }}
     >
-      <InsideStack.Screen name="Map" component={Map} />
-      <InsideStack.Screen name="Setting" component={Setting} />
-      <InsideStack.Screen name="Test" component={Test} />
-      <InsideStack.Screen name="AllChats" component={AllChats} />
+      <InsideStack.Screen
+        name="BottomTabs"
+        component={BottomTabNavigator}
+        options={{ headerShown: false }}
+      />
       <InsideStack.Screen name="SingleChat" component={SingleChat} />
       <InsideStack.Screen name="UpdateEmoji" component={UpdateEmoji} />
       <InsideStack.Screen name="UpdateBase" component={UpdateBase} />
@@ -87,6 +89,67 @@ Notifications.setNotificationHandler({
     };
   },
 });
+
+const BottomTab = createBottomTabNavigator();
+
+function BottomTabNavigator() {
+  return (
+    <BottomTab.Navigator>
+      <BottomTab.Screen
+        name="Map"
+        component={Map}
+        options={{
+          title: "Discovery",
+          headerStyle: {
+            backgroundColor: "#f4511e",
+          },
+          headerTintColor: "#fff",
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+        }}
+      />
+      <BottomTab.Screen
+        name="Setting"
+        component={Setting}
+        options={{
+          title: "Me",
+          headerStyle: {
+            backgroundColor: "#f4511e",
+          },
+          headerTintColor: "#fff",
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+        }}
+      />
+      <BottomTab.Screen
+        name="Chats"
+        component={AllChats}
+        options={{
+          title: "Chats",
+          headerStyle: {
+            backgroundColor: "#f4511e",
+          },
+          headerTintColor: "#fff",
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+        }}
+      />
+      {/* <BottomTab.Screen name="Test" component={Test} options={{
+          title: 'Discovery',
+          headerStyle: {
+            backgroundColor: '#f4511e',
+          },
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+        }}/> */}
+    </BottomTab.Navigator>
+  );
+}
 export default function App() {
   // Set the notification listener
   const [user, setUser] = useState<User | null>(null);

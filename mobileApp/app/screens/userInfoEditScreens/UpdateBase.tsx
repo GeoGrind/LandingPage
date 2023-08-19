@@ -26,10 +26,8 @@ const UpdateBase = ({ route, navigation }: Props) => {
 
   const dynamicInitializeState = (field: string) => {
     switch (field) {
-      case "name":
-        return currentUser.name;
-      case "email":
-        return currentUser.email;
+      case "username":
+        return currentUser.username;
       case "email":
         return currentUser.email;
       case "program":

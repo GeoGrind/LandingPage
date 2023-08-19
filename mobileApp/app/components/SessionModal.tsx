@@ -55,14 +55,16 @@ const SessionModal: React.FC<SessionModalProps> = ({
 
   return (
     <View style={styles.formContainer}>
-      <DropDownPicker
-        open={openSelector}
-        value={courseValue}
-        items={items}
-        setOpen={setOpenSelector}
-        setValue={setCourseValue}
-        setItems={setItems}
-      />
+      <View style={{ zIndex: 100 }}>
+        <DropDownPicker
+          open={openSelector}
+          value={courseValue}
+          items={items}
+          setOpen={setOpenSelector}
+          setValue={setCourseValue}
+          setItems={setItems}
+        />
+      </View>
       <Button
         onPress={() => {
           if (segmentedPicker.current) {

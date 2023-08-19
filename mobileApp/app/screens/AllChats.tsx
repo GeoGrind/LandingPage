@@ -64,11 +64,11 @@ const AllChats = () => {
         const userData = userSnapshot.data();
 
         if (userData) {
-          const name = userData.name || "";
+          const username = userData.username || "";
           const profilePicture = userData.profilePicture || "";
           const emoji = userData.emoji || "";
           return {
-            name: { [userId]: name },
+            username: { [userId]: username },
             profilePicture: { [userId]: profilePicture },
             emoji: { [userId]: emoji },
           };
@@ -87,7 +87,7 @@ const AllChats = () => {
 
       const updatedNames = results.reduce((acc, result) => {
         if (result) {
-          return { ...acc, ...result.name };
+          return { ...acc, ...result.username };
         }
         return acc;
       }, {});
@@ -123,16 +123,6 @@ const AllChats = () => {
 
   return (
     <View style={styles.container}>
-      <Header
-        leftComponent={{
-          icon: "map",
-          color: "#fff",
-          onPress: () => {
-            navigation.navigate("Map");
-          },
-        }}
-        centerComponent={{ text: "Chats", style: { color: "#fff" } }}
-      />
       <FlatList
         data={chatRooms}
         renderItem={({ item }) => (

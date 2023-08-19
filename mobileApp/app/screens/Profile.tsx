@@ -50,7 +50,7 @@ const Profile = ({ route }: Props) => {
           containerStyle={styles.avatarStyle}
         />
         <View style={styles.profileInfoContainer}>
-          <Text style={styles.nameText}>{targetUser?.name}</Text>
+          <Text style={styles.nameText}>{targetUser?.username}</Text>
 
           <View style={styles.cardContainer}>
             <View style={styles.infoCard}>

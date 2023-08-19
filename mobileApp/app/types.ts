@@ -3,21 +3,15 @@ import { MessageType } from "@flyerhq/react-native-chat-ui";
 export type User = {
   uid: string;
   expoToken: string | undefined; // If expoToken === "", it indicates that the user is not signed in
-  email: string | null;
-  name: string | null;
-  emoji: string | "🙂";
+  email: string;
+  username: string;
+  emoji: string;
   termCourses: string[];
-  location: Location | null;
-  isInSession: boolean;
-  onGoingSession: Session | null;
+  session: Session | null;
   program: string | null;
   yearOfGraduation: number | null;
-  region: string | null;
-  gender: string | null;
-  university: string | null;
-  profilePicture:
-    | string
-    | "https://www.tenforums.com/geek/gars/images/2/types/thumb_15951118880user.png";
+  university: string;
+  profilePicture: string;
 };
 
 export type Location = {
@@ -28,11 +22,10 @@ export type Location = {
 export type Session = {
   course: string;
   startTime: number; // time since 1970 in milliseconds
-  isVisible: boolean;
-  sessionStartLocation: Location | null;
-  numberOfCheerers: number;
-  cheerers: string[];
-
+  isPrivate: boolean;
+  location: Location;
+  numberOfLikers: number;
+  likers: string[];
   stopTime: number;
   description: string;
 };
@@ -44,8 +37,7 @@ export type Message = {
   id: string;
   createdAt: number;
   message: string;
-  sender: string;
-  isHeader: boolean;
+  senderId: string;
 };
 
 // Type for the documents in the "groups" collection
@@ -58,6 +50,7 @@ export type ChatRoom = {
 
 // The params need to be passed in when navigating between the screens
 export type InsideRootStackParamList = {
+  BottomTabs: {};
   Map: {};
   Setting: {};
   Test: {};

@@ -35,7 +35,7 @@ import { Modal, Portal, PaperProvider } from "react-native-paper";
 import DropDownPicker from "react-native-dropdown-picker";
 import SessionModal from "../components/SessionModal";
 import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
-
+import { Image } from "react-native";
 const Map = () => {
   const [inSessionUsers, setInSessionUsers] = useState<User[]>([]);
   const [showForm, setShowForm] = useState(false);
@@ -45,6 +45,11 @@ const Map = () => {
   const [input, setInput] = useState<string>("");
   const [clickedUser, setClickedUser] = useState<User | null>(null);
   const dispatch = useDispatch();
+  const [timerKey, setTimerKey] = useState<number>(1);
+
+  const [duration, setDuration] = useState<number>(-1);
+  const [remainingTime, setRemainingTime] = useState<number>(-1);
+
   const currentUserRedux = useSelector(
     (state: any) => state.currentUser.currentUser
   );
@@ -99,8 +104,9 @@ const Map = () => {
   }, []);
   // This use effect can fetch the data when there is a navigation even happened
   useEffect(() => {
-    const unsubscribe = navigation.addListener("focus", () => {
+    const unsubscribe = navigation.addListener("focus", async () => {
       fetchData();
+      resetTime();
     });
     return unsubscribe;
   }, [navigation]);
@@ -111,6 +117,14 @@ const Map = () => {
     setInSessionUsers(temp1);
   };
 
+  const resetTime = async () => {
+    const user = await getUserById(currentUser!.uid);
+    if (user?.session) {
+      setTimerKey(timerKey + 1);
+      setDuration((user.session.stopTime - user.session.startTime) / 1000);
+      setRemainingTime((user.session.stopTime - Date.now()) / 1000);
+    }
+  };
   const handleFormSubmit = async () => {
     /* TODO: This process is very slow, needs optimization 
     Try to update the UI at client side first, then update the DB in the background
@@ -120,39 +134,41 @@ const Map = () => {
       alert("Fill out all fields");
       return;
     }
+
     setShowForm(false);
+
     const newSession: Session = {
       course: courseValue,
       startTime: Date.now(),
-      isVisible: true,
-      sessionStartLocation: { longitude: 0, latitude: 0 }, // Set initial location
-      numberOfCheerers: 0,
-      cheerers: [],
+      isPrivate: false,
+      location: { longitude: 0, latitude: 0 }, // Set initial location
+      numberOfLikers: 0,
+      likers: [],
       stopTime: Date.now() + timeValue,
       description: descriptionValue,
     };
+    setDuration(timeValue / 1000);
+    setRemainingTime(timeValue / 1000);
+
     const curLocation = await getUserLocation();
-    newSession.sessionStartLocation = curLocation;
+    if (curLocation) {
+      newSession.location = curLocation;
+    }
+
     dispatch(
       updateCurrentUser({
-        location: curLocation,
-        isInSession: true,
-        onGoingSession: newSession,
+        session: newSession,
       })
     );
     updateUserFields({
-      isInSession: true,
-      onGoingSession: newSession,
-      location: curLocation,
+      session: newSession,
     });
   };
 
   const handleSignOffClick = async () => {
     try {
       updateUserFields({
-        location: null,
-        onGoingSession: null,
-        isInSession: false,
+        session: null,
       });
       await updateUserFields({
         expoToken: "",
@@ -163,18 +179,13 @@ const Map = () => {
     }
   };
   const handleStopSessionClick = async () => {
-    // TODO: Needs the UI update immediately after the button is clicked
     try {
       updateUserFields({
-        location: null,
-        onGoingSession: null,
-        isInSession: false,
+        session: null,
       });
       dispatch(
         updateCurrentUser({
-          location: null,
-          isInSession: false,
-          onGoingSession: null,
+          session: null,
         })
       );
     } catch (error) {
@@ -192,8 +203,7 @@ const Map = () => {
 
     // Filter users based on the prefix match in "onGoingSession.course"
     return inSessionUsers.filter(
-      (user) =>
-        user.onGoingSession && user.onGoingSession.course.startsWith(input)
+      (user) => user.session && user.session.course.startsWith(input)
     );
   };
 
@@ -215,55 +225,82 @@ const Map = () => {
               <Marker
                 key={index}
                 coordinate={{
-                  latitude: user.location!.latitude,
-                  longitude: user.location!.longitude,
+                  latitude: user.session?.location.latitude!,
+                  longitude: user.session?.location.longitude!,
                 }}
                 onPress={() => {
                   handleOpenPress(user);
                 }}
               >
-                <Text>{user.emoji}</Text>
+                <View
+                  style={{
+                    backgroundColor: "red",
+                    padding: 2,
+                    borderRadius: 2,
+                  }}
+                >
+                  <Image
+                    style={{ width: 20, height: 20 }}
+                    source={{
+                      uri: `${user.profilePicture}`,
+                    }}
+                  />
+                </View>
               </Marker>
             );
           })}
-          {currentUserRedux?.isInSession && (
+
+          {currentUserRedux?.session && (
             <Marker
               key={10000000}
               coordinate={{
-                latitude: currentUserRedux?.location.latitude,
-                longitude: currentUserRedux?.location.longitude,
+                latitude: currentUserRedux?.session.location.latitude,
+                longitude: currentUserRedux?.session.location.longitude,
               }}
               onPress={() => {
                 handleOpenPress(currentUserRedux);
               }}
             >
-              <Text>{currentUserRedux?.emoji}</Text>
+              <View
+                style={{
+                  backgroundColor: "red",
+                  padding: 2,
+                  borderRadius: 2,
+                }}
+              >
+                <Image
+                  style={{ width: 20, height: 20 }}
+                  source={{
+                    uri: `${currentUserRedux?.profilePicture}`,
+                  }}
+                />
+              </View>
             </Marker>
           )}
         </MapView>
         <View style={styles.searchContainer}>
-          {currentUserRedux?.isInSession && (
-            <CountdownCircleTimer
-              isPlaying
-              duration={
-                (currentUserRedux.onGoingSession.stopTime -
-                  currentUserRedux.onGoingSession.startTime) /
-                1000
-              }
-              colors={["#004777", "#F7B801", "#A30000", "#A30000"]}
-              colorsTime={[7, 5, 2, 0]}
-              size={50}
-              strokeWidth={6}
-              onComplete={() => {
-                handleStopSessionClick();
-              }}
-            >
-              {({ remainingTime }) => {
-                const hours = Math.floor(remainingTime / 3600);
-                const minutes = Math.floor((remainingTime % 3600) / 60);
-                return <Text>{`${hours}:${minutes}`}</Text>;
-              }}
-            </CountdownCircleTimer>
+          {currentUserRedux?.session && (
+            <View key={timerKey}>
+              <CountdownCircleTimer
+                key={timerKey}
+                isPlaying
+                duration={duration}
+                initialRemainingTime={remainingTime}
+                colors={["#004777", "#F7B801", "#A30000", "#A30000"]}
+                colorsTime={[7, 5, 2, 0]}
+                size={50}
+                strokeWidth={6}
+                onComplete={() => {
+                  handleStopSessionClick();
+                }}
+              >
+                {({ remainingTime }) => {
+                  const hours = Math.floor(remainingTime / 3600);
+                  const minutes = Math.floor((remainingTime % 3600) / 60);
+                  return <Text>{`${hours}:${minutes}`}</Text>;
+                }}
+              </CountdownCircleTimer>
+            </View>
           )}
           <TextInput
             style={styles.searchBar}
@@ -272,14 +309,13 @@ const Map = () => {
             value={input}
             onChangeText={(s) => {
               setInput(s);
-              console.log(s);
             }}
           />
           <TouchableOpacity onPress={fetchData}>
             <FontAwesome5 name="sync" size={30} color="black" />
           </TouchableOpacity>
         </View>
-        {!currentUserRedux?.isInSession && (
+        {!currentUserRedux?.session ? (
           <View style={styles.roundButton}>
             <FontAwesome5
               name="play"
@@ -288,23 +324,16 @@ const Map = () => {
               onPress={() => setShowForm(true)}
             />
           </View>
+        ) : (
+          <View style={styles.roundButton}>
+            <FontAwesome5
+              name="stop"
+              size={24}
+              color="white"
+              onPress={handleStopSessionClick}
+            />
+          </View>
         )}
-        <View style={styles.buttonContainer}>
-          <Navbar
-            onStopSessionClick={handleStopSessionClick}
-            onSignOffClick={handleSignOffClick}
-            onTestClick={() => {
-              navigation.navigate("Test");
-            }}
-            onListViewClick={() => {
-              navigation.navigate("ListView");
-            }}
-            onChatClick={() => {
-              navigation.navigate("AllChats");
-            }}
-            onSettingClick={handleSettingClick}
-          />
-        </View>
 
         <Portal>
           <Modal

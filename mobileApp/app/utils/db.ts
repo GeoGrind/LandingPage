@@ -19,11 +19,13 @@ import {
   LocationObject,
   requestForegroundPermissionsAsync,
   getCurrentPositionAsync,
+  LocationAccuracy,
 } from "expo-location";
 import { getAuth } from "firebase/auth";
 import { User, Location, Session, ChatRoom } from "../types";
 import "react-native-get-random-values";
 import { generateUUID } from "./util";
+import * as ExpoLocation from "expo-location";
 
 export const getUserLocation = async (): Promise<Location | null> => {
   try {
@@ -46,16 +48,20 @@ export const getUserLocation = async (): Promise<Location | null> => {
     if (!userData) {
       return null;
     }
-
     // Check location permissions
     const { status } = await requestForegroundPermissionsAsync();
     if (status !== "granted") {
       console.log("Please grant location permissions");
       return null;
     }
-
     // Get the current location
-    const currentLocation: LocationObject = await getCurrentPositionAsync({});
+
+    const currentLocation = await ExpoLocation.getLastKnownPositionAsync({});
+
+    console.log("Finish");
+    if (!currentLocation) {
+      return null;
+    }
     const { longitude, latitude } = currentLocation.coords;
 
     const location = {
@@ -79,8 +85,9 @@ export const fetchAllLocationUserPairs = async (): Promise<
   const locationUserPairs: { location: Location; uid: string }[] = [];
   snapshot.forEach((doc) => {
     const user = doc.data() as User;
-    if (user.isInSession == true) {
-      const { location, uid } = user;
+    if (user.session) {
+      const { session, uid } = user;
+      const location = session.location;
       if (location != null && uid != null) {
         locationUserPairs.push({ location, uid });
       }
@@ -94,7 +101,7 @@ export const fetchActiveUsers = async (): Promise<User[]> => {
   const snapshot = await getDocs(docRef);
   const users: Array<User> = [];
   snapshot.forEach((user) => {
-    if (user.data().isInSession === true) {
+    if (user.data().session) {
       users.push(user.data() as User);
     }
   });
@@ -247,16 +254,12 @@ export const getUserById = async (uid: string) => {
         uid: userData.uid,
         expoToken: userData.expoToken,
         email: userData.email,
-        name: userData.name,
+        username: userData.username,
         emoji: userData.emoji,
         termCourses: userData.termCourses,
-        location: userData.location,
-        isInSession: userData.isInSession,
-        onGoingSession: userData.onGoingSession,
+        session: userData.session,
         program: userData.program,
         yearOfGraduation: userData.yearOfGraduation,
-        region: userData.region,
-        gender: userData.gender,
         university: userData.university,
         profilePicture: userData.profilePicture,
       };
@@ -297,11 +300,27 @@ export const updateUserFields = async (fields: UserFields): Promise<void> => {
 };
 
 // Two functions below will be replaced
+
+export const uriToBlob = (uri: any) => {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.onload = function () {
+      // return the blob
+      resolve(xhr.response);
+    };
+    xhr.onerror = function () {
+      reject(new Error("uriToBlob failed"));
+    };
+    xhr.responseType = "blob";
+    xhr.open("GET", uri, true);
+
+    xhr.send(null);
+  });
+};
 export async function handleUpload(uri: string) {
-  const fetchResponse = await fetch(uri);
-  const theBlob = await fetchResponse.blob();
+  const theBlob = await uriToBlob(uri);
   const imageRef = ref(getStorage(), `images/${Date.now()}.jpeg`);
-  const uploadTask = uploadBytesResumable(imageRef, theBlob);
+  const uploadTask = uploadBytesResumable(imageRef, theBlob as any);
   const auth = getAuth(); // Get the Firebase Authentication instance
   const user = auth.currentUser; // Get the currently logged-in user
   if (!user) {
