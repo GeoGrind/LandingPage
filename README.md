@@ -1,10 +1,10 @@
 # Introduction
 - The app will have map integration like snapchat
-- Allow school emails in the future
+- Allowing only school emails in the future
 - Filter using class or other things
-- We use emojis instead of profile pictures
 
-- Will replace swift with react native for mobile, and use electron + react for desktop
+- Will use react native for mobile, and use electron + react for desktop
+
 
 
 Using:
