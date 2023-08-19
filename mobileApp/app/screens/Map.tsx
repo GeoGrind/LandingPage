@@ -45,6 +45,11 @@ const Map = () => {
   const [input, setInput] = useState<string>("");
   const [clickedUser, setClickedUser] = useState<User | null>(null);
   const dispatch = useDispatch();
+  const [timerKey, setTimerKey] = useState<number>(1);
+
+  const [duration, setDuration] = useState<number>(-1);
+  const [remainingTime, setRemainingTime] = useState<number>(-1);
+
   const currentUserRedux = useSelector(
     (state: any) => state.currentUser.currentUser
   );
@@ -99,8 +104,9 @@ const Map = () => {
   }, []);
   // This use effect can fetch the data when there is a navigation even happened
   useEffect(() => {
-    const unsubscribe = navigation.addListener("focus", () => {
+    const unsubscribe = navigation.addListener("focus", async () => {
       fetchData();
+      resetTime();
     });
     return unsubscribe;
   }, [navigation]);
@@ -111,6 +117,14 @@ const Map = () => {
     setInSessionUsers(temp1);
   };
 
+  const resetTime = async () => {
+    const user = await getUserById(currentUser!.uid);
+    if (user?.session) {
+      setTimerKey(timerKey + 1);
+      setDuration((user.session.stopTime - user.session.startTime) / 1000);
+      setRemainingTime((user.session.stopTime - Date.now()) / 1000);
+    }
+  };
   const handleFormSubmit = async () => {
     /* TODO: This process is very slow, needs optimization 
     Try to update the UI at client side first, then update the DB in the background
@@ -131,6 +145,8 @@ const Map = () => {
       stopTime: Date.now() + timeValue,
       description: descriptionValue,
     };
+    setDuration(timeValue / 1000);
+    setRemainingTime(timeValue / 1000);
     const curLocation = await getUserLocation();
     if (curLocation) {
       newSession.location = curLocation;
@@ -260,27 +276,27 @@ const Map = () => {
         </MapView>
         <View style={styles.searchContainer}>
           {currentUserRedux?.session && (
-            <CountdownCircleTimer
-              isPlaying
-              duration={
-                (currentUserRedux.session.stopTime -
-                  currentUserRedux.session.startTime) /
-                1000
-              }
-              colors={["#004777", "#F7B801", "#A30000", "#A30000"]}
-              colorsTime={[7, 5, 2, 0]}
-              size={50}
-              strokeWidth={6}
-              onComplete={() => {
-                handleStopSessionClick();
-              }}
-            >
-              {({ remainingTime }) => {
-                const hours = Math.floor(remainingTime / 3600);
-                const minutes = Math.floor((remainingTime % 3600) / 60);
-                return <Text>{`${hours}:${minutes}`}</Text>;
-              }}
-            </CountdownCircleTimer>
+            <View key={timerKey}>
+              <CountdownCircleTimer
+                key={timerKey}
+                isPlaying
+                duration={duration}
+                initialRemainingTime={remainingTime}
+                colors={["#004777", "#F7B801", "#A30000", "#A30000"]}
+                colorsTime={[7, 5, 2, 0]}
+                size={50}
+                strokeWidth={6}
+                onComplete={() => {
+                  handleStopSessionClick();
+                }}
+              >
+                {({ remainingTime }) => {
+                  const hours = Math.floor(remainingTime / 3600);
+                  const minutes = Math.floor((remainingTime % 3600) / 60);
+                  return <Text>{`${hours}:${minutes}`}</Text>;
+                }}
+              </CountdownCircleTimer>
+            </View>
           )}
           <TextInput
             style={styles.searchBar}
@@ -295,7 +311,7 @@ const Map = () => {
             <FontAwesome5 name="sync" size={30} color="black" />
           </TouchableOpacity>
         </View>
-        {!currentUserRedux?.session && (
+        {!currentUserRedux?.session ? (
           <View style={styles.roundButton}>
             <FontAwesome5
               name="play"
@@ -304,23 +320,16 @@ const Map = () => {
               onPress={() => setShowForm(true)}
             />
           </View>
+        ) : (
+          <View style={styles.roundButton}>
+            <FontAwesome5
+              name="stop"
+              size={24}
+              color="white"
+              onPress={handleStopSessionClick}
+            />
+          </View>
         )}
-        <View style={styles.buttonContainer}>
-          <Navbar
-            onStopSessionClick={handleStopSessionClick}
-            onSignOffClick={handleSignOffClick}
-            onTestClick={() => {
-              navigation.navigate("Test");
-            }}
-            onListViewClick={() => {
-              navigation.navigate("ListView");
-            }}
-            onChatClick={() => {
-              navigation.navigate("AllChats");
-            }}
-            onSettingClick={handleSettingClick}
-          />
-        </View>
 
         <Portal>
           <Modal

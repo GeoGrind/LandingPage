@@ -127,7 +127,7 @@ function BottomTabNavigator() {
         name="Chats"
         component={AllChats}
         options={{
-          title: "Discovery",
+          title: "Chats",
           headerStyle: {
             backgroundColor: "#f4511e",
           },

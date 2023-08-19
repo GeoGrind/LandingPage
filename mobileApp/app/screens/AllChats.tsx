@@ -123,16 +123,6 @@ const AllChats = () => {
 
   return (
     <View style={styles.container}>
-      <Header
-        leftComponent={{
-          icon: "map",
-          color: "#fff",
-          onPress: () => {
-            navigation.navigate("Map");
-          },
-        }}
-        centerComponent={{ text: "Chats", style: { color: "#fff" } }}
-      />
       <FlatList
         data={chatRooms}
         renderItem={({ item }) => (
