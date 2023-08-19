@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { User } from 'types/user.type';
 import { fetchActiveUsers } from 'utils/db';
 import { useAuthContext } from 'context/AuthContext';
@@ -10,6 +10,7 @@ import SignUp from './Authentication/Form/SignUp/SignUp';
 import Header from './Header/Header';
 import CreateSession from './CreateSession/CreateSession';
 import { useAppContext } from 'context/AppContext';
+import MapButtons from './Map/MapButtons/MapButtons';
 
 function Home() {
   const {
@@ -20,13 +21,14 @@ function Home() {
     contentStyles,
   } = useAppContext();
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     const users = await fetchActiveUsers();
     setActiveUsers(users);
-  };
+  }, [setActiveUsers]);
+
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   return (
     <div className={styles.Home} style={contentStyles}>
@@ -34,6 +36,8 @@ function Home() {
       {showLogin && <Login />}
       {showSignUp && <SignUp />}
       {showCreateSession && <CreateSession />}
+
+      <MapButtons />
       <Map />
     </div>
   );

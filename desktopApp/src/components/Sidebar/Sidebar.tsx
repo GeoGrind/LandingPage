@@ -1,4 +1,3 @@
-import { User } from 'types/user.type';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
@@ -18,12 +17,8 @@ import Discovery from './Discovery/Discovery';
 
 function Sidebar() {
   const navigate = useNavigate();
-  const {
-    activeUsers,
-    setShowLogin,
-    showExpandedSidebar,
-    setShowExpandedSidebar,
-  } = useAppContext();
+  const { setShowLogin, showExpandedSidebar, setShowExpandedSidebar } =
+    useAppContext();
   const { currentUser, logout } = useAuthContext();
   const [isDiscoveryOpen, setIsDiscoveryOpen] = useState<boolean>(false);
 
