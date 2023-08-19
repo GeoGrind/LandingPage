@@ -4,6 +4,7 @@ import { useAuthContext } from 'context/AuthContext';
 import { useChatContext } from 'context/ChatContext';
 import { useNavigate } from 'react-router-dom';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import { useState } from 'react';
 import styles from './Discovery.module.scss';
 import messageIcon from '../../../../assets/messageIcon.png';
 
@@ -12,6 +13,7 @@ function Discovery() {
   const { setCurrentChatRoomId, likeSession } = useChatContext();
   const { currentUser } = useAuthContext();
   const navigate = useNavigate();
+  const [filter, setFilter] = useState('');
 
   if (!currentUser) {
     return null;
@@ -23,13 +25,33 @@ function Discovery() {
     return null;
   };
 
+  const getFilteredUsersInSession = () => {
+    return activeUsers.filter((user) => {
+      return (
+        user.session &&
+        user.session.course // filter by course
+          .toLowerCase() // non-case sensitive
+          .replace(/\s/g, '') // non-whitespace sensitive
+          .includes(filter.toLowerCase().replace(/\s/g, ''))
+      );
+    });
+  };
+
   return (
     <div className={styles.Discovery}>
-      <input className={styles.Discovery__input} placeholder="Search" />
+      <input
+        className={styles.Discovery__input}
+        type="search"
+        placeholder="Search"
+        value={filter}
+        onChange={(e) => {
+          return setFilter(e.target.value);
+        }}
+      />
       <div className={styles.Discovery__bottom}>
-        {activeUsers.map(
+        {getFilteredUsersInSession().map(
           (user) =>
-            user.session?.location && (
+            user.session && (
               <div className={styles.Discovery__item} key={user.uid}>
                 <div className={styles.Discovery__item__top}>
                   <img
