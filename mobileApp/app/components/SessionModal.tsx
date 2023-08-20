@@ -1,4 +1,4 @@
-import { StyleSheet, View, KeyboardAvoidingView, Platform } from "react-native";
+import { StyleSheet, View, Text } from "react-native";
 import React, { useRef, useState } from "react";
 import { Button, TextInput as PaperTextInput } from "react-native-paper";
 import SegmentedPicker from "react-native-segmented-picker";
@@ -47,15 +47,19 @@ const SessionModal: React.FC<SessionModalProps> = ({
 
   return (
     <View style={styles.formContainer}>
-      <Button
-        onPress={() => {
+      <Text style={styles.heading}>Create a new session</Text>
+      <Text style={styles.subheading}>Start your study journey</Text>
+      <PaperTextInput
+        value={seletedCourse || "Choose the course"}
+        mode="outlined"
+        style={styles.clickableInputBox}
+        onTouchEnd={() => {
           if (segmentedPickerCourse.current) {
             segmentedPickerCourse.current.show();
           }
         }}
-      >
-        {seletedCourse || "Choose the course"}
-      </Button>
+        editable={false} // this ensures the user can't manually type into it
+      />
 
       <SegmentedPicker
         ref={segmentedPickerCourse}
@@ -71,15 +75,17 @@ const SessionModal: React.FC<SessionModalProps> = ({
         ]}
       />
 
-      <Button
-        onPress={() => {
+      <PaperTextInput
+        value={selectedTime || "Select session time"}
+        mode="outlined"
+        style={styles.clickableInputBox}
+        onTouchEnd={() => {
           if (segmentedPickerTime.current) {
             segmentedPickerTime.current.show();
           }
         }}
-      >
-        {selectedTime || "Select session time"}
-      </Button>
+        editable={false}
+      />
       <SegmentedPicker
         ref={segmentedPickerTime}
         onConfirm={onConfirmTime}
@@ -131,21 +137,36 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#f4f4f4", // You can choose a light background color
-    borderRadius: 20, // Rounded corners for the container
-    padding: 20, // Inner padding for the container
+    backgroundColor: "#f4f4f4",
+    borderRadius: 20,
   },
   submitButton: {
     backgroundColor: "blue",
     padding: 10,
-    borderRadius: 20, // Rounded corners for the button
+    borderRadius: 20,
     marginTop: 10,
-    width: "80%", // This makes the button width consistent with the input width
-    alignItems: "center", // To center the text inside the button
+    width: "80%",
+    alignItems: "center",
   },
   inputBox: {
     width: "80%",
     marginTop: 10,
-    borderRadius: 10, // Rounded corners for the text input
+    borderRadius: 10,
+  },
+  clickableInputBox: {
+    width: "80%",
+    marginTop: 10,
+    borderRadius: 10,
+    backgroundColor: "#fff",
+  },
+  heading: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  subheading: {
+    fontSize: 16,
+    color: "#777",
+    marginBottom: 20,
   },
 });

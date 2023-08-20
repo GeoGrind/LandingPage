@@ -41,6 +41,7 @@
     "react-native-dotenv": "^3.4.9",
     "react-native-dropdown-picker": "^5.4.7-beta.1",
     "react-native-dropdown-select-list": "^2.0.4",
+    "react-native-element-dropdown": "^2.9.0",
     "react-native-elements": "^3.4.3",
     "react-native-fs": "^2.20.0",
     "react-native-gesture-handler": "~2.9.0",
@@ -63,7 +64,8 @@
     "react-redux": "^8.1.1",
     "rn-emoji-keyboard": "^1.5.0",
     "rn-emoji-picker": "^1.1.6",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "undefined": "@expo/vector-icons/AntDesign"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

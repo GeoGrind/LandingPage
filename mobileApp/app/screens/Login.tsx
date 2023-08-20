@@ -11,7 +11,7 @@ import { FIREBASE_AUTH } from "../../FirebaseConfig";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { endsWithCanadianUniversitySuffix } from "../utils/emailVerification";
 import { initializeExpoToken } from "../utils/notifications";
-import { updateUserFields } from "../utils/db";
+import { getUserById, updateUserFields, getUserByEmail } from "../utils/db";
 import { useNavigation, ParamListBase } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 const Login = () => {
@@ -22,8 +22,21 @@ const Login = () => {
   const auth = FIREBASE_AUTH;
   const signIn = async () => {
     setLoading(true);
+
     try {
-      const response = await signInWithEmailAndPassword(auth, email, password);
+      const user1 = await getUserByEmail(email);
+
+      if (user1 === null) {
+        alert("This email is not registered!");
+        setLoading(false);
+        return;
+      }
+      if (user1.expoToken) {
+        alert("You have signed in from another mobile device!");
+        setLoading(false);
+        return;
+      }
+      await signInWithEmailAndPassword(auth, email, password);
       const expoToken = await initializeExpoToken();
       if (expoToken == undefined) {
         console.log("issue with expo token");
