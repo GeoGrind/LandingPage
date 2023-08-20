@@ -274,6 +274,41 @@ export const getUserById = async (uid: string) => {
   }
 };
 
+export const getUserByEmail = async (userEmail: string) => {
+  try {
+    const db = FIREBASE_DB;
+    const usersCollection = collection(db, "users");
+    const q = query(usersCollection, where("email", "==", userEmail));
+
+    const querySnapshot = await getDocs(q);
+
+    if (!querySnapshot.empty) {
+      const userDoc = querySnapshot.docs[0];
+      const userData = userDoc.data();
+      const user: User = {
+        uid: userData.uid,
+        expoToken: userData.expoToken,
+        email: userData.email,
+        username: userData.username,
+        emoji: userData.emoji,
+        termCourses: userData.termCourses,
+        session: userData.session,
+        program: userData.program,
+        yearOfGraduation: userData.yearOfGraduation,
+        university: userData.university,
+        profilePicture: userData.profilePicture,
+      };
+      return user;
+    } else {
+      console.log("User data not found for the provided email.");
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching user data by email:", error);
+    throw error;
+  }
+};
+
 type UserFields = Partial<User>;
 export const updateUserFields = async (fields: UserFields): Promise<void> => {
   try {

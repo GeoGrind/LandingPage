@@ -7,7 +7,8 @@ import {
   TouchableOpacity,
   Text,
   AppState,
-  Alert,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import "firebase/firestore";
 import {
@@ -15,12 +16,10 @@ import {
   getUserLocation,
   updateUserFields,
 } from "../utils/db";
-import { signOut } from "firebase/auth";
 import { FIREBASE_AUTH } from "../../FirebaseConfig";
 import { Session, User } from "../types";
 import { useNavigation, ParamListBase } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import Navbar from "../components/NavBar";
 import { Keyboard } from "react-native";
 import { useDispatch } from "react-redux";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
@@ -32,7 +31,6 @@ import { setCurrentUser } from "../store/features/currentUserSlice";
 import { useSelector } from "react-redux";
 
 import { Modal, Portal, PaperProvider } from "react-native-paper";
-import DropDownPicker from "react-native-dropdown-picker";
 import SessionModal from "../components/SessionModal";
 import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
 import { Image } from "react-native";
@@ -165,19 +163,6 @@ const Map = () => {
     });
   };
 
-  const handleSignOffClick = async () => {
-    try {
-      updateUserFields({
-        session: null,
-      });
-      await updateUserFields({
-        expoToken: "",
-      });
-      await signOut(FIREBASE_AUTH);
-    } catch (error) {
-      console.log("Error signing off:", error);
-    }
-  };
   const handleStopSessionClick = async () => {
     try {
       updateUserFields({
@@ -425,7 +410,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     padding: 20,
     width: "80%", // 80% of the screen width
-    height: "50%", // 50% of the screen height
+    height: 500, // 50% of the screen height
     alignSelf: "center",
     borderRadius: 5,
   },
