@@ -6,7 +6,7 @@ import { Team } from './components/Team'
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+    <main className="flex bg-gradient-to-br from-a0d9da to-80cdbf min-h-screen flex-col items-center justify-between p-24">
       <Hero />
       <AboutUs />
       <PitchDeck />
