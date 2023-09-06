@@ -2,7 +2,7 @@ import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { AboutUs } from './components/AboutUs';
 import { PitchDeck } from './components/PitchDeck';
-import { Team } from './components/Team';
+import { Team } from './components/Team/Team';
 import { Footer } from './components/Footer';
 
 export default function Home() {
