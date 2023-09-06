@@ -3,7 +3,7 @@
 .Team {
   font-family: Inter, -apple-system, BlinkMacSystemFont, "San Francisco", Roboto,
     "Segoe UI", "Helvetica Neue", sans-serif;
-  font-family: 'Open Sans Hebrew';
+  font-family: "Open Sans Hebrew";
 
   font-weight: 400;
   font-size: 16px;
@@ -13,5 +13,51 @@
     flex-wrap: wrap;
     width: 100%;
     margin: 100px 0px;
+    margin: 50px 0px;
+
+    &__image {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      margin-bottom: 32px;
+    }
+    &__content {
+      flex: 1 1 0%;
+      padding-left: 32px;
+
+      &__name {
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
+
+      &__headline {
+        font-size: 18px;
+        font-weight: 600;
+        color: rgb(49, 57, 60);
+      }
+
+      &__links {
+        margin: 16px 0px;
+        &__link {
+          font-weight: 600;
+          font-size: 16px;
+          text-decoration: underline;
+          cursor: pointer;
+          width: fit-content;
+          margin-right: 16px;
+          transition: all 0.1s ease-in 0s;
+        }
+      }
+
+      &__description {
+        font-weight: 400;
+        font-size: 16px;
+      }
+    }
+  }
+  a {
+    color: #006ed8;
+    text-decoration: underline;
   }
 }
