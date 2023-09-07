@@ -53,7 +53,7 @@ const teamMembers = [
     image: ChristopherSimanjuntak,
     name: "Christopher Simanjuntak",
     headline:
-      "Business Analyst/Software Engineer — Mathematics 2026 @ UWaterloo",
+      "Software Engineer/Business Analyst — Mathematics 2026 @ UWaterloo",
     links: { Linkedin: "https://www.linkedin.com/in/mschristophers/" },
     description:
       "Christopher sometimes creates ChatGPT prompts about making movie scripts for him to imagine in his mind.",
@@ -86,7 +86,7 @@ const teamMembers = [
   {
     image: MichaelLapshin,
     name: "Michael Lapshin",
-    headline: "Business Analyst - Software Engineering 2025 @ UWaterloo",
+    headline: "Backend Engineer - Software Engineering 2025 @ UWaterloo",
     links: { Linkedin: "https://www.linkedin.com/in/michael-lapshin/" },
     description:
       "Michael does rock-climbing for fun. He's also experienced in backend & microservices.",
