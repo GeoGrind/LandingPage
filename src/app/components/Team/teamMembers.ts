@@ -12,7 +12,7 @@ const teamMembers = [
   {
     image: JustinPeng,
     name: "Justin Peng",
-    headline: "Founder/SWE Lead for Mobile — Computer Science 2026 @ Uwaterloo",
+    headline: "Mobile Engineer — Computer Science 2026 @ Uwaterloo",
     links: { Linkedin: "https://www.linkedin.com/in/justinpeng1209/" },
     description: "Justin loves coding.",
   },
@@ -20,7 +20,7 @@ const teamMembers = [
     image: JayZhou,
     name: "Jay Zhou",
     headline:
-      "Founder/Platform & Production Engineer — Computer Science 2024 @ UWaterloo",
+      "Platform & Production Engineer — Computer Science 2024 @ UWaterloo",
     links: {
       Linkedin: "https://www.linkedin.com/in/jay-zhengjie-zhou/",
       Github: "https://github.com/JayZhouzzj",
@@ -31,7 +31,7 @@ const teamMembers = [
     image: DelbertLuo,
     name: "Delbert Luo",
     headline:
-      "Founder/SWE Lead for Desktop —  Combinatorics & Optimization 2026 @ UWaterloo",
+      "Software Engineer —  Combinatorics & Optimization 2026 @ UWaterloo",
     links: {
       Linkedin: "https://www.linkedin.com/in/delbertluo/",
       Website: "https://delberter.com/",
