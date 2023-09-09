@@ -83,7 +83,7 @@ const teamMembers = [
     headline: "Backend Engineer Lead - Mechatronics 2027 @ UWaterloo",
     links: { Linkedin: "https://www.linkedin.com/in/kent-tran2302" },
     description:
-      "Kent enjoys writing backend code. In his free time he enjoys playing soccer, cooking, and baking in his free time.",
+      "Kent is interested in API design, database management and server operations. In his free time he enjoys playing soccer, cooking his favourite foods, and baking cookies.",
   },
   {
     image: MichaelLapshin,
