@@ -10,7 +10,7 @@ const Footer = () => {
         <div className="md:flex md:justify-between">
           <div className="mb-6 md:mb-0">
             <a
-              href="https://about.geogrind.delberter.com/"
+              href="https://about-geogrind.delberter.com/"
               className="flex items-center"
             >
               <Image
@@ -124,7 +124,7 @@ const Footer = () => {
           <span className="text-sm text-gray-500 sm:text-center dark:text-gray-400">
             &copy; {new Date().getFullYear()}
             <a
-              href="https://about.geogrind.delberter.com/"
+              href="https://about-geogrind.delberter.com/"
               className="hover:underline"
             >
               {" "}
