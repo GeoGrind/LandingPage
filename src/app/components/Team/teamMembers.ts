@@ -12,7 +12,7 @@ const teamMembers = [
   {
     image: JustinPeng,
     name: "Justin Peng",
-    headline: "Mobile Engineer Lead— Computer Science 2026 @ UWaterloo",
+    headline: "Engineer Lead, Mobile — Computer Science 2026 @ UWaterloo",
     links: { Linkedin: "https://www.linkedin.com/in/justinpeng1209/" },
     description: "Justin loves coding.",
   },
@@ -32,7 +32,7 @@ const teamMembers = [
     image: DelbertLuo,
     name: "Delbert Luo",
     headline:
-      "Software Engineer Lead for Desktop & Web —  Combinatorics & Optimization 2026 @ UWaterloo",
+      "Engineer Lead, Desktop & Web —  Combinatorics & Optimization 2026 @ UWaterloo",
     links: {
       Linkedin: "https://www.linkedin.com/in/delbertluo/",
       Website: "https://delberter.com/",
@@ -43,7 +43,7 @@ const teamMembers = [
   {
     image: GloriaKuang,
     name: "Gloria Kuang",
-    headline: "Product Designer — New Media 2025 @ University of Toronto",
+    headline: "UI/UX Designer — New Media 2025 @ University of Toronto",
     links: {
       Linkedin: "https://www.linkedin.com/in/gloria-kuang-53427a238/",
     },
@@ -54,7 +54,7 @@ const teamMembers = [
     image: ChristopherSimanjuntak,
     name: "Christopher Simanjuntak",
     headline:
-      "Software Engineer/Business Analyst — Mathematics 2026 @ UWaterloo",
+      "Frontend Engineer/Business Analyst — Mathematics 2026 @ UWaterloo",
     links: { Linkedin: "https://www.linkedin.com/in/mschristophers/" },
     description:
       "Christopher sometimes creates ChatGPT prompts about making movie scripts for him to imagine in his mind.",
@@ -72,7 +72,7 @@ const teamMembers = [
     image: EdwardZhang,
     name: "Edward Zhang",
     headline:
-      "Software Engineer - Statistics + Computational Mathematics 2026 @ UWaterloo",
+      "Frontend Engineer - Statistics + Computational Mathematics 2026 @ UWaterloo",
     links: { Linkedin: "https://www.linkedin.com/in/zhang-edward/" },
     description:
       "Edward is majoring in Statistics and likes working out, his favourite basketball player is James Harden.",
@@ -80,7 +80,7 @@ const teamMembers = [
   {
     image: KentTran,
     name: "Kent Tran",
-    headline: "Backend Engineer - Mechatronics 2027 @ UWaterloo",
+    headline: "Backend Engineer Lead - Mechatronics 2027 @ UWaterloo",
     links: { Linkedin: "https://www.linkedin.com/in/kent-tran2302" },
     description:
       "Kent enjoys writing backend code. In his free time he enjoys playing soccer, cooking, and baking in his free time.",
@@ -97,7 +97,7 @@ const teamMembers = [
   {
     image: MilesZaman,
     name: "Miles Zaman",
-    headline: "Software Engineer - Computer Science 2026 @ UWaterloo",
+    headline: "Frontend Engineer - Computer Science 2026 @ UWaterloo",
     links: {
       Linkedin: "https://www.linkedin.com/in/miles-zaman/",
       Website: "https://www.mileszaman.com/",
