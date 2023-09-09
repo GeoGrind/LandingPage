@@ -13,9 +13,9 @@ const Header = () => {
         </div>
         <nav className="hidden md:flex space-x-4">
           <a href="#" className="text-lg text-gray-800 hover:text-gray-600">About</a>
-          <a href="#" className="text-lg text-gray-800 hover:text-gray-600">Features</a>
-          <a href="#" className="text-lg text-gray-800 hover:text-gray-600">Team</a>
-          <a href="#" className="text-lg text-gray-800 hover:text-gray-600">Contact</a>
+          <a href="#features" className="text-lg text-gray-800 hover:text-gray-600">Features</a>
+          <a href="#team" className="text-lg text-gray-800 hover:text-gray-600">Team</a>
+          <a href="#contact" className="text-lg text-gray-800 hover:text-gray-600">Contact</a>
         </nav>
         
         <div className="md:hidden">

@@ -12,7 +12,7 @@ const teamMembers = [
   {
     image: JustinPeng,
     name: "Justin Peng",
-    headline: "Mobile Engineer — Computer Science 2026 @ Uwaterloo",
+    headline: "Mobile Engineer Lead— Computer Science 2026 @ UWaterloo",
     links: { Linkedin: "https://www.linkedin.com/in/justinpeng1209/" },
     description: "Justin loves coding.",
   },
@@ -25,19 +25,20 @@ const teamMembers = [
       Linkedin: "https://www.linkedin.com/in/jay-zhengjie-zhou/",
       Github: "https://github.com/JayZhouzzj",
     },
-    description: "Jay likes cilantro.",
+    description:
+      "Jay likes cilantro and likes to solve hard coding problems when he is bored.",
   },
   {
     image: DelbertLuo,
     name: "Delbert Luo",
     headline:
-      "Software Engineer —  Combinatorics & Optimization 2026 @ UWaterloo",
+      "Software Engineer Lead for Desktop & Web —  Combinatorics & Optimization 2026 @ UWaterloo",
     links: {
       Linkedin: "https://www.linkedin.com/in/delbertluo/",
       Website: "https://delberter.com/",
     },
     description:
-      "Delbert's favourite colour is purple. When he's not rock climbing he enjoys playing badminton, soccer, and dodgeball.",
+      "Delbert's favourite colour is purple. When he's not writing code he likes to rock climb and play badminton, soccer, and dodgeball.",
   },
   {
     image: GloriaKuang,
@@ -81,12 +82,14 @@ const teamMembers = [
     name: "Kent Tran",
     headline: "Backend Engineer - Mechatronics 2027 @ UWaterloo",
     links: { Linkedin: "https://www.linkedin.com/in/kent-tran2302" },
-    description: "Kent likes playing soccer for fun.",
+    description:
+      "Kent enjoys writing backend code. In his free time he enjoys playing soccer, cooking, and baking in his free time.",
   },
   {
     image: MichaelLapshin,
     name: "Michael Lapshin",
-    headline: "Backend Engineer - Software Engineering 2025 @ UWaterloo",
+    headline:
+      "Product Manager/Backend Engineer - Software Engineering 2025 @ UWaterloo",
     links: { Linkedin: "https://www.linkedin.com/in/michael-lapshin/" },
     description:
       "Michael does rock-climbing for fun. He's also experienced in backend & microservices.",
@@ -94,12 +97,13 @@ const teamMembers = [
   {
     image: MilesZaman,
     name: "Miles Zaman",
-    headline: "Software Engineer - Computer Science 2026 @ Uwaterloo",
+    headline: "Software Engineer - Computer Science 2026 @ UWaterloo",
     links: {
       Linkedin: "https://www.linkedin.com/in/miles-zaman/",
       Website: "https://www.mileszaman.com/",
     },
-    description: "Miles is into Muay Thai, rock climbing, and loves sushi.",
+    description:
+      "Fun fact: Miles has been coding since he was 13. He's into Muay Thai, rock climbing, and loves sushi.",
   },
 ];
 
