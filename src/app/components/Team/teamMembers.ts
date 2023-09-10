@@ -55,7 +55,7 @@ const teamMembers = [
     image: ChristopherSimanjuntak,
     name: "Christopher Simanjuntak",
     headline:
-      "Frontend Engineer/Business Analyst — Mathematics 2026 @ UWaterloo",
+      "Business Lead, Frontend Engineer — Combinatorics & Optimization + Statistics 2026 @ UWaterloo",
     links: { Linkedin: "https://www.linkedin.com/in/mschristophers/" },
     description:
       "Christopher sometimes creates ChatGPT prompts about making movie scripts for him to imagine in his mind.",
@@ -76,7 +76,7 @@ const teamMembers = [
       "Frontend Engineer - Statistics + Computational Mathematics 2026 @ UWaterloo",
     links: { Linkedin: "https://www.linkedin.com/in/zhang-edward/" },
     description:
-      "Edward is majoring in Statistics and likes working out, his favourite basketball player is James Harden.",
+      "Edward is majoring in Statistics and likes working out. His favourite basketball player is James Harden.",
   },
   {
     image: KentTran,
