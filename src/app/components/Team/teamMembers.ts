@@ -93,7 +93,7 @@ const teamMembers = [
       "Product Manager/Backend Engineer - Software Engineering 2025 @ UWaterloo",
     links: { Linkedin: "https://www.linkedin.com/in/michael-lapshin/" },
     description:
-      "Michael does rock-climbing for fun. He's also experienced in backend & microservices.",
+      "Michael does rock climbing for fun. He also has a lot of experience in backend development & microservices.",
   },
   {
     image: MilesZaman,
