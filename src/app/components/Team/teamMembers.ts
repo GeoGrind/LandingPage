@@ -17,6 +17,18 @@ const teamMembers = [
     description: "Justin loves coding.",
   },
   {
+    image: DelbertLuo,
+    name: "Delbert Luo",
+    headline:
+      "Engineer Lead, Desktop & Web —  Combinatorics & Optimization + Computational Mathematics 2026 @ UWaterloo",
+    links: {
+      Linkedin: "https://www.linkedin.com/in/delbertluo/",
+      Website: "https://delberter.com/",
+    },
+    description:
+      "Delbert's favourite colour is purple. When he's not immersed in coding or math he enjoys activities like rock climbing, badminton, soccer, and dodgeball.",
+  },
+  {
     image: JayZhou,
     name: "Jay Zhou",
     headline:
@@ -28,18 +40,7 @@ const teamMembers = [
     description:
       "Jay likes cilantro and likes to solve hard coding problems when he is bored.",
   },
-  {
-    image: DelbertLuo,
-    name: "Delbert Luo",
-    headline:
-      "Engineer Lead, Desktop & Web —  Combinatorics & Optimization 2026 @ UWaterloo",
-    links: {
-      Linkedin: "https://www.linkedin.com/in/delbertluo/",
-      Website: "https://delberter.com/",
-    },
-    description:
-      "Delbert's favourite colour is purple. When he's not writing code he likes to rock climb and play badminton, soccer, and dodgeball.",
-  },
+
   {
     image: GloriaKuang,
     name: "Gloria Kuang",
