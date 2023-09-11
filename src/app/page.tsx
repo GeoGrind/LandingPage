@@ -7,25 +7,29 @@ import { Footer } from "./components/Footer";
 
 export default function Home() {
   return (
-    <main className="flex bg-gradient-to-br from-a0d9da to-80cdbf min-h-screen flex-col items-center justify-between">
-      <Header />
-      <Hero />
-      <div
-        className="w-full h-0.5 bg-gray-300 my-10 opacity-50"
-        id="about"
-      ></div>
-      <AboutUs />
-      <div
-        className="w-full h-0.5 bg-gray-300 my-10 opacity-50"
-        id="features"
-      ></div>
-      <PitchDeck />
-      <div
-        className="w-full h-0.5 bg-gray-300 my-10 opacity-50"
-        id="team"
-      ></div>
-      <Team />
-      <Footer />
-    </main>
-  );
+    <div className="overflow-x-hidden">
+      <main className="flex flex-col items-center justify-between bg-gradient-to-br from-a0d9da to-80cdbf min-h-screen w-full px-4 md:px-0">
+        <Header />
+        <Hero />
+        <Separator id="about" />
+        <AboutUs />
+        <Separator id="features" />
+        <PitchDeck />
+        <Separator id="team" />
+        <Team />
+        <Footer />
+      </main>
+    </div>
+  )
 }
+
+interface SeparatorProps {
+  id: string
+}
+
+const Separator: React.FC<SeparatorProps> = ({ id }) => (
+  <div
+    className="w-full h-0.5 bg-gray-300 my-10 opacity-50"
+    id={id}
+  ></div>
+)

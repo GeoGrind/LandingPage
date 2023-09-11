@@ -5,8 +5,8 @@ import geoGrindLogo from "../assets/GeoGrindDark.png";
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-300 w-full p-10 mt-10" id="contact">
-      <div className="mx-auto w-full max-w-screen-xl p-6 py-6 lg:py-8">
+    <footer className="bg-gray-300 w-full p-6 mt-10" id="contact">
+      <div className="container mx-auto justify max-w-screen-xl p-6 py-6 lg:py-8">
         <div className="md:flex md:justify-between">
           <div className="mb-6 md:mb-0">
             <a
