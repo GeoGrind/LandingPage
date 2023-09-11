@@ -55,7 +55,7 @@ const teamMembers = [
     image: ChristopherSimanjuntak,
     name: "Christopher Simanjuntak",
     headline:
-      "Business Lead, Frontend Engineer — Combinatorics & Optimization + Statistics 2026 @ UWaterloo",
+      "Business Lead/Frontend Engineer — Combinatorics & Optimization + Statistics 2026 @ UWaterloo",
     links: { Linkedin: "https://www.linkedin.com/in/mschristophers/" },
     description:
       "Christopher sometimes creates ChatGPT prompts about making movie scripts for him to imagine in his mind.",
