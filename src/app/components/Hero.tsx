@@ -4,7 +4,7 @@ import geoGrindLogo from "../assets/GeoGrindDark.png";
 const Hero = () => (
   <section className="bg-gradient-to-r text-center pt-32 px-6 md:px-20 lg:px-40">
     <div className="container mx-auto">
-      <h1 className="text-9xl font-bold mb-3 tracking-tighter leading-none">
+      <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-bold mb-3 tracking-tighter leading-none">
         GeoGrind
       </h1>
       <p className="text-2xl mb-5 leading-relaxed max-w-2xl mx-auto">
